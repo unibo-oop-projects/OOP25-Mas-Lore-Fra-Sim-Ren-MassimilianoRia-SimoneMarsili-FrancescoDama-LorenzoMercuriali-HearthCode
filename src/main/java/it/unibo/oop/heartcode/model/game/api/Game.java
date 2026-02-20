@@ -12,11 +12,15 @@ public interface Game {
 
     /**
      * Temp method.
+     * 
+     * @return return
      */
     boolean isOver();
 
     /**
      * Temp method.
+     * 
+     * @return return
      */
     boolean hasPlayerWon();
 
