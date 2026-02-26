@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode.model.deck.api;
+package it.unibo.oop.hearthcode.model.deck.api;
 
 /**
  * It modelizes the set of the cards drawable by his own player.

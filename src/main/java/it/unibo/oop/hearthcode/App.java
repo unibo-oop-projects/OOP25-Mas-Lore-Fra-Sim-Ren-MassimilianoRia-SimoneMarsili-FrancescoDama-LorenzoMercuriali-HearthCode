@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode;
+package it.unibo.oop.hearthcode;
 
 /**
  * The entry point for the HearthCode application.

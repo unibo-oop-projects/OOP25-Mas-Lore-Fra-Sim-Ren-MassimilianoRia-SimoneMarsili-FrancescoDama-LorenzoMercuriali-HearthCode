@@ -1,6 +1,6 @@
-package it.unibo.oop.heartcode.model.deck.impl;
+package it.unibo.oop.hearthcode.model.deck.impl;
 
-import it.unibo.oop.heartcode.model.deck.api.Parser;
+import it.unibo.oop.hearthcode.model.deck.api.Parser;
 
 /**
  * A {@link Parser} implementation for {@link CreatureDefinition}.

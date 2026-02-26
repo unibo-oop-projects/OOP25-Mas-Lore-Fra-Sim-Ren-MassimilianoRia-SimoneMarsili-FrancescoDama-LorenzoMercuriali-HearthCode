@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode.model.file_management;
+package it.unibo.oop.hearthcode.model.file_management;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.unibo.oop.heartcode.model.file_management.impl.TextFileFullReader;
+import it.unibo.oop.hearthcode.model.file_management.impl.TextFileFullReader;
 
 /**
  * A simple test for {@link TextFileFullReader}.

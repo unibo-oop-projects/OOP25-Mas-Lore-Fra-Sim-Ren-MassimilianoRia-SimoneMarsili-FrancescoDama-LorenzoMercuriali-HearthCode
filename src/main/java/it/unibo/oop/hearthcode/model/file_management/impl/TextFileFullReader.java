@@ -1,7 +1,10 @@
-package it.unibo.oop.heartcode.model.file_management.impl;
+package it.unibo.oop.hearthcode.model.file_management.impl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import it.unibo.oop.hearthcode.model.file_management.api.FullReader;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +12,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-
-import it.unibo.oop.heartcode.model.file_management.api.FullReader;
 
 /**
  * An implementation of {@link FullReader} interface that reads all the lines from a text file, given a stream.

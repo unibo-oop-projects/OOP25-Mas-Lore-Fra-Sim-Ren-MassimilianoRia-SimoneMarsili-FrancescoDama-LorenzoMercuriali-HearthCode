@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode.model.game.api;
+package it.unibo.oop.hearthcode.model.game.api;
 
 /**
  * The entry point for the model.

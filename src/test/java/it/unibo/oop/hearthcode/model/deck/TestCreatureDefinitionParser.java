@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode.model.deck;
+package it.unibo.oop.hearthcode.model.deck;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.unibo.oop.heartcode.model.deck.impl.CreatureDefinitionParser;
+import it.unibo.oop.hearthcode.model.deck.impl.CreatureDefinitionParser;
 
 /**
  * A simple test for @{link CreatureDefinitionParser}.

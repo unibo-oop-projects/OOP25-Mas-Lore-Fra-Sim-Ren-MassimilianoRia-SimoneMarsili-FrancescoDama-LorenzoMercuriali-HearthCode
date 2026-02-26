@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode.model.deck.impl;
+package it.unibo.oop.hearthcode.model.deck.impl;
 
 /**
  * It represents the concept of Creature Definition.

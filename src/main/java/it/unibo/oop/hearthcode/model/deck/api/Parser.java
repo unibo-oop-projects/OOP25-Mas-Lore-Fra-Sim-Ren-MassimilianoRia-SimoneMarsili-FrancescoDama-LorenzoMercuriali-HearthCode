@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode.model.deck.api;
+package it.unibo.oop.hearthcode.model.deck.api;
 
 /**
  * It modelizes an interface for parsing a string into a T type object.

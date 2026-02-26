@@ -1,4 +1,4 @@
-package it.unibo.oop.heartcode.model.deck.api;
+package it.unibo.oop.hearthcode.model.deck.api;
 
 /**
  * A specific type of card that can be deployed during the match.
