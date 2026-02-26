@@ -6,9 +6,9 @@ package it.unibo.oop.heartcode.model.deck.api;
 public interface Card {
 
     /**
-     * @return the specific id of the istance of the card
+     * @return the specific CardId of the istance of the card
      */
-    Integer getId();
+    CardId getId();
 
     /**
      * @return the name of the card
