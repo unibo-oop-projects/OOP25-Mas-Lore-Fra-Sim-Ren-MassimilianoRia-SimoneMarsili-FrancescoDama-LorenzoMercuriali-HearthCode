@@ -14,7 +14,7 @@ import it.unibo.oop.hearthcode.model.file_management.impl.TextFileFullReader;
 final class TestTextFileFullReader {
 
     private static final String TEST_FILE = "creatures.txt";
-    private static final int EXPECTED_N_LINES = 9;
+    private static final int EXPECTED_N_LINES = 10;
     private TextFileFullReader reader;
 
     @BeforeEach
