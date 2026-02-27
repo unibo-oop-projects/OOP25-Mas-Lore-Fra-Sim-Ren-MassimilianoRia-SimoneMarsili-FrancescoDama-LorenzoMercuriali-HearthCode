@@ -7,3 +7,4 @@ Oasis Snapjaw,6,2,4
 Novice Engineer,1,1,1
 Nightblade,4,4,5
 Wolfrider,1,3,3
+Reckless Rocketeer,2,5,6
