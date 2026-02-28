@@ -17,6 +17,10 @@ import it.unibo.oop.hearthcode.model.deck.impl.CreatureDefinition;
 final class TestCreatureDatabase {
 
     private static final String TEST_FILE = "creatures.txt";
+    private static final String TEST_NAME = "Reckless Rocketeer";
+    private static final int TEST_HEALTH = 2;
+    private static final int TEST_ATTACK = 5;
+    private static final int TEST_MANA = 6;
     private static final int N_CREATURES = 10;
     private CreatureDatabase db;
 
@@ -32,7 +36,12 @@ final class TestCreatureDatabase {
     @Test
     void testDb() {
         assertEquals(N_CREATURES, this.db.size());
-        assertEquals(new CreatureDefinition("Murloc", 1, 2, 1), this.db.getAll().get(0));
+        assertEquals(new CreatureDefinition("Murloc", 1, 2, 1),
+            this.db.getAll().get(0)
+        );
+        assertEquals(new CreatureDefinition(TEST_NAME, TEST_HEALTH, TEST_ATTACK, TEST_MANA),
+            this.db.getAll().getLast()
+        );
         assertThrows(UnsupportedOperationException.class,
             () -> this.db.getAll().add(new CreatureDefinition("Name", 1, 1, 1))
         );
