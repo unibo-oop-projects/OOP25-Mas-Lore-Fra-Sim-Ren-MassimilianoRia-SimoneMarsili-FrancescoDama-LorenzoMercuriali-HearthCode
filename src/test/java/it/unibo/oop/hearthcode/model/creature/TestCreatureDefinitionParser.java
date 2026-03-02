@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.deck;
+package it.unibo.oop.hearthcode.model.creature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
