@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabase;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
-import it.unibo.oop.hearthcode.model.deck.impl.CreatureDefinition;
 
 /**
  * A simple test for {@link CreatureDatabase}.

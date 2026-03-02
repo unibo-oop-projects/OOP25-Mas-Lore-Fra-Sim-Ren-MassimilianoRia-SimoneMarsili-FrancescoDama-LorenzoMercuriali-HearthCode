@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.deck.api;
+package it.unibo.oop.hearthcode.model.creature.api;
 
 /**
  * Identifies all the cards.

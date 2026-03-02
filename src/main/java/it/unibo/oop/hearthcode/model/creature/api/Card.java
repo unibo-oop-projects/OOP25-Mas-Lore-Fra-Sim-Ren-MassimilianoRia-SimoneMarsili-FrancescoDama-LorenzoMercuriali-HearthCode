@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.deck.api;
+package it.unibo.oop.hearthcode.model.creature.api;
 
 /**
  * A card that can be played during the match.

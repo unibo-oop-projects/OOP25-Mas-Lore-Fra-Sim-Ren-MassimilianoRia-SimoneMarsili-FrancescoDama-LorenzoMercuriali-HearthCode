@@ -2,8 +2,8 @@ package it.unibo.oop.hearthcode.model.database.impl;
 
 import java.util.List;
 
+import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.database.api.Database;
-import it.unibo.oop.hearthcode.model.deck.impl.CreatureDefinition;
 
 /**
  * A specific implementation of {@link Database} that contains {@link CreatureDefinition}.

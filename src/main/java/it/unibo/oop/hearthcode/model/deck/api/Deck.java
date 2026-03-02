@@ -1,5 +1,7 @@
 package it.unibo.oop.hearthcode.model.deck.api;
 
+import it.unibo.oop.hearthcode.model.creature.api.Card;
+
 /**
  * It modelizes the set of the cards drawable by his own player.
  */

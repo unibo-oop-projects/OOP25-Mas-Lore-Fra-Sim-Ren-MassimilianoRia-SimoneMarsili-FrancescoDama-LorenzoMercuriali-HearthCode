@@ -2,8 +2,8 @@ package it.unibo.oop.hearthcode.model.army.api;
 
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.deck.api.CardId;
-import it.unibo.oop.hearthcode.model.deck.api.Creature;
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.api.Creature;
 
 /**
  * It modelizes the set of the placed creatures by his own player.

@@ -1,6 +1,6 @@
 package it.unibo.oop.hearthcode.model.database.impl;
 
-import it.unibo.oop.hearthcode.model.deck.impl.CreatureDefinitionParser;
+import it.unibo.oop.hearthcode.model.creature.impl.CreatureDefinitionParser;
 import it.unibo.oop.hearthcode.model.file_management.impl.TextFileFullReader;
 
 /**
