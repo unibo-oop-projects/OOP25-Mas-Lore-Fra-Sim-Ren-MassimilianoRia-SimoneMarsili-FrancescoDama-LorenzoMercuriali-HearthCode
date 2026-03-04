@@ -18,7 +18,7 @@ public final class MainScene extends JPanel implements Scene {
      * Builds the panel.
      */
     public MainScene() {
-        this.setLayout(new GridBagLayout()); // centra i componenti
+        this.setLayout(new GridBagLayout());
         final JButton playButton = new JButton("Play");
         this.add(playButton);
     }

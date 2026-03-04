@@ -3,7 +3,7 @@ package it.unibo.oop.hearthcode.view.api;
 /**
  * It represents the main frame of the application.
  */
-@FunctionalInterface
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface MainView {
 
     /**
