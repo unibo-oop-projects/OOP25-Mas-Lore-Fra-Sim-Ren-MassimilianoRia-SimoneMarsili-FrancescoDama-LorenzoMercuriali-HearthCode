@@ -7,8 +7,16 @@ import javax.swing.JPanel;
 
 import it.unibo.oop.hearthcode.view.api.Scene;
 
-public class MainScene extends JPanel implements Scene {
+/**
+ * It represents the first scene in the application.
+ */
+public final class MainScene extends JPanel implements Scene {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Builds the panel.
+     */
     public MainScene() {
         this.setLayout(new GridBagLayout()); // centra i componenti
         final JButton playButton = new JButton("Play");

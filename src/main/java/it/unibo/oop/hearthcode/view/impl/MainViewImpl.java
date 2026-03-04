@@ -11,7 +11,7 @@ import it.unibo.oop.hearthcode.view.api.MainView;
 /**
  * It represents the implementation of the main view of the application which contains the various scenes.
  */
-public class MainViewImpl implements MainView {
+public final class MainViewImpl implements MainView {
 
     private final JFrame frame = new JFrame("HearthCode");
     private final MainScene scene = new MainScene();
@@ -31,5 +31,5 @@ public class MainViewImpl implements MainView {
             this.frame.setVisible(true);
         });
     }
-    
+
 }
