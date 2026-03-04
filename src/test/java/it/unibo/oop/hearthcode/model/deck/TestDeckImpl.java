@@ -1,0 +1,64 @@
+package it.unibo.oop.hearthcode.model.deck;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
+
+import it.unibo.oop.hearthcode.model.creature.api.Card;
+import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
+import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
+import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabase;
+import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
+import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
+import it.unibo.oop.hearthcode.model.game.impl.IdGenerator;
+
+/**
+ * A simple test for Deck and DeckFactory.
+ */
+final class TestDeckImpl {
+
+    private static final String TEST_FILE = "creatures.txt";
+    private DeckFactory factory;
+    private CreatureDatabase db;
+
+    @BeforeEach
+    void initTest() {
+        this.db = CreatureDatabaseFactory.createFromFile(TEST_FILE);
+        this.factory = new DeckFactory(
+            this.db, 
+            new CreatureImplFactory(new IdGenerator())
+        );
+    }
+
+    @Test
+    void testUniform() {
+        final var deck = this.factory.createWeighted(
+            this.db.size(), 
+            def -> 1
+        );
+
+        assertEquals(this.db.size(), deck.getRemaining());
+
+        final List<Card> allDrawed = IntStream.range(0, deck.getRemaining())
+            .mapToObj(n -> deck.draw())
+            .toList();
+
+        assertEquals(this.db.size(), allDrawed.size());
+
+        assertEquals(
+            Set.copyOf(this.db.getAll().stream().map(CreatureDefinition::name).toList()), 
+            Set.copyOf(allDrawed.stream().map(Card::getName).toList())
+        );
+
+        assertEquals(
+            allDrawed.stream().count(), 
+            allDrawed.stream().map(Card::getId).distinct().count()
+        );
+
+    }
+}
