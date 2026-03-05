@@ -1,0 +1,30 @@
+package it.unibo.oop.hearthcode.model.hand.api;
+
+import it.unibo.oop.hearthcode.model.creature.api.Card;
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
+
+/**
+ * It represents the hand of the player.
+ */
+public interface Hand {
+    /**
+     * @return the number of cards in the player's hand
+     */
+    int getSize();
+
+    /**
+     * It adds the card in the hand.
+     * 
+     * @param card the card to be added
+     * @return whether the operation was successful or not
+     */
+    boolean addCard(Card card);
+
+    /**
+     * It removes from the hand the card specified by its own id.
+     * 
+     * @param cardId the id of the card
+     * @return the card removed
+     */
+    Card removeCard(CardId cardId);
+}
