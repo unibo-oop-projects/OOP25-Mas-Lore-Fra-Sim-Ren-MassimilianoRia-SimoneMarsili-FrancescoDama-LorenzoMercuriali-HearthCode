@@ -16,9 +16,8 @@ public interface Hand {
      * It adds the card in the hand.
      * 
      * @param card the card to be added
-     * @return whether the operation was successful or not
      */
-    boolean addCard(Card card);
+    void addCard(Card card);
 
     /**
      * It removes from the hand the card specified by its own id.
