@@ -36,7 +36,7 @@ public class DeckFactory {
 
     /**
      * It creates a deck with the concept of {@link WeightStrategy}.
-     * Basically it's more difficult for a strong card to be choosen twice than a weeker one.
+     * Basically it's more difficult for a strong card to be choosen twice than a weaker one.
      * 
      * @param size the size of the deck to be created
      * @param strategy the weight strategy used to create the deck

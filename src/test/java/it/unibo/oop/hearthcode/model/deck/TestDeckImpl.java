@@ -1,6 +1,7 @@
 package it.unibo.oop.hearthcode.model.deck;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,5 +61,29 @@ final class TestDeckImpl {
             allDrawed.stream().map(Card::getId).distinct().count()
         );
 
+    }
+
+    @Test
+    void testNonUniform() {
+        try {
+
+            final var deck = this.factory.createWeighted(
+                this.db.size() * 2, 
+                def -> Math.max(1, def.manaCost())
+            );
+
+            final List<Card> allDrawed = IntStream.range(0, deck.getRemaining())
+            .mapToObj(n -> deck.draw())
+            .toList();
+
+            assertEquals(this.db.size() * 2, allDrawed.size());
+
+            assertEquals(
+                Set.copyOf(this.db.getAll().stream().map(CreatureDefinition::name).toList()), 
+                Set.copyOf(allDrawed.stream().map(Card::getName).distinct().toList())
+            );
+        } catch (final IllegalStateException e) {
+            fail(e);
+        }
     }
 }
