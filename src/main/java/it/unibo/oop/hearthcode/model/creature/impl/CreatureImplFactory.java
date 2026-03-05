@@ -1,6 +1,7 @@
 package it.unibo.oop.hearthcode.model.creature.impl;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.api.CardType;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.game.impl.IdGenerator;
@@ -30,7 +31,7 @@ public final class CreatureImplFactory {
     public Creature createFromDefinition(final CreatureDefinition definition) {
         return new CreatureImpl(
             definition,
-            new CardId(this.generator.nextId())
+            new CardId(CardType.CREATURE, this.generator.nextId())
         );
     }
 }
