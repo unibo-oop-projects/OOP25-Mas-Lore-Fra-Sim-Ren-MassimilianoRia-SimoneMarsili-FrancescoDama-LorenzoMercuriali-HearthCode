@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.ActionListener;
@@ -37,43 +36,32 @@ public final class MainScene extends JPanel implements Scene {
     private final JButton settingsButton;
     private final JButton quitButton;
 
-    private transient BufferedImage background;
-    private transient BufferedImage scaledBackground;
-
-    private int cachedPanelWidth;
-    private int cachedPanelHeight;
+    private final BufferedImage background;
 
     /**
      * Builds the panel.
      */
     public MainScene() {
         super(new GridBagLayout());
-        this.setOpaque(false);
 
         this.background = loadBufferedImage(BACKGROUND_PATH);
 
         this.playButton = this.createImageButton(
             "/play-normal.png",
             "/play-hover.png",
-            "/play-pressed.png",
-            BUTTON_WIDTH,
-            BUTTON_HEIGHT
+            "/play-pressed.png"
         );
 
         this.settingsButton = this.createImageButton(
             "/settings-normal.png",
             "/settings-hover.png",
-            "/settings-pressed.png",
-            BUTTON_WIDTH,
-            BUTTON_HEIGHT
+            "/settings-pressed.png"
         );
 
         this.quitButton = this.createImageButton(
             "/quit-normal.png",
             "/quit-hover.png",
-            "/quit-pressed.png",
-            BUTTON_WIDTH,
-            BUTTON_HEIGHT
+            "/quit-pressed.png"
         );
 
         this.initializeLayout();
@@ -124,13 +112,11 @@ public final class MainScene extends JPanel implements Scene {
     private JButton createImageButton(
         final String normalPath,
         final String hoverPath,
-        final String pressedPath,
-        final int width,
-        final int height
+        final String pressedPath
     ) {
-        final ImageIcon normalIcon = loadScaledIcon(normalPath, width, height);
-        final ImageIcon hoverIcon = loadScaledIcon(hoverPath, width, height);
-        final ImageIcon pressedIcon = loadScaledIcon(pressedPath, width, height);
+        final ImageIcon normalIcon = loadScaledIcon(normalPath, BUTTON_WIDTH, BUTTON_HEIGHT);
+        final ImageIcon hoverIcon = loadScaledIcon(hoverPath, BUTTON_WIDTH, BUTTON_HEIGHT);
+        final ImageIcon pressedIcon = loadScaledIcon(pressedPath, BUTTON_WIDTH, BUTTON_HEIGHT);
 
         final JButton button = new JButton(normalIcon);
         button.setRolloverIcon(hoverIcon);
@@ -142,7 +128,7 @@ public final class MainScene extends JPanel implements Scene {
         button.setOpaque(false);
         button.setText(null);
 
-        final Dimension size = new Dimension(width, height);
+        final Dimension size = new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT);
         button.setPreferredSize(size);
         button.setMinimumSize(size);
         button.setMaximumSize(size);
@@ -172,37 +158,6 @@ public final class MainScene extends JPanel implements Scene {
         }
     }
 
-    private static BufferedImage scaleImage(
-        final Image source,
-        final int width,
-        final int height
-    ) {
-        final BufferedImage scaled = new BufferedImage(
-            width,
-            height,
-            BufferedImage.TYPE_INT_ARGB
-        );
-
-        final Graphics2D g2d = scaled.createGraphics();
-        g2d.setRenderingHint(
-            RenderingHints.KEY_INTERPOLATION,
-            RenderingHints.VALUE_INTERPOLATION_BICUBIC
-        );
-        g2d.setRenderingHint(
-            RenderingHints.KEY_RENDERING,
-            RenderingHints.VALUE_RENDER_QUALITY
-        );
-        g2d.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON
-        );
-
-        g2d.drawImage(source, 0, 0, width, height, null);
-        g2d.dispose();
-
-        return scaled;
-    }
-
     private static BufferedImage scaleButtonImageHighQuality(
         final BufferedImage source,
         final int targetWidth,
@@ -210,14 +165,18 @@ public final class MainScene extends JPanel implements Scene {
     ) {
         int currentWidth = source.getWidth();
         int currentHeight = source.getHeight();
-
         BufferedImage currentImage = source;
 
         while (currentWidth / 2 >= targetWidth && currentHeight / 2 >= targetHeight) {
             currentWidth /= 2;
             currentHeight /= 2;
 
-            final BufferedImage tmp = createCompatibleImage(currentWidth, currentHeight);
+            final BufferedImage tmp = new BufferedImage(
+                currentWidth,
+                currentHeight,
+                BufferedImage.TYPE_INT_ARGB
+            );
+
             final Graphics2D g2d = tmp.createGraphics();
             g2d.setComposite(AlphaComposite.Src);
             g2d.setRenderingHint(
@@ -239,7 +198,12 @@ public final class MainScene extends JPanel implements Scene {
         }
 
         if (currentWidth != targetWidth || currentHeight != targetHeight) {
-            final BufferedImage finalImage = createCompatibleImage(targetWidth, targetHeight);
+            final BufferedImage finalImage = new BufferedImage(
+                targetWidth,
+                targetHeight,
+                BufferedImage.TYPE_INT_ARGB
+            );
+
             final Graphics2D g2d = finalImage.createGraphics();
             g2d.setComposite(AlphaComposite.Src);
             g2d.setRenderingHint(
@@ -263,22 +227,15 @@ public final class MainScene extends JPanel implements Scene {
         return currentImage;
     }
 
-    private static BufferedImage createCompatibleImage(final int width, final int height) {
-        return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-    }
+    @Override
+    protected void paintComponent(final Graphics g) {
+        super.paintComponent(g);
 
-    private BufferedImage getScaledBackground() {
         final int panelWidth = this.getWidth();
         final int panelHeight = this.getHeight();
 
         if (panelWidth <= 0 || panelHeight <= 0) {
-            return null;
-        }
-
-        if (this.scaledBackground != null
-                && panelWidth == this.cachedPanelWidth
-                && panelHeight == this.cachedPanelHeight) {
-            return this.scaledBackground;
+            return;
         }
 
         final double scale = Math.max(
@@ -286,31 +243,11 @@ public final class MainScene extends JPanel implements Scene {
             (double) panelHeight / this.background.getHeight()
         );
 
-        final int scaledWidth = (int) Math.ceil(this.background.getWidth() * scale);
-        final int scaledHeight = (int) Math.ceil(this.background.getHeight() * scale);
+        final int drawWidth = (int) Math.ceil(this.background.getWidth() * scale);
+        final int drawHeight = (int) Math.ceil(this.background.getHeight() * scale);
 
-        this.scaledBackground = scaleImage(this.background, scaledWidth, scaledHeight);
-        this.cachedPanelWidth = panelWidth;
-        this.cachedPanelHeight = panelHeight;
-
-        return this.scaledBackground;
-    }
-
-    @Override
-    protected void paintComponent(final Graphics g) {
-        super.paintComponent(g);
-
-        if (this.background == null) {
-            return;
-        }
-
-        final BufferedImage currentBackground = this.getScaledBackground();
-        if (currentBackground == null) {
-            return;
-        }
-
-        final int x = (this.getWidth() - currentBackground.getWidth()) / 2;
-        final int y = (this.getHeight() - currentBackground.getHeight()) / 2;
+        final int x = (panelWidth - drawWidth) / 2;
+        final int y = (panelHeight - drawHeight) / 2;
 
         final Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(
@@ -326,7 +263,7 @@ public final class MainScene extends JPanel implements Scene {
             RenderingHints.VALUE_ANTIALIAS_ON
         );
 
-        g2d.drawImage(currentBackground, x, y, this);
+        g2d.drawImage(this.background, x, y, drawWidth, drawHeight, null);
         g2d.dispose();
     }
 }
