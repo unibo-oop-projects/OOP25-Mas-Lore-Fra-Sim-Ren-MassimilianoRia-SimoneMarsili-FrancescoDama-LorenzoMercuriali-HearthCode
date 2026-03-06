@@ -31,7 +31,9 @@ public final class MenuScene extends JPanel implements Scene {
     private static final int BUTTON_WIDTH = 280;
     private static final int BUTTON_HEIGHT = 100;
 
-    private final BufferedImage background;
+    private static final int BUTTON_PADDING_Y = 12;
+
+    private final transient BufferedImage background;
 
     private final JButton playButton;
     private final JButton settingsButton;
@@ -67,7 +69,7 @@ public final class MenuScene extends JPanel implements Scene {
     private void initializeLayout() {
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.insets = new Insets(12, 0, 12, 0);
+        gbc.insets = new Insets(BUTTON_PADDING_Y, 0, BUTTON_PADDING_Y, 0);
 
         gbc.gridy = 0;
         this.add(this.playButton, gbc);
@@ -146,7 +148,7 @@ public final class MenuScene extends JPanel implements Scene {
                     "Resource not found: " + path
                 )
             );
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException("Cannot load resource: " + path, e);
         }
     }
