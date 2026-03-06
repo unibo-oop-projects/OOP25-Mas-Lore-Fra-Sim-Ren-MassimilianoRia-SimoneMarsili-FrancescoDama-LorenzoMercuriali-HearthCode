@@ -11,4 +11,9 @@ public interface MainView {
      */
     void show();
 
+    /**
+     * Closes the application window.
+     */
+    void close();
+
 }
