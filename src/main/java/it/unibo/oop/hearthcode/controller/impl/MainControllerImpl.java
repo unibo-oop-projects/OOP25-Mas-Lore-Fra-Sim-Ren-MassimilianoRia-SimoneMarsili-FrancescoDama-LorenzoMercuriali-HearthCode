@@ -24,15 +24,15 @@ public final class MainControllerImpl implements MainController {
 
     @Override
     public void start() {
-        final MenuScene mainScene = new MenuScene();
+        final MenuScene menuScene = new MenuScene();
         final SettingsScene settingsScene = new SettingsScene();
         final MatchScene matchScene = new MatchScene();
 
-        new MenuController(mainScene, this.mainView);
+        new MenuController(menuScene, this.mainView);
         new SettingsController(settingsScene, this.mainView);
         new MatchController(matchScene, this.mainView);
 
-        this.mainView.addScene(SceneId.MAIN_MENU, mainScene);
+        this.mainView.addScene(SceneId.MAIN_MENU, menuScene);
         this.mainView.addScene(SceneId.SETTINGS, settingsScene);
         this.mainView.addScene(SceneId.MATCH, matchScene);
 
