@@ -103,7 +103,7 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
     }
 
     @Override
-    protected void paintComponent(final Graphics g) {
+    protected final void paintComponent(final Graphics g) {
         super.paintComponent(g);
 
         final int panelWidth = this.getWidth();
