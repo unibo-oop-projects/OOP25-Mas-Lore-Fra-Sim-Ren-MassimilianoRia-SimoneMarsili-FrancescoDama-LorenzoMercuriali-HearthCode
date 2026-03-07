@@ -1,14 +1,15 @@
 package it.unibo.oop.hearthcode.model.game.api;
 
 /**
- * The entry point for the model.
+ * The entry point of the model.
+ * It represents the main class of the game and applies the basic rules of the game.
  */
-public interface Game {
+public interface Match {
 
     /**
      * Temp method.
      */
-    void startGame();
+    void startMatch();
 
     /**
      * Temp method.
