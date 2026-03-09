@@ -1,6 +1,7 @@
 package it.unibo.oop.hearthcode.model.player;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,4 +56,11 @@ final class TestHand {
         assertEquals(removedCard.getId(), id);
     }
 
+    @Test
+    void testException() {
+        this.hand.addCard(this.deck.draw());
+        assertThrows(IllegalArgumentException.class, () -> {
+            this.hand.removeCard(this.deck.draw().getId());
+        });
+    }
 }
