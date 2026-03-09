@@ -49,6 +49,7 @@ public class HandImpl implements Hand {
         if (card.isEmpty()) {
             throw new IllegalArgumentException("this card isn't contained in your hand");
         } else {
+            this.hand.remove(card.get());
             return card.get();
         }
     }
