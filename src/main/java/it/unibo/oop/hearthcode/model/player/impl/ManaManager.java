@@ -38,4 +38,16 @@ public class ManaManager {
         this.maxMana++;
         this.actualMana = this.maxMana; 
     }
+
+    /**
+     * it decreases the actual mana of the player.
+     * 
+     * @param amount the mana to be subtracted
+     */
+    void decreaseActualMana(final int amount) {
+        this.actualMana -= amount;
+        if (this.actualMana < 0) {
+            throw new IllegalStateException("Mana resource can't be negative");
+        }
+    }
 }

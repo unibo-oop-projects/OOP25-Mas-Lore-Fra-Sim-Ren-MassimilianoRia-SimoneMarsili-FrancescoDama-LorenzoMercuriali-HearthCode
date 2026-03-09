@@ -75,7 +75,9 @@ public class PlayerImpl implements Player {
      */
     @Override
     public Card playCard(final CardId cardId) {
-        return this.hand.removeCard(cardId);
+        final Card removedCard = this.hand.removeCard(cardId);
+        this.manaManager.decreaseActualMana(removedCard.getManaCost());
+        return removedCard;
     }
 
     /**

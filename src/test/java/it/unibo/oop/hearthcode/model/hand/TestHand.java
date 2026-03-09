@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.player;
+package it.unibo.oop.hearthcode.model.hand;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

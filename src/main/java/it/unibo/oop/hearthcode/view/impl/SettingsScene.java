@@ -6,10 +6,12 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
+import it.unibo.oop.hearthcode.view.api.SettingsView;
+
 /**
  * It represents the settings scene of the application.
  */
-public final class SettingsScene extends AbstractBackgroundScene {
+public final class SettingsScene extends AbstractBackgroundScene implements SettingsView {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,6 +53,7 @@ public final class SettingsScene extends AbstractBackgroundScene {
      *
      * @param action the action to execute
      */
+    @Override
     public void onBack(final Runnable action) {
         this.backButton.addActionListener(event -> action.run());
     }

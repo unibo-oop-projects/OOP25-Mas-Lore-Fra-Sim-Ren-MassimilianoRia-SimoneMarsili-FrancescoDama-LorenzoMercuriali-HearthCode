@@ -9,12 +9,12 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import it.unibo.oop.hearthcode.view.api.Scene;
+import it.unibo.oop.hearthcode.view.api.MatchView;
 
 /**
  * Placeholder match scene.
  */
-public final class MatchScene extends JPanel implements Scene {
+public final class MatchScene extends JPanel implements MatchView {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,6 +44,7 @@ public final class MatchScene extends JPanel implements Scene {
      *
      * @param action the action to execute
      */
+    @Override
     public void onBack(final Runnable action) {
         this.backButton.addActionListener(event -> action.run());
     }
