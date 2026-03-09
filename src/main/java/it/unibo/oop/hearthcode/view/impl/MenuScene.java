@@ -7,10 +7,12 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
+import it.unibo.oop.hearthcode.view.api.MenuView;
+
 /**
  * It represents the menu scene of the application.
  */
-public final class MenuScene extends AbstractBackgroundScene {
+public final class MenuScene extends AbstractBackgroundScene implements MenuView {
 
     private static final long serialVersionUID = 1L;
 
@@ -77,6 +79,7 @@ public final class MenuScene extends AbstractBackgroundScene {
      *
      * @param action the action to execute
      */
+    @Override
     public void onPlay(final Runnable action) {
         this.playButton.addActionListener(event -> action.run());
     }
@@ -86,6 +89,7 @@ public final class MenuScene extends AbstractBackgroundScene {
      *
      * @param action the action to execute
      */
+    @Override
     public void onSettings(final Runnable action) {
         this.settingsButton.addActionListener(event -> action.run());
     }
@@ -95,6 +99,7 @@ public final class MenuScene extends AbstractBackgroundScene {
      *
      * @param action the action to execute
      */
+    @Override
     public void onQuit(final Runnable action) {
         this.quitButton.addActionListener(event -> action.run());
     }

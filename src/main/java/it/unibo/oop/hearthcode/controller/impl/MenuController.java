@@ -3,8 +3,8 @@ package it.unibo.oop.hearthcode.controller.impl;
 //import it.unibo.oop.hearthcode.model.game.api.Match;
 //import it.unibo.oop.hearthcode.model.game.impl.MatchImpl;
 import it.unibo.oop.hearthcode.view.api.MainView;
+import it.unibo.oop.hearthcode.view.api.MenuView;
 import it.unibo.oop.hearthcode.view.api.SceneId;
-import it.unibo.oop.hearthcode.view.impl.MenuScene;
 
 /**
  * Controller of the menu scene.
@@ -19,7 +19,7 @@ public class MenuController {
      * @param scene the controlled scene
      * @param mainView the application main view
      */
-    public MenuController(final MenuScene scene, final MainView mainView) {
+    public MenuController(final MenuView scene, final MainView mainView) {
         scene.onPlay(() -> {
             //this.match.startGame();
             mainView.showScene(SceneId.MATCH);
