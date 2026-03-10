@@ -22,5 +22,5 @@ public enum SoundEffect {
     public String resourcePath() {
         return this.resourcePath;
     }
-    
+
 }

@@ -27,5 +27,5 @@ public enum SoundTrack {
     public String getResourcePath() {
         return this.resourcePath;
     }
-    
+
 }
