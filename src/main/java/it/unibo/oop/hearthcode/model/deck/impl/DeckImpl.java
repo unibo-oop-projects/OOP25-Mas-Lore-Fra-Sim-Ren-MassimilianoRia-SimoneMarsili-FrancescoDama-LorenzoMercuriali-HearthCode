@@ -25,7 +25,7 @@ public class DeckImpl implements Deck {
         if (getRemaining() == 0) {
             throw new IllegalStateException("It's not possible drawing from an empty deck.");
         }
-        return this.cards.removeFirst();
+        return this.cards.remove(0);
     }
 
     /**

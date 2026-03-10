@@ -40,7 +40,7 @@ final class TestCreatureDatabase {
             this.db.getAll().get(0)
         );
         assertEquals(new CreatureDefinition(TEST_NAME, TEST_HEALTH, TEST_ATTACK, TEST_MANA),
-            this.db.getAll().getLast()
+            this.db.getAll().get(this.db.getAll().size() - 1)
         );
         assertThrows(UnsupportedOperationException.class,
             () -> this.db.getAll().add(new CreatureDefinition("Name", 1, 1, 1))
