@@ -12,6 +12,7 @@ import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
 import it.unibo.oop.hearthcode.model.game.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.player.api.Player;
+import it.unibo.oop.hearthcode.model.player.impl.PlayerFactory;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerImpl;
 
 /**
@@ -30,7 +31,7 @@ final class PlayerTest {
             new CreatureImplFactory(new IdGenerator())
         );
         final Deck deck = factory.createWeighted(db.size(), def -> 1);
-        this.player = new PlayerImpl(deck, 10);
+        this.player = PlayerFactory.createPlayer(deck, 10);
     }
 
     @Test

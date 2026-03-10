@@ -17,13 +17,7 @@ public class PlayerImpl implements Player {
     private final Deck deck;
     private int health;
 
-    /**
-     * It constructs a new player.
-     * 
-     * @param deck the deck to be used
-     * @param health the health of the player
-     */
-    public PlayerImpl(final Deck deck, final int health) {
+    PlayerImpl(final Deck deck, final int health) {
         this.manaManager = new ManaManager();
         this.hand = new HandImpl();
         this.deck = deck;
