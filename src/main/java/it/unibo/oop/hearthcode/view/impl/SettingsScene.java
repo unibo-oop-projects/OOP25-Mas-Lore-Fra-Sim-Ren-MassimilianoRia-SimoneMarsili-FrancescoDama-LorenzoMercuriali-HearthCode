@@ -15,7 +15,7 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
 
     private static final long serialVersionUID = 1L;
 
-    private static final String BACKGROUND_PATH = "/menu-background.png";
+    private static final String BACKGROUND_PATH = "/images/menu-background.png";
 
     private static final int BUTTON_WIDTH = 280;
     private static final int BUTTON_HEIGHT = 100;
@@ -31,9 +31,9 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
         this.setLayout(new GridBagLayout());
 
         this.backButton = this.createImageButton(
-            "/back-normal.png",
-            "/back-hover.png",
-            "/back-pressed.png",
+            "/images/back-normal.png",
+            "/images/back-hover.png",
+            "/images/back-pressed.png",
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );

@@ -1,0 +1,28 @@
+package it.unibo.oop.hearthcode.controller.api;
+
+/**
+ * Coordinates scene transitions at application level.
+ */
+public interface SceneCoordinator {
+
+    /**
+     * Shows the main menu scene.
+     */
+    void showMainMenu();
+
+    /**
+     * Shows the settings scene.
+     */
+    void showSettings();
+
+    /**
+     * Shows the match scene.
+     */
+    void showMatch();
+
+    /**
+     * Requests the application shutdown.
+     */
+    void requestExit();
+
+}

@@ -8,7 +8,7 @@ public enum SoundEffect {
     /**
      * Generic button click.
      */
-    BUTTON_CLICK("/click_audio.wav");
+    BUTTON_CLICK("/audio/effects/click_audio.wav");
 
     private final String resourcePath;
 

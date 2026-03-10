@@ -13,7 +13,7 @@ import it.unibo.oop.hearthcode.audio.model.SoundTrack;
 /**
  * Default audio service based on Java Sound.
  */
-public final class JavaxSoundAudioService implements AudioService {
+public final class AudioServiceImpl implements AudioService {
 
     private Clip currentMusicClip;
     private SoundTrack currentTrack;
@@ -23,7 +23,7 @@ public final class JavaxSoundAudioService implements AudioService {
     /**
      * Builds the audio service with both music and effects enabled.
      */
-    public JavaxSoundAudioService() {
+    public AudioServiceImpl() {
         this.musicEnabled = true;
         this.effectsEnabled = true;
     }

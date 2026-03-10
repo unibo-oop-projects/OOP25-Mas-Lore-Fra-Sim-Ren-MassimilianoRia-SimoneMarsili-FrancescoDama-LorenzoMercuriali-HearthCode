@@ -1,10 +1,11 @@
 package it.unibo.oop.hearthcode.controller.impl;
 
+import it.unibo.oop.hearthcode.audio.api.AudioService;
+import it.unibo.oop.hearthcode.audio.model.SoundEffect;
+import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 //import it.unibo.oop.hearthcode.model.game.api.Match;
 //import it.unibo.oop.hearthcode.model.game.impl.MatchImpl;
-import it.unibo.oop.hearthcode.view.api.MainView;
 import it.unibo.oop.hearthcode.view.api.MenuView;
-import it.unibo.oop.hearthcode.view.api.SceneId;
 
 /**
  * Controller of the menu scene.
@@ -17,18 +18,26 @@ public class MenuController {
      * Builds the controller and binds the scene actions.
      *
      * @param scene the controlled scene
-     * @param mainView the application main view
+     * @param coordinator the application scene coordinator
+     * @param audioService the audio service
      */
-    public MenuController(final MenuView scene, final MainView mainView) {
+    public MenuController(
+        final MenuView scene,
+        final SceneCoordinator coordinator,
+        final AudioService audioService
+    ) {
         scene.onPlay(() -> {
             //this.match.startGame();
-            mainView.showScene(SceneId.MATCH);
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            coordinator.showMatch();
         });
-        scene.onSettings(() -> mainView.showScene(SceneId.SETTINGS));
+        scene.onSettings(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            coordinator.showSettings();
+        });
         scene.onQuit(() -> {
-            if (mainView.confirmExit()) {
-                mainView.close();
-            }
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            coordinator.requestExit();
         });
     }
 

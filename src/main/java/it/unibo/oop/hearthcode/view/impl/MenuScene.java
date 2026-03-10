@@ -16,7 +16,7 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
 
     private static final long serialVersionUID = 1L;
 
-    private static final String BACKGROUND_PATH = "/menu-background.png";
+    private static final String BACKGROUND_PATH = "/images/menu-background.png";
 
     private static final int BUTTON_WIDTH = 280;
     private static final int BUTTON_HEIGHT = 100;
@@ -35,23 +35,23 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
         this.setLayout(new GridBagLayout());
 
         this.playButton = this.createImageButton(
-            "/play-normal.png",
-            "/play-hover.png",
-            "/play-pressed.png",
+            "/images/play-normal.png",
+            "/images/play-hover.png",
+            "/images/play-pressed.png",
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
         this.settingsButton = this.createImageButton(
-            "/settings-normal.png",
-            "/settings-hover.png",
-            "/settings-pressed.png",
+            "/images/settings-normal.png",
+            "/images/settings-hover.png",
+            "/images/settings-pressed.png",
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
         this.quitButton = this.createImageButton(
-            "/quit-normal.png",
-            "/quit-hover.png",
-            "/quit-pressed.png",
+            "/images/quit-normal.png",
+            "/images/quit-hover.png",
+            "/images/quit-pressed.png",
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );

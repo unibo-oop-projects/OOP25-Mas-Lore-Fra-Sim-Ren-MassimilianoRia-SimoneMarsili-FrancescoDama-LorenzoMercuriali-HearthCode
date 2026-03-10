@@ -8,12 +8,12 @@ public enum SoundTrack {
     /**
      * Background music for menu-like scenes.
      */
-    MENU("/menu_audio_background.wav"),
+    MENU("/audio/music/menu_audio_background.wav"),
 
     /**
      * Background music for the match scene.
      */
-    MATCH("/match_audio_background.wav");
+    MATCH("/audio/music/match_audio_background.wav");
 
     private final String resourcePath;
 
