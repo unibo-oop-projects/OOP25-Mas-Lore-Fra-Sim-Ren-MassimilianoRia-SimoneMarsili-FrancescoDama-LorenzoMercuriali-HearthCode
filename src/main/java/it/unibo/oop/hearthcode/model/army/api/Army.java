@@ -29,4 +29,15 @@ public interface Army {
      */
     boolean isCreatureAwake(CardId cardId);
 
+    /**
+     * Adds a specific card to the army.
+     * 
+     * @param id the id of the card to be added in the army.
+     */
+    void placeCard(CardId cardId);
+
+    /**
+     * It awakes all the cratures in the army.
+     */
+    void awakeCreatures();
 }
