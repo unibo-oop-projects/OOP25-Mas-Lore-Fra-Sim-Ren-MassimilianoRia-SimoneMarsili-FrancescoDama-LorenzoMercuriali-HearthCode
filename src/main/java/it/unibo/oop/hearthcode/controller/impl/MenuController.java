@@ -3,16 +3,12 @@ package it.unibo.oop.hearthcode.controller.impl;
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
-//import it.unibo.oop.hearthcode.model.game.api.Match;
-//import it.unibo.oop.hearthcode.model.game.impl.MatchImpl;
 import it.unibo.oop.hearthcode.view.api.MenuView;
 
 /**
  * Controller of the menu scene.
  */
 public class MenuController {
-
-    //private final Match match = new MatchImpl();
 
     /**
      * Builds the controller and binds the scene actions.
@@ -27,7 +23,6 @@ public class MenuController {
         final AudioService audioService
     ) {
         scene.onPlay(() -> {
-            //this.match.startGame();
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             coordinator.showMatch();
         });
