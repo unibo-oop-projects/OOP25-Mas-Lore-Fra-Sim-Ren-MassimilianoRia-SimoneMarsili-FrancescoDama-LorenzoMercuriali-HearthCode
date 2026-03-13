@@ -5,7 +5,7 @@ package it.unibo.oop.hearthcode.model.player.impl;
  */
 public class ManaManager {
 
-    private static final int START_MANA = 3;
+    private static final int START_MANA = 1;
     private int maxMana;
     private int actualMana;
 

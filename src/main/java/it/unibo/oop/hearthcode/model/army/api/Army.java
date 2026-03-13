@@ -11,6 +11,11 @@ import it.unibo.oop.hearthcode.model.creature.api.Creature;
 public interface Army {
 
     /**
+     * @return the actual number of creatures placed in this army
+     */
+    int getSize();
+
+    /**
      * @param cardId the identifier of the specific card
      * @return an Optional containing the requested creature if present, empty otherwise
      */

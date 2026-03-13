@@ -10,7 +10,7 @@ import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabase;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
-import it.unibo.oop.hearthcode.model.game.impl.IdGenerator;
+import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.player.api.Player;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerFactory;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerImpl;

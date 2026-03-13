@@ -13,9 +13,9 @@ import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabase;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
-import it.unibo.oop.hearthcode.model.game.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.hand.api.Hand;
 import it.unibo.oop.hearthcode.model.hand.impl.HandImpl;
+import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 
 /**
  * a simple test for {@link HandImpl}.

@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.game.impl;
+package it.unibo.oop.hearthcode.model.match.impl;
 
 /**
  * A simple Integer ID generator.

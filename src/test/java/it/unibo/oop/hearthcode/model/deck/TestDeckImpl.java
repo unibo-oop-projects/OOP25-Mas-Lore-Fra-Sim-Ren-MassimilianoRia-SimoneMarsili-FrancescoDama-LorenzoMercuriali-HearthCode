@@ -16,7 +16,7 @@ import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabase;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
-import it.unibo.oop.hearthcode.model.game.impl.IdGenerator;
+import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 
 /**
  * A simple test for Deck and DeckFactory.

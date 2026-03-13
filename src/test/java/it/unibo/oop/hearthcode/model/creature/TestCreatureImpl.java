@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
-import it.unibo.oop.hearthcode.model.game.impl.IdGenerator;
+import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 
 final class TestCreatureImpl {
 
