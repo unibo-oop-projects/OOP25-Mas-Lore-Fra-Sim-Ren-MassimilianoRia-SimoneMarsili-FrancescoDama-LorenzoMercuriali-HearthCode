@@ -32,7 +32,7 @@ public interface Army {
     /**
      * Adds a specific card to the army.
      * 
-     * @param id the id of the card to be added in the army.
+     * @param cardId the id of the card to be added in the army.
      */
     void placeCard(CardId cardId);
 
