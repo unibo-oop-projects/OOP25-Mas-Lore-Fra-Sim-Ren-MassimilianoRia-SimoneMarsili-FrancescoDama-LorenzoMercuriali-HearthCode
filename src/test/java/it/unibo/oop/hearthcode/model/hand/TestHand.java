@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import it.unibo.oop.hearthcode.model.boardgame.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
@@ -15,7 +16,6 @@ import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
 import it.unibo.oop.hearthcode.model.hand.api.Hand;
 import it.unibo.oop.hearthcode.model.hand.impl.HandImpl;
-import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 
 /**
  * a simple test for {@link HandImpl}.

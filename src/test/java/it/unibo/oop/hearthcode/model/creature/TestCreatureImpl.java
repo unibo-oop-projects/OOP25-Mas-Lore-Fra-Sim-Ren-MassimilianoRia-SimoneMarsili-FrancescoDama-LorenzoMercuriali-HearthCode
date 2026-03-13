@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import it.unibo.oop.hearthcode.model.boardgame.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
-import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 
 final class TestCreatureImpl {
 

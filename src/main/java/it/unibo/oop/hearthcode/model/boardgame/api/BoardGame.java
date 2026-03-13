@@ -11,6 +11,16 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 public interface BoardGame {
 
     /**
+     * @return return whether the game is over or not
+     */
+    boolean isOver();
+
+    /**
+     * @return return the winner of the game if present, empty otherwise
+     */
+    Optional<PlayerId> getWinner();
+
+    /**
      * It allows to start the fight between the specified cards.
      * 
      * @param attackingIdCard the id of the attacking card
@@ -33,5 +43,10 @@ public interface BoardGame {
      * @param placingPlayer the player who placed the card
      */
     void place(Optional<CardId> selectedIdCard, Optional<PlayerId> placingPlayer);
+
+    /**
+     * Makes actions to switch the match turn.
+     */
+    void switchTurn();
 
 }

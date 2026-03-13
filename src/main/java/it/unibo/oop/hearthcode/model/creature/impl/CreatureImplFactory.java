@@ -1,10 +1,10 @@
 package it.unibo.oop.hearthcode.model.creature.impl;
 
+import it.unibo.oop.hearthcode.model.boardgame.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CardType;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
-import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 
 /**
  * A simple {@link CreatureImpl} factory.

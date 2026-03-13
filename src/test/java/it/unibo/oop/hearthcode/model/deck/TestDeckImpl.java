@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import it.unibo.oop.hearthcode.model.boardgame.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabase;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
-import it.unibo.oop.hearthcode.model.match.impl.IdGenerator;
 
 /**
  * A simple test for Deck and DeckFactory.
