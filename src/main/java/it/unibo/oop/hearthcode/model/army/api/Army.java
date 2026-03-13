@@ -37,7 +37,7 @@ public interface Army {
     void placeCard(CardId cardId);
 
     /**
-     * It awakes all the cratures in the army.
+     * It awakes all the creatures in the army.
      */
     void awakeCreatures();
 }
