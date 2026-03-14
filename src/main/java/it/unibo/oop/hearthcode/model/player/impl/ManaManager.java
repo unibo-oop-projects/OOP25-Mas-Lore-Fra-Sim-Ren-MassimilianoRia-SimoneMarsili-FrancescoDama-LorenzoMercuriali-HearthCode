@@ -10,7 +10,7 @@ public class ManaManager {
     private int actualMana;
 
     /**
-     * Inizializes the actual and the max Mana at 3.
+     * Inizializes the actual and the max Mana at 1.
      */
     public ManaManager() {
         this.maxMana = START_MANA;

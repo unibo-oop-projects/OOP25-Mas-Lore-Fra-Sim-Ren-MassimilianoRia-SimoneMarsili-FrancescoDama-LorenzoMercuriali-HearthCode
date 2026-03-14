@@ -6,22 +6,33 @@ import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.hand.api.Hand;
 import it.unibo.oop.hearthcode.model.hand.impl.HandImpl;
 import it.unibo.oop.hearthcode.model.player.api.Player;
+import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**
  * implementation of Player.
  */
 public class PlayerImpl implements Player {
 
+    private final PlayerId id;
     private final ManaManager manaManager;
     private final Hand hand;
     private final Deck deck;
     private int health;
 
-    PlayerImpl(final Deck deck, final int health) {
+    PlayerImpl(final Deck deck, final int health, final PlayerId id) {
         this.manaManager = new ManaManager();
         this.hand = new HandImpl();
         this.deck = deck;
         this.health = health;
+        this.id = id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PlayerId getId() {
+        return this.id;
     }
 
     /**

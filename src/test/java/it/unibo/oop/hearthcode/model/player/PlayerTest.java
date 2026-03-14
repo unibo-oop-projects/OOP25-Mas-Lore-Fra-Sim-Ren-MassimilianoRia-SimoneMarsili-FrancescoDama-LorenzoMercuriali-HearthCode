@@ -12,6 +12,8 @@ import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
 import it.unibo.oop.hearthcode.model.player.api.Player;
+import it.unibo.oop.hearthcode.model.player.api.PlayerId;
+import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerFactory;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerImpl;
 
@@ -31,7 +33,8 @@ final class PlayerTest {
             new CreatureImplFactory(new IdGenerator())
         );
         final Deck deck = factory.createWeighted(db.size(), def -> 1);
-        this.player = PlayerFactory.createPlayer(deck, 10);
+        final PlayerId id = new PlayerId(PlayerType.HUMAN_PLAYER);
+        this.player = PlayerFactory.createPlayer(deck, 10, id);
     }
 
     @Test
