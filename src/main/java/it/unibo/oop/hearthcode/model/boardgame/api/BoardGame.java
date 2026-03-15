@@ -47,7 +47,7 @@ public interface BoardGame {
      * @param selectedIdCard the id of the card to be placed
      * @param placingPlayer the player who placed the card
      */
-    void place(Optional<CardId> selectedIdCard, Optional<PlayerId> placingPlayer);
+    void place(CardId selectedIdCard, PlayerId placingPlayer);
 
     /**
      * Makes actions to switch the match turn.

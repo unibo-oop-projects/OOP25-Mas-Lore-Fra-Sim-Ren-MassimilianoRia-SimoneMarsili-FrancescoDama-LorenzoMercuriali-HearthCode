@@ -6,10 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.api.CardType;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
@@ -22,14 +24,15 @@ public class BoardGameImpl implements BoardGame{
 
     private static final String DEFAULT_CREATURES_FILE = "creatures.txt";
     private static final int STARTING_HAND_CARDS = 5;
+    private static final int MAX_ARMY_SIZE = 5;
     private static final int DECK_SIZE = 20;
     private static final int DEFAULT_HEALTH = 30;
-    private final Map<PlayerId, Army> gameState;
-    private final List<Player> players;
+    private final Map<Player, Army> gameState;
+    private final Map<PlayerId, Player> players;
 
     public BoardGameImpl() {
         this.gameState = new HashMap<>();
-        this.players = new LinkedList<>();
+        this.players = new HashMap<>();
         initGame();
     }
 
@@ -51,8 +54,8 @@ public class BoardGameImpl implements BoardGame{
             new PlayerId(PlayerType.IA_PLAYER)
         );
         
-        this.players.add(humanPlayer);
-        this.players.add(iaPlayer);
+        this.players.put(humanPlayer.getId(), humanPlayer);
+        this.players.put(iaPlayer.getId(), iaPlayer);
 
         // manca inizializzazione turni ed army
     }
@@ -60,10 +63,10 @@ public class BoardGameImpl implements BoardGame{
     @Override
     public void startGame() {
         try {
-            for (int i = 0; i < STARTING_HAND_CARDS; i++) {
-                this.players.get(0).drawCard();
-                this.players.get(1).drawCard();
-            }
+            this.players.values().forEach(
+                p -> IntStream.range(0, STARTING_HAND_CARDS)
+                    .forEach(n -> p.drawCard())
+            );
         } catch (final IllegalStateException e) {
             throw new IllegalStateException("Could not draw all the requested cards", e);
         }
@@ -73,14 +76,18 @@ public class BoardGameImpl implements BoardGame{
 
     @Override
     public boolean isOver() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isOver'");
+        return this.players.values().stream().anyMatch(p -> p.getHealth() <= 0);
     }
 
     @Override
     public Optional<PlayerId> getWinner() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWinner'");
+        if (!isOver()) {
+            return Optional.empty();
+        }
+        return this.players.values().stream()
+            .filter(p -> p.getHealth() > 0)
+            .map(p -> p.getId())
+            .findFirst();
     }
 
     @Override
@@ -96,9 +103,28 @@ public class BoardGameImpl implements BoardGame{
     }
 
     @Override
-    public void place(Optional<CardId> selectedIdCard, Optional<PlayerId> placingPlayer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'place'");
+    public void place(CardId selectedIdCard, PlayerId placingPlayer) {
+
+        // Check if placingPlayer is the actualPlayer
+
+        if (!this.players.containsKey(placingPlayer)) {
+            throw new IllegalArgumentException("Specified player is not in the game");
+        }
+        if (!selectedIdCard.type().equals(CardType.CREATURE)) {
+            throw new IllegalArgumentException("You cannot place a non-creature card");
+        }
+        if (this.gameState.get(this.players.get(placingPlayer)).getSize() >= MAX_ARMY_SIZE) {
+            throw new IllegalStateException("The creature cannot be placed in the army: already reached maximum capacity");
+        }
+        try {
+            final var removed = this.players.get(placingPlayer).playCard(selectedIdCard);
+
+            // bisogna inserire la carta nell'army
+
+        } catch (final IllegalArgumentException | IllegalStateException e) {
+            throw new IllegalStateException("The card cannot be placed on the board", e);
+        }
+        
     }
 
     @Override
