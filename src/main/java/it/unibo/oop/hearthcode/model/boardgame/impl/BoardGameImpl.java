@@ -51,6 +51,12 @@ public class BoardGameImpl implements BoardGame{
     }
 
     @Override
+    public void startGame() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'startGame'");
+    }
+
+    @Override
     public boolean isOver() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'isOver'");

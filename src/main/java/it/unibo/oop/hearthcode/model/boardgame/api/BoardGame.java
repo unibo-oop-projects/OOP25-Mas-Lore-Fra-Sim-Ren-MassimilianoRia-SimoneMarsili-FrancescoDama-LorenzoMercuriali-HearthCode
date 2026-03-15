@@ -11,6 +11,11 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 public interface BoardGame {
 
     /**
+     * It allows to start the game.
+     */
+    void startGame();
+
+    /**
      * @return return whether the game is over or not
      */
     boolean isOver();
