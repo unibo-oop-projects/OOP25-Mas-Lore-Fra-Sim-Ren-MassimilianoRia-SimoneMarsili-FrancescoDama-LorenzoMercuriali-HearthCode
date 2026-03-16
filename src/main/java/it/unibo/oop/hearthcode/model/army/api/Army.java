@@ -37,9 +37,9 @@ public interface Army {
     /**
      * Adds a specific card to the army.
      * 
-     * @param cardId the id of the card to be added in the army.
+     * @param creature the creature to be added in the army.
      */
-    void placeCard(CardId cardId);
+    void placeCard(Creature creature);
 
     /**
      * It awakes all the creatures in the army.

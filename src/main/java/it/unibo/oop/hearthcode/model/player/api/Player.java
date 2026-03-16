@@ -8,6 +8,12 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
  */
 public interface Player {
     /**
+     * @return the player id
+     */
+
+    PlayerId getId();
+
+    /**
      * @return the actual amount of player's Mana
      */
     int getActualMana();

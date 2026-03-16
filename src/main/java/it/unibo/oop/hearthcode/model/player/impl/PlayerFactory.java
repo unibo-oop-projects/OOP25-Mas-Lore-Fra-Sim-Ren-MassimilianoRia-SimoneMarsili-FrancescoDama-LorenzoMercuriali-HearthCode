@@ -1,6 +1,7 @@
 package it.unibo.oop.hearthcode.model.player.impl;
 
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
+import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**
  * a simple factory for {@link PlayerImpl}.
@@ -14,9 +15,10 @@ public final class PlayerFactory {
      * 
      * @param deck the deck to be assigned
      * @param health the health to be assigned
+     * @param id the PlayerId to be assigned
      * @return a new player with those parameters
      */
-    public static PlayerImpl createPlayer(final Deck deck, final int health) {
-        return new PlayerImpl(deck, health);
+    public static PlayerImpl createPlayer(final Deck deck, final int health, final PlayerId id) {
+        return new PlayerImpl(deck, health, id);
     }
 }

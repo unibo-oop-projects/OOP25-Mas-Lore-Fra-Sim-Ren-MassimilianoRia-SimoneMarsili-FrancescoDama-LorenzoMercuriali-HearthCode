@@ -10,7 +10,7 @@ public class ManaManager {
     private int actualMana;
 
     /**
-     * Inizializes the actual and the max Mana at 3.
+     * Inizializes the actual and the max Mana at 1.
      */
     public ManaManager() {
         this.maxMana = START_MANA;
@@ -45,9 +45,10 @@ public class ManaManager {
      * @param amount the mana to be subtracted
      */
     void decreaseActualMana(final int amount) {
-        this.actualMana -= amount;
-        if (this.actualMana < 0) {
+        if (this.actualMana - amount < 0) {
             throw new IllegalStateException("Mana resource can't be negative");
+        } else {
+           this.actualMana -= amount; 
         }
     }
 }
