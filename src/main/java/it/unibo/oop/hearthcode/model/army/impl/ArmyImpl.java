@@ -64,15 +64,16 @@ public class ArmyImpl implements Army {
      */
     @Override
     public boolean isCreatureAwake(final CardId cardId) {
-        final Optional<Creature> creature = this.awakenCreatures.stream()
+        final Optional<Creature> creatureAwake = this.awakenCreatures.stream()
             .filter(c -> c.getId().equals(cardId))
             .findFirst();
-        if (creature.isEmpty()) {
-            throw new IllegalArgumentException("your card isn't contained in the army");
-        } else {
-            return this.awakenCreatures.stream()
-                .anyMatch(c -> c.getId().equals(cardId));
+        final Optional<Creature> creatureAsleep = this.sleepingCreatures.stream()
+            .filter(c -> c.getId().equals(cardId))
+            .findFirst();
+        if (creatureAsleep.isEmpty() && creatureAwake.isEmpty()) {
+            throw new IllegalArgumentException("this card isn't contained in your army");
         }
+        return creatureAwake.isPresent();
     }
 
     /**
