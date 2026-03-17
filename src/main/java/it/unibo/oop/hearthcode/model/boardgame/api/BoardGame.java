@@ -31,15 +31,14 @@ public interface BoardGame {
      * @param attackingIdCard the id of the attacking card
      * @param defendingIdCard the id of the defending card
      */
-    void attackCard(Optional<CardId> attackingIdCard, Optional<CardId> defendingIdCard);
+    void attackCard(CardId attackingIdCard, CardId defendingIdCard);
 
     /**
      * It allows to start the fight between the specified card and the enemy hero.
      * 
      * @param attackingIdCard the attacking card
-     * @param defendingPlayer the defending player
      */
-    void attackHero(Optional<CardId> attackingIdCard, Optional<PlayerId> defendingPlayer);
+    void attackHero(CardId attackingIdCard);
 
     /**
      * It allows to place the card selected by the player in his own army.

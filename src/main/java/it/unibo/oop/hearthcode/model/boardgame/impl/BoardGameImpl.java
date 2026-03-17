@@ -91,13 +91,13 @@ public class BoardGameImpl implements BoardGame{
     }
 
     @Override
-    public void attackCard(Optional<CardId> attackingIdCard, Optional<CardId> defendingIdCard) {
+    public void attackCard(CardId attackingIdCard, CardId defendingIdCard) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'attackCard'");
     }
 
     @Override
-    public void attackHero(Optional<CardId> attackingIdCard, Optional<PlayerId> defendingPlayer) {
+    public void attackHero(CardId attackingIdCard) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'attackHero'");
     }
