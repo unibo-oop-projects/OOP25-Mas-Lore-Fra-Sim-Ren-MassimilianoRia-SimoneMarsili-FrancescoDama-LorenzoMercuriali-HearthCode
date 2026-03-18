@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureDefinitionParser;
 
 /**
- * A simple test for @{link CreatureDefinitionParser}.
+ * A simple test for {@link CreatureDefinitionParser}.
  */
 final class TestCreatureDefinitionParser {
 

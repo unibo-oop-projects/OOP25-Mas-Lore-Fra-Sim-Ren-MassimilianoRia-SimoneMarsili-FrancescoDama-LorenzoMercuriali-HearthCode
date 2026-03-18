@@ -13,7 +13,7 @@ import it.unibo.oop.hearthcode.view.api.Scene;
 import it.unibo.oop.hearthcode.view.api.SceneId;
 
 /**
- * It represents the implementation of the main view of the application.
+ * Implementation of the main view of the application.
  */
 public final class MainViewImpl implements MainView {
 

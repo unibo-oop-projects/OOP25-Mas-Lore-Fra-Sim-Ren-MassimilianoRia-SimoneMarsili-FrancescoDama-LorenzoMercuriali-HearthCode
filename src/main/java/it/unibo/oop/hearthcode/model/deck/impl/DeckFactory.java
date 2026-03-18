@@ -23,7 +23,7 @@ public class DeckFactory {
     private final Random random;
 
     /**
-     * It constructs a new DeckFactory.
+     * Constructs a new DeckFactory.
      * 
      * @param database the creature database to choose cards from 
      * @param factory the factory used to create creatures
@@ -35,12 +35,12 @@ public class DeckFactory {
     }
 
     /**
-     * It creates a deck with the concept of {@link WeightStrategy}.
-     * Basically it's more difficult for a strong card to be choosen twice than a weaker one.
+     * Creates a deck using a {@link WeightStrategy}.
+     * Basically, a strong card is less likely to be chosen twice than a weaker one.
      * 
      * @param size the size of the deck to be created
      * @param strategy the weight strategy used to create the deck
-     * @return the new Deck shuffled
+     * @return the new shuffled deck
      */
     public Deck createWeighted(final int size, final WeightStrategy strategy) {
         final var allDef = this.database.getAll();
@@ -66,9 +66,9 @@ public class DeckFactory {
     }
 
     /*
-    Support method used to draw cards with a non-uniform probability.
-    It uses the WeightStrategy to sum all the creature weights and choose a random value in that range;
-    then it return the corresponding creature definition.
+    Helper method used to draw cards with a non-uniform probability.
+    It uses the WeightStrategy to sum all creature weights and choose a random value in that range;
+    it then returns the corresponding creature definition.
     */
     private CreatureDefinition pickRandomWeighted(final List<CreatureDefinition> allDef, final WeightStrategy strategy) {
         final int weightsSum = allDef.stream().mapToInt(strategy::getWeight).sum();
@@ -83,7 +83,7 @@ public class DeckFactory {
             }
         }
 
-        throw new IllegalStateException("An error occured during Weight calculation");
+        throw new IllegalStateException("An error occurred during Weight calculation");
 
     }
 }

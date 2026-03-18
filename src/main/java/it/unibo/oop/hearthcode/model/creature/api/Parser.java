@@ -1,16 +1,16 @@
 package it.unibo.oop.hearthcode.model.creature.api;
 
 /**
- * It modelizes an interface for parsing a string into a T type object.
+ * An interface for parsing a string into an object of type {@code T}.
  * 
- * @param <T> the type of parsed string
+ * @param <T> the type produced by the parser
  */
 @FunctionalInterface
 public interface Parser<T> {
     /**
      * Parses a single string into the corresponding object.
      * 
-     * @param line the line to be parsed
+     * @param line the line to parse
      * @return the parsed object
      */
     T parseLine(String line);

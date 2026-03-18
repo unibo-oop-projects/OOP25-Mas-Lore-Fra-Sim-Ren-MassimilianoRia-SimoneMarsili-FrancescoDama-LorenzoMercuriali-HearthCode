@@ -10,7 +10,7 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
 
 /**
- * implementation of Army.
+ * Implementation of {@link Army}.
  */
 public class ArmyImpl implements Army {
 
@@ -19,7 +19,7 @@ public class ArmyImpl implements Army {
     private List<Creature> sleepingCreatures;
 
     /**
-     * a simple constructor for Army.
+     * Creates a new army.
      */
     public ArmyImpl() {
         this.awakenCreatures = new ArrayList<>();

@@ -14,7 +14,7 @@ public final class CreatureImplFactory {
     private final IdGenerator generator;
 
     /**
-     * It constructs a new CreatureImplFactory.
+     * Constructs a new CreatureImplFactory.
      * 
      * @param generator the {@link IdGenerator} used to initialize creatures
      */
@@ -23,10 +23,10 @@ public final class CreatureImplFactory {
     }
 
     /**
-     * It creates a new {@link CreatureImpl} starting from its {@link CreatureDefinition}.
+     * Creates a new {@link CreatureImpl} from its {@link CreatureDefinition}.
      * 
-     * @param definition the CreatureDefinition of the creature to create
-     * @return the creature created
+     * @param definition the definition of the creature to create
+     * @return the created creature
      */
     public Creature createFromDefinition(final CreatureDefinition definition) {
         return new CreatureImpl(
