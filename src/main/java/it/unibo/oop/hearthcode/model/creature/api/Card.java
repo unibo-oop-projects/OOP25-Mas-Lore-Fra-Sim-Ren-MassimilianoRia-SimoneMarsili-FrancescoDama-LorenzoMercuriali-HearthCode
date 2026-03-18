@@ -6,7 +6,7 @@ package it.unibo.oop.hearthcode.model.creature.api;
 public interface Card {
 
     /**
-     * @return the specific CardId of the istance of the card
+     * @return the specific CardId of the instance of the card
      */
     CardId getId();
 

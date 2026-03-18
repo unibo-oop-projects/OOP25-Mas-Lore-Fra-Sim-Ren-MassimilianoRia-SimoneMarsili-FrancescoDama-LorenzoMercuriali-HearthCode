@@ -19,7 +19,7 @@ public interface Player {
     int getActualMana();
 
     /**
-     * @return the amount of maximun Mana available for the turn
+     * @return the amount of maximum Mana available for the turn
      */
     int getTurnManaLimit();
 
