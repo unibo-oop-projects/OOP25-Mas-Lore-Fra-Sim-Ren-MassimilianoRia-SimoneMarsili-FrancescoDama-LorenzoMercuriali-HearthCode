@@ -30,8 +30,8 @@ public class ArmyImpl implements Army {
      * {@inheritDoc}
      */
     @Override
-    public int getSize() {
-        return this.awakenCreatures.size() + this.sleepingCreatures.size();
+    public boolean isArmyFull() {
+        return (this.awakenCreatures.size() + this.sleepingCreatures.size()) >= ARMY_MAX_SIZE;
     }
 
     /**
@@ -81,9 +81,7 @@ public class ArmyImpl implements Army {
      */
     @Override
     public void placeCard(final Creature creature) {
-        if (this.getSize() >= ARMY_MAX_SIZE) {
-            throw new IllegalStateException("Reached maximum capacity of the army(5)");
-        } else {
+        if (!this.isArmyFull()) {
             this.sleepingCreatures.add(creature);
         }
     }
