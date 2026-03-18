@@ -16,11 +16,6 @@ public interface BoardGame {
     void startGame();
 
     /**
-     * @return return whether the game is over or not
-     */
-    boolean isOver();
-
-    /**
      * @return return the winner of the game if present, empty otherwise
      */
     Optional<PlayerId> getWinner();
@@ -44,9 +39,8 @@ public interface BoardGame {
      * It allows to place the card selected by the player in his own army.
      * 
      * @param selectedIdCard the id of the card to be placed
-     * @param placingPlayer the player who placed the card
      */
-    void place(CardId selectedIdCard, PlayerId placingPlayer);
+    void place(CardId selectedIdCard);
 
     /**
      * Makes actions to switch the match turn.

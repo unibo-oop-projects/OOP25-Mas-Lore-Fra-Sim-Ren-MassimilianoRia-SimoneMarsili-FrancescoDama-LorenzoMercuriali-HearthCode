@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.boardGame;
+package it.unibo.oop.hearthcode.model.boardgame;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -9,7 +9,6 @@ import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameImpl;
 
 final class TestBoardGame {
-    
     private BoardGame board;
 
     @BeforeEach
