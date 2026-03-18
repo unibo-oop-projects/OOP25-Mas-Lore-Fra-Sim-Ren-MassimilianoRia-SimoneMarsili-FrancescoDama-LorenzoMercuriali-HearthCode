@@ -11,9 +11,9 @@ import it.unibo.oop.hearthcode.model.creature.api.Creature;
 public interface Army {
 
     /**
-     * @return the actual number of creatures placed in this army
+     * @return wether the army is full or not
      */
-    int getSize();
+    boolean isArmyFull();
 
     /**
      * @param cardId the identifier of the specific card
