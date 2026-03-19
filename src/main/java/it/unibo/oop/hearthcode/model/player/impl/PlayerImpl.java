@@ -5,6 +5,8 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.hand.api.Hand;
 import it.unibo.oop.hearthcode.model.hand.impl.HandImpl;
+import it.unibo.oop.hearthcode.model.player.api.DrawCardResult;
+import it.unibo.oop.hearthcode.model.player.api.DrawCardResultType;
 import it.unibo.oop.hearthcode.model.player.api.Player;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
@@ -89,11 +91,16 @@ public class PlayerImpl implements Player {
      * {@inheritDoc}
      */
     @Override
-    public boolean drawCard() {
+    public DrawCardResult drawCard() {
         final var drawnCard = this.deck.draw();
-        if (drawnCard.isPresent()) {
-            this.hand.addCard(drawnCard.get());
+        if (drawnCard.isEmpty()) {
+            return new DrawCardResult(drawnCard, DrawCardResultType.DECK_EMPTY);
         }
-        return drawnCard.isPresent();
+        if (this.hand.getActualSize() < this.hand.getMaximumSize()) {
+            this.hand.addCard(drawnCard.get());
+            return new DrawCardResult(drawnCard, DrawCardResultType.CARD_ADDED);
+        }
+        return new DrawCardResult(drawnCard, DrawCardResultType.CARD_BURNED);
     }
+
 }

@@ -7,10 +7,16 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
  * It represents the hand of the player.
  */
 public interface Hand {
+
+    /**
+     * @return the maximum number of cards in the player's hand
+     */
+    int getMaximumSize();
+
     /**
      * @return the number of cards in the player's hand
      */
-    int getSize();
+    int getActualSize();
 
     /**
      * It adds the card in the hand.

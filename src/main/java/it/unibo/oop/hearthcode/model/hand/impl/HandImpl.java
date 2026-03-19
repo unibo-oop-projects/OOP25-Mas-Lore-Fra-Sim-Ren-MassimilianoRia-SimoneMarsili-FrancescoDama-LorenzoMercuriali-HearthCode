@@ -13,6 +13,8 @@ import it.unibo.oop.hearthcode.model.hand.api.Hand;
  */
 public class HandImpl implements Hand {
 
+    private final static int MAXIMUM_SIZE = 7;
+
     private final List<Card> hand;
 
     /**
@@ -26,7 +28,15 @@ public class HandImpl implements Hand {
      * {@inheritDoc}
      */
     @Override
-    public int getSize() {
+    public int getMaximumSize() {
+        return MAXIMUM_SIZE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getActualSize() {
         return this.hand.size();
     }
 

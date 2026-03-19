@@ -51,7 +51,7 @@ public interface Player {
     /**
      * The action of drawing a card by the player.
      * 
-     * @return whether a card was drawn
+     * @return the outcome of the draw
      */
-    boolean drawCard();
+    DrawCardResult drawCard();
 }

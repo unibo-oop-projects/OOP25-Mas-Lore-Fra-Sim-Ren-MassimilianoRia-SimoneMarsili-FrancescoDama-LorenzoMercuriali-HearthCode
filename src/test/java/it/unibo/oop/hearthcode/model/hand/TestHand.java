@@ -40,10 +40,10 @@ final class TestHand {
     @Test
     void testAddCard() {
         this.hand.addCard(this.deck.draw().get());
-        assertEquals(1, this.hand.getSize());
+        assertEquals(1, this.hand.getActualSize());
         this.hand.addCard(this.deck.draw().get());
         this.hand.addCard(this.deck.draw().get());
-        assertEquals(3, this.hand.getSize());
+        assertEquals(3, this.hand.getActualSize());
     }
 
     @Test
@@ -52,7 +52,7 @@ final class TestHand {
         final CardId id = card.getId();
         this.hand.addCard(card);
         final Card removedCard = this.hand.removeCard(id);
-        assertEquals(0, this.hand.getSize());
+        assertEquals(0, this.hand.getActualSize());
         assertEquals(removedCard.getId(), id);
     }
 
