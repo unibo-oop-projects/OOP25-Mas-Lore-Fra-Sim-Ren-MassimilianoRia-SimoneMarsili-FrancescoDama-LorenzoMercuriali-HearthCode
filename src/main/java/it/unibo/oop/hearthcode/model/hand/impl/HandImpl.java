@@ -13,7 +13,7 @@ import it.unibo.oop.hearthcode.model.hand.api.Hand;
  */
 public class HandImpl implements Hand {
 
-    private final static int MAXIMUM_SIZE = 7;
+    private static final int MAXIMUM_SIZE = 7;
 
     private final List<Card> hand;
 
