@@ -11,12 +11,12 @@ public interface Creature extends Card {
     Integer getHealth();
 
     /**
-     * @return the value attack of the creature
+     * @return the attack value of the creature
      */
     Integer getAttackValue();
 
     /**
-     * Decrease the creature's health.
+     * Decreases the creature's health.
      * 
      * @param damage the amount of damage inflicted
      * @return the updated value of the creature's health

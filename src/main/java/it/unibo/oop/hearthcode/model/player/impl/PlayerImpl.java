@@ -9,7 +9,7 @@ import it.unibo.oop.hearthcode.model.player.api.Player;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**
- * implementation of Player.
+ * Implementation of {@link Player}.
  */
 public class PlayerImpl implements Player {
 

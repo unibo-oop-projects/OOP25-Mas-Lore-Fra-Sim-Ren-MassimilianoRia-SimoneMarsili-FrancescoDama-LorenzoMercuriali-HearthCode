@@ -3,14 +3,14 @@ package it.unibo.oop.hearthcode.model.deck.api;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 
 /**
- * It modelizes the set of the cards drawable by his own player.
+ * Represents the set of cards that can be drawn by a player.
  */
 public interface Deck {
 
     /**
      * Represents the act of drawing a card from the deck.
      * 
-     * @return the card drawed
+     * @return the drawn card
      */
     Card draw();
 

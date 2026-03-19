@@ -7,7 +7,7 @@ import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
 
 /**
- * An implementation of {@link Deck} interface.
+ * An implementation of the {@link Deck} interface.
  */
 public class DeckImpl implements Deck {
 

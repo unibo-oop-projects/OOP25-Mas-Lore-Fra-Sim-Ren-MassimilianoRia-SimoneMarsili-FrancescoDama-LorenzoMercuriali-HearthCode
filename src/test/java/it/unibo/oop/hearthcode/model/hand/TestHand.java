@@ -18,7 +18,7 @@ import it.unibo.oop.hearthcode.model.hand.api.Hand;
 import it.unibo.oop.hearthcode.model.hand.impl.HandImpl;
 
 /**
- * a simple test for {@link HandImpl}.
+ * A simple test for {@link HandImpl}.
  */
 final class TestHand {
 

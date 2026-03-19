@@ -18,7 +18,7 @@ import it.unibo.oop.hearthcode.model.player.impl.PlayerFactory;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerImpl;
 
 /**
- * a simple test for {@link PlayerImpl}.
+ * A simple test for {@link PlayerImpl}.
  */
 final class PlayerTest {
     private static final int EXPECTED_HEALTH = 6;

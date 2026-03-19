@@ -3,8 +3,8 @@ package it.unibo.oop.hearthcode.model.deck.api;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 
 /**
- * It modelizes a WeightStrategy for creature cards.
- * Different creature may have different weights in the game.
+ * Represents a weighting strategy for creature cards.
+ * Different creatures may have different weights in the game.
  */
 @FunctionalInterface
 public interface WeightStrategy {
