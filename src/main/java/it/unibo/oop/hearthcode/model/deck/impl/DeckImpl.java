@@ -2,6 +2,7 @@ package it.unibo.oop.hearthcode.model.deck.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
@@ -21,11 +22,11 @@ public class DeckImpl implements Deck {
      * {@inheritDoc}
      */
     @Override
-    public Card draw() {
+    public Optional<Card> draw() {
         if (getRemaining() == 0) {
-            throw new IllegalStateException("It's not possible drawing from an empty deck.");
+            return Optional.empty();
         }
-        return this.cards.remove(0);
+        return Optional.of(this.cards.remove(0));
     }
 
     /**
