@@ -89,7 +89,11 @@ public class PlayerImpl implements Player {
      * {@inheritDoc}
      */
     @Override
-    public void drawCard() {
-        this.hand.addCard(this.deck.draw());
+    public boolean drawCard() {
+        final var drawnCard = this.deck.draw();
+        if (drawnCard.isPresent()) {
+            this.hand.addCard(drawnCard.get());
+        }
+        return drawnCard.isPresent();
     }
 }
