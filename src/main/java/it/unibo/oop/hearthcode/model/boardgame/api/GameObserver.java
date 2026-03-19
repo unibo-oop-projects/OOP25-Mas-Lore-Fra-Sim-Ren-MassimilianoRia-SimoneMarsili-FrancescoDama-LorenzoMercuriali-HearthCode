@@ -1,0 +1,86 @@
+package it.unibo.oop.hearthcode.model.boardgame.api;
+
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
+import it.unibo.oop.hearthcode.model.player.api.PlayerId;
+
+/**
+ * An interface for {@link ObservableGame} observers.
+ */
+public interface GameObserver {
+
+    /**
+     * Notifies that the match started.
+     * 
+     * @param aiPlayer the enemy player
+     * @param aiHealth the health of the enemy player
+     * @param humanPlayer the user player
+     * @param humanHealth the health of the user player
+     */
+    void onGameStarted(PlayerId aiPlayer, int aiHealth, PlayerId humanPlayer, int humanHealth);
+
+    /**
+     * Notifies that a turn is ended and a new one starts.
+     * 
+     * @param nextPlayer the player whose turn has started
+     */
+    void onTurnSwitch(PlayerId nextPlayer);
+
+    /**
+     * Notifies that a creature was drawn.
+     * 
+     * @param playerId the player who drawn the creature
+     * @param drawnCard the drawn card
+     * @param def the {@link CreatureDefinition} of the drawn creature
+     */
+    void onCreatureDrawn(PlayerId playerId, CardId drawnCard, CreatureDefinition def);
+
+    /**
+     * Notifies that a card was placed in the board.
+     * 
+     * @param playerId the player who placed the card
+     * @param placedCard the placed card
+     */
+    void onCardPlaced(PlayerId playerId, CardId placedCard);
+
+    /**
+     * Notifies that the health of a card has changed.
+     * 
+     * @param cardId card whose health has changed
+     * @param newHealth the new health of the card
+     */
+    void onCardHealthChanged(CardId cardId, int newHealth);
+
+    /**
+     * Notifies that a card was destroyed.
+     * 
+     * @param cardId the destroyed card
+     */
+    void onCardDestroyed(CardId cardId);
+
+    /**
+     * Notifies that the health of a player has changed.
+     * 
+     * @param playerId the player whose health has changed
+     * @param newHealth the new health of the player
+     */
+    void onPlayerHealthChanged(PlayerId playerId, int newHealth);
+
+    /**
+     * Notifies that the Mana of a player has changed.
+     * 
+     * @param playerId the player whose Mana has changed
+     * @param actualMana the new actual mana of the player
+     * @param manaLimit the mana limit of the player
+     */
+    void onManaChanged(PlayerId playerId, int actualMana, int manaLimit);
+
+    /**
+     * Notifies that a Card is exhausted and cannot be used.
+     * 
+     * @param player the player owner of the exhausted card
+     * @param exhaustedCard the exhausted card
+     */
+    void onCardExhausted(PlayerId player, CardId exhaustedCard);
+
+}
