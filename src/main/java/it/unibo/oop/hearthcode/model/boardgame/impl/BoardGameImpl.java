@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import it.unibo.oop.hearthcode.model.army.api.Army;
+import it.unibo.oop.hearthcode.model.army.impl.ArmyImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CardType;
@@ -28,7 +29,7 @@ public final class BoardGameImpl implements BoardGame {
     private static final int STARTING_HAND_CARDS = 5;
     private static final int DECK_SIZE = 20;
     private static final int DEFAULT_HEALTH = 30;
-    private final Map<Player, Army> gameState;
+    private final Map<Player, Army> armies;
     private final Map<PlayerId, Player> players;
     private PlayerId currentPlayer;
 
@@ -36,7 +37,7 @@ public final class BoardGameImpl implements BoardGame {
      * It constructs a new BoardGameImpl.
      */
     public BoardGameImpl() {
-        this.gameState = new HashMap<>();
+        this.armies = new HashMap<>();
         this.players = new HashMap<>();
         initGame();
     }
@@ -63,8 +64,8 @@ public final class BoardGameImpl implements BoardGame {
 
         this.players.put(humanPlayer.getId(), humanPlayer);
         this.players.put(iaPlayer.getId(), iaPlayer);
-
-        // manca inizializzazione turni ed army
+        this.armies.put(humanPlayer, new ArmyImpl());
+        this.armies.put(iaPlayer, new ArmyImpl());
     }
 
     private PlayerId getDefendingPlayer() {
@@ -87,8 +88,7 @@ public final class BoardGameImpl implements BoardGame {
         } catch (final IllegalStateException e) {
             throw new IllegalStateException("Could not draw all the requested cards", e);
         }
-
-        // TO DO
+        this.players.get(this.currentPlayer).incrementMana();
     }
 
     /**
@@ -107,14 +107,23 @@ public final class BoardGameImpl implements BoardGame {
      */
     @Override
     public void attackCard(final CardId attackingIdCard, final CardId defendingIdCard) {
-
-        final var currentArmy = this.gameState.get(this.players.get(this.currentPlayer));
-        final var defendingArmy = this.gameState.get(this.players.get(1));
-        if (!currentArmy.isPresent(attackingIdCard) || !defendingArmy.isPresent(defendingIdCard)) {
-            throw new IllegalStateException("Not a right combination of a card");
-        }
-        if (currentArmy.canAttack(attackingIdCard)) {
-            final var attackingCard = currentArmy.getPlacedCard(attackingIdCard);
+        final var currentArmy = this.armies.get(this.players.get(this.currentPlayer));
+        final var defendingArmy = this.armies.get(this.players.get(getDefendingPlayer()));
+        try {
+            final var defendingCard = defendingArmy.getPlacedCard(defendingIdCard);
+            if (defendingCard.isPresent() || currentArmy.canAttack(attackingIdCard)) {
+                final var attackingCard = currentArmy.getPlacedCard(attackingIdCard).get();
+                attackingCard.decreaseHealth(defendingCard.get().getAttackValue());
+                defendingCard.get().decreaseHealth(attackingCard.getAttackValue());
+                if (attackingCard.getHealth() == 0) {
+                    currentArmy.deleteDeathCreature(attackingIdCard);
+                }
+                if (defendingCard.get().getHealth() == 0) {
+                    defendingArmy.deleteDeathCreature(defendingIdCard);
+                }
+            }
+        } catch (final IllegalArgumentException e) {
+            throw new IllegalArgumentException("Something went wrong with the fight", e);
         }
     }
 
@@ -124,12 +133,12 @@ public final class BoardGameImpl implements BoardGame {
     @Override
     public void attackHero(final CardId attackingIdCard) {
         try {
-            final var currentArmy = this.gameState.get(this.players.get(this.currentPlayer));
+            final var currentArmy = this.armies.get(this.players.get(this.currentPlayer));
             if (currentArmy.canAttack(attackingIdCard)) {
                 final var attackingCard = currentArmy.getPlacedCard(attackingIdCard);
-                this.players.get(getDefendingPlayer()).decreaseHealth(((Creature) attackingCard).getAttackValue());
-            }
-            else {
+                this.players.get(getDefendingPlayer()).decreaseHealth(attackingCard.get().getAttackValue());
+                currentArmy.disableAttack(attackingIdCard);
+            } else {
                 throw new IllegalStateException("You cannot use this card right now");
             }
         } catch (final IllegalArgumentException e) {
@@ -145,13 +154,13 @@ public final class BoardGameImpl implements BoardGame {
         if (selectedIdCard.type() != CardType.CREATURE) {
             throw new IllegalArgumentException("You cannot place a non-creature card");
         }
+        final var currentArmy = this.armies.get(this.players.get(currentPlayer));
+        if (currentArmy.isArmyFull()) {
+            throw new IllegalStateException("your army is full and cannot place the card");
+        }
         try {
-            final var currentArmy = this.gameState.get(this.players.get(currentPlayer));
-            if (currentArmy.isArmyFull()) {
-                throw new IllegalStateException("your army is full and cannot place the card");
-            }
             final var removed = this.players.get(this.currentPlayer).playCard(selectedIdCard);
-            this.gameState.get(this.players.get(currentPlayer)).placeCard((Creature) removed);
+            this.armies.get(this.players.get(currentPlayer)).placeCard((Creature) removed);
         } catch (final IllegalArgumentException | IllegalStateException e) {
             throw new IllegalStateException("The card cannot be placed on the board", e);
         }
