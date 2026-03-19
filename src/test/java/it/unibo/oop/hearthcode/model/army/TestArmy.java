@@ -43,9 +43,11 @@ final class TestArmy {
         final Creature creature = (Creature) card;
         final CardId id = creature.getId();
         this.army.placeCard(creature);
-        assertFalse(this.army.isCreatureAwake(id));
+        assertFalse(this.army.canAttack(id));
         this.army.awakeCreatures();
-        assertTrue(this.army.isCreatureAwake(id));
+        assertTrue(this.army.canAttack(id));
+        this.army.disableAttack(id);
+        assertFalse(this.army.canAttack(id));
     }
 
     @Test
@@ -70,7 +72,7 @@ final class TestArmy {
         final CardId id = creature.getId(); 
         this.army.placeCard(creature);
         creature.decreaseHealth(10);
-        if (creature.getHealth() <= 0) {
+        if (creature.getHealth() == 0) {
             this.army.deleteDeathCreature(id);
         }
         assertTrue(this.army.getPlacedCard(id).isEmpty());

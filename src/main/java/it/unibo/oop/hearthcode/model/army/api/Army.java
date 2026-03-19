@@ -30,9 +30,16 @@ public interface Army {
 
     /**
      * @param cardId the identifier of the specific card
-     * @return true if the creature is awake, false otherwise
+     * @return true if the creature is awake and is able to attack, false otherwise
      */
-    boolean isCreatureAwake(CardId cardId);
+    boolean canAttack(CardId cardId);
+
+    /**
+     * It disables the attack of a specified card.
+     * 
+     * @param cardId the id of the specified card
+     */
+    void disableAttack(CardId cardId);
 
     /**
      * Adds a specific card to the army.
