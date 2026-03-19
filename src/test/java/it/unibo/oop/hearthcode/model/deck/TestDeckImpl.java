@@ -45,20 +45,20 @@ final class TestDeckImpl {
 
         assertEquals(this.db.size(), deck.getRemaining());
 
-        final List<Card> allDrawed = IntStream.range(0, deck.getRemaining())
-            .mapToObj(n -> deck.draw())
+        final List<Card> allDrawn = IntStream.range(0, deck.getRemaining())
+            .mapToObj(n -> deck.draw().get())
             .toList();
 
-        assertEquals(this.db.size(), allDrawed.size());
+        assertEquals(this.db.size(), allDrawn.size());
 
         assertEquals(
             Set.copyOf(this.db.getAll().stream().map(CreatureDefinition::name).toList()), 
-            Set.copyOf(allDrawed.stream().map(Card::getName).toList())
+            Set.copyOf(allDrawn.stream().map(Card::getName).toList())
         );
 
         assertEquals(
-            allDrawed.stream().count(), 
-            allDrawed.stream().map(Card::getId).distinct().count()
+            allDrawn.stream().count(), 
+            allDrawn.stream().map(Card::getId).distinct().count()
         );
 
     }
@@ -72,15 +72,15 @@ final class TestDeckImpl {
                 def -> Math.max(1, def.manaCost())
             );
 
-            final List<Card> allDrawed = IntStream.range(0, deck.getRemaining())
-            .mapToObj(n -> deck.draw())
+            final List<Card> allDrawn = IntStream.range(0, deck.getRemaining())
+            .mapToObj(n -> deck.draw().get())
             .toList();
 
-            assertEquals(this.db.size() * 2, allDrawed.size());
+            assertEquals(this.db.size() * 2, allDrawn.size());
 
             assertEquals(
                 Set.copyOf(this.db.getAll().stream().map(CreatureDefinition::name).toList()), 
-                Set.copyOf(allDrawed.stream().map(Card::getName).distinct().toList())
+                Set.copyOf(allDrawn.stream().map(Card::getName).distinct().toList())
             );
         } catch (final IllegalStateException e) {
             fail(e);

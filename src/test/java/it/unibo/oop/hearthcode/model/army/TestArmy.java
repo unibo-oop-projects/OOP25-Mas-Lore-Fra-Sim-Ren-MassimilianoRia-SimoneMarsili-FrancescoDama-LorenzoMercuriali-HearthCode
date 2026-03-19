@@ -39,7 +39,7 @@ final class TestArmy {
 
     @Test
     void testAwaken() {
-        final Card card = this.deck.draw();
+        final Card card = this.deck.draw().get();
         final Creature creature = (Creature) card;
         final CardId id = creature.getId();
         this.army.placeCard(creature);
@@ -52,7 +52,7 @@ final class TestArmy {
 
     @Test
     void testModifications() {
-        final Card card = this.deck.draw();
+        final Card card = this.deck.draw().get();
         final Creature creature = (Creature) card;
         final int health = creature.getHealth();
         final CardId id = creature.getId();
@@ -67,7 +67,7 @@ final class TestArmy {
 
     @Test
     void testPlacingAndDeath() {
-        final Card card = this.deck.draw();
+        final Card card = this.deck.draw().get();
         final Creature creature = (Creature) card;
         final CardId id = creature.getId(); 
         this.army.placeCard(creature);

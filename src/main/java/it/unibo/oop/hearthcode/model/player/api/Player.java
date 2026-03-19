@@ -50,6 +50,8 @@ public interface Player {
 
     /**
      * The action of drawing a card by the player.
+     * 
+     * @return whether a card was drawn
      */
-    void drawCard();
+    boolean drawCard();
 }

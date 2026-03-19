@@ -1,5 +1,7 @@
 package it.unibo.oop.hearthcode.model.deck.api;
 
+import java.util.Optional;
+
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 
 /**
@@ -12,7 +14,7 @@ public interface Deck {
      * 
      * @return the drawn card
      */
-    Card draw();
+    Optional<Card> draw();
 
     /**
      * @return the number of remaining cards in the deck

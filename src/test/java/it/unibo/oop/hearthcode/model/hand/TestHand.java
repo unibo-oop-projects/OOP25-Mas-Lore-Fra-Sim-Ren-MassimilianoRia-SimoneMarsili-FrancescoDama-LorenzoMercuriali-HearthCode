@@ -39,16 +39,16 @@ final class TestHand {
 
     @Test
     void testAddCard() {
-        this.hand.addCard(this.deck.draw());
+        this.hand.addCard(this.deck.draw().get());
         assertEquals(1, this.hand.getSize());
-        this.hand.addCard(this.deck.draw());
-        this.hand.addCard(this.deck.draw());
+        this.hand.addCard(this.deck.draw().get());
+        this.hand.addCard(this.deck.draw().get());
         assertEquals(3, this.hand.getSize());
     }
 
     @Test
     void testRemoveCard() {
-        final Card card = this.deck.draw();
+        final Card card = this.deck.draw().get();
         final CardId id = card.getId();
         this.hand.addCard(card);
         final Card removedCard = this.hand.removeCard(id);
@@ -58,9 +58,9 @@ final class TestHand {
 
     @Test
     void testException() {
-        this.hand.addCard(this.deck.draw());
+        this.hand.addCard(this.deck.draw().get());
         assertThrows(IllegalArgumentException.class, () -> {
-            this.hand.removeCard(this.deck.draw().getId());
+            this.hand.removeCard(this.deck.draw().get().getId());
         });
     }
 }
