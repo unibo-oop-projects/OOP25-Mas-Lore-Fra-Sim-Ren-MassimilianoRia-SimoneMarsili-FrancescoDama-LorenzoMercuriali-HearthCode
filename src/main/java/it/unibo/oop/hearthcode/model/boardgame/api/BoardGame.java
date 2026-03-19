@@ -11,9 +11,9 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 public interface BoardGame {
 
     /**
-     * @return whether the game is over
+     * It allows to start the game.
      */
-    boolean isOver();
+    void startGame();
 
     /**
      * @return the winner of the game if present, empty otherwise
@@ -26,23 +26,21 @@ public interface BoardGame {
      * @param attackingIdCard the id of the attacking card
      * @param defendingIdCard the id of the defending card
      */
-    void attackCard(Optional<CardId> attackingIdCard, Optional<CardId> defendingIdCard);
+    void attackCard(CardId attackingIdCard, CardId defendingIdCard);
 
     /**
      * Starts combat between the specified card and the enemy hero.
      * 
      * @param attackingIdCard the attacking card
-     * @param defendingPlayer the defending player
      */
-    void attackHero(Optional<CardId> attackingIdCard, Optional<PlayerId> defendingPlayer);
+    void attackHero(CardId attackingIdCard);
 
     /**
      * Places the card selected by the player in their army.
      * 
      * @param selectedIdCard the id of the card to be placed
-     * @param placingPlayer the player who placed the card
      */
-    void place(Optional<CardId> selectedIdCard, Optional<PlayerId> placingPlayer);
+    void place(CardId selectedIdCard);
 
     /**
      * Performs the actions required to switch turns.
