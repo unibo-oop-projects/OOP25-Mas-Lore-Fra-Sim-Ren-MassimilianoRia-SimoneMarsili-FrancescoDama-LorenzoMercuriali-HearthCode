@@ -68,4 +68,27 @@ public class CreatureImpl implements Creature {
         return this.currentHealth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+        final CreatureImpl other = (CreatureImpl) obj;
+        return this.id.equals(other.id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
+    }
+
 }
