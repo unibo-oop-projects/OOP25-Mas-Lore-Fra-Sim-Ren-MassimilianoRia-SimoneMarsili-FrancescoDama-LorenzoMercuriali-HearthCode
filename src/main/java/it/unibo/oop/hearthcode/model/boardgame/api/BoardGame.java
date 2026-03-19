@@ -16,12 +16,12 @@ public interface BoardGame {
     void startGame();
 
     /**
-     * @return return the winner of the game if present, empty otherwise
+     * @return the winner of the game if present, empty otherwise
      */
     Optional<PlayerId> getWinner();
 
     /**
-     * It allows to start the fight between the specified cards.
+     * Starts combat between the specified cards.
      * 
      * @param attackingIdCard the id of the attacking card
      * @param defendingIdCard the id of the defending card
@@ -29,21 +29,21 @@ public interface BoardGame {
     void attackCard(CardId attackingIdCard, CardId defendingIdCard);
 
     /**
-     * It allows to start the fight between the specified card and the enemy hero.
+     * Starts combat between the specified card and the enemy hero.
      * 
      * @param attackingIdCard the attacking card
      */
     void attackHero(CardId attackingIdCard);
 
     /**
-     * It allows to place the card selected by the player in his own army.
+     * Places the card selected by the player in their army.
      * 
      * @param selectedIdCard the id of the card to be placed
      */
     void place(CardId selectedIdCard);
 
     /**
-     * Makes actions to switch the match turn.
+     * Performs the actions required to switch turns.
      */
     void switchTurn();
 

@@ -2,14 +2,14 @@ package it.unibo.oop.hearthcode.model.boardgame.impl;
 
 /**
  * A simple Integer ID generator.
- * It basicly acts as a counter.
+ * It basically acts as a counter.
  */
 public final class IdGenerator {
 
     private int nextId;
 
     /**
-     * It constructs a new IdGenerator that starts counting from 1.
+     * Constructs a new IdGenerator that starts counting from 1.
      */
     public IdGenerator() {
         this.nextId = 1;

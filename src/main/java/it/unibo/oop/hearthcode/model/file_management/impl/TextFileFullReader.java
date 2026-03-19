@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * An implementation of {@link FullReader} interface that reads all the lines from a text file, given a stream.
+ * An implementation of the {@link FullReader} interface that reads all lines from a text file stream.
  */
 public class TextFileFullReader implements FullReader<String> {
 

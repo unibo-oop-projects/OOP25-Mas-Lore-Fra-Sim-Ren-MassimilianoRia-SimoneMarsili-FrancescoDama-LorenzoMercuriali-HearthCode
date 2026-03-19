@@ -4,15 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * It modelizes a generic reader that can read the entire content of a specific source.
+ * Represents a generic reader that can read the entire content of a source.
  * 
- * @param <T> the type of the elements read frome the source
+ * @param <T> the type of the elements read from the source
  */
 @FunctionalInterface
 public interface FullReader<T> {
 
     /**
-     * Read all the lines of a specific source.
+     * Reads all the lines from a source.
      * 
      * @return an Optional containing the lines read if they are present, empty otherwise
      */

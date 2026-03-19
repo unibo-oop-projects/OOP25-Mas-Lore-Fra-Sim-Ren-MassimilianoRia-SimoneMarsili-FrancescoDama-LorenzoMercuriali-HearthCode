@@ -6,12 +6,12 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
 
 /**
- * It modelizes the set of the placed creatures by his own player.
+ * Represents the set of creatures placed by a player.
  */
 public interface Army {
 
     /**
-     * @return wether the army is full or not
+     * @return whether the army is full
      */
     boolean isArmyFull();
 
@@ -22,7 +22,7 @@ public interface Army {
     Optional<Creature> getPlacedCard(CardId cardId);
 
     /**
-     * Remove a specific card from the army.
+     * Removes a specific card from the army.
      * 
      * @param cardId the id of the creature to be removed
      */
@@ -30,19 +30,26 @@ public interface Army {
 
     /**
      * @param cardId the identifier of the specific card
-     * @return true if the creature is awake, false otherwise
+     * @return true if the creature is awake and is able to attack, false otherwise
      */
-    boolean isCreatureAwake(CardId cardId);
+    boolean canAttack(CardId cardId);
+
+    /**
+     * It disables the attack of a specified card.
+     * 
+     * @param cardId the id of the specified card
+     */
+    void disableAttack(CardId cardId);
 
     /**
      * Adds a specific card to the army.
      * 
-     * @param creature the creature to be added in the army.
+     * @param creature the creature to be added to the army
      */
     void placeCard(Creature creature);
 
     /**
-     * It awakes all the creatures in the army.
+     * Wakes up all the creatures in the army.
      */
     void awakeCreatures();
 }

@@ -67,6 +67,16 @@ public final class BoardGameImpl implements BoardGame {
         // manca inizializzazione turni ed army
     }
 
+    private PlayerId getDefendingPlayer() {
+        return this.players.keySet().stream()
+            .filter(i -> !i.equals(this.currentPlayer))
+            .toList()
+            .get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void startGame() {
         try {
@@ -81,6 +91,9 @@ public final class BoardGameImpl implements BoardGame {
         // TO DO
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<PlayerId> getWinner() {
         final List<Player> alivePlayers = this.players.values().stream()
@@ -89,27 +102,54 @@ public final class BoardGameImpl implements BoardGame {
         return alivePlayers.size() == 2 ? Optional.empty() : Optional.of(alivePlayers.get(0).getId());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attackCard(final CardId attackingIdCard, final CardId defendingIdCard) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'attackCard'");
+
+        final var currentArmy = this.gameState.get(this.players.get(this.currentPlayer));
+        final var defendingArmy = this.gameState.get(this.players.get(1));
+        if (!currentArmy.isPresent(attackingIdCard) || !defendingArmy.isPresent(defendingIdCard)) {
+            throw new IllegalStateException("Not a right combination of a card");
+        }
+        if (currentArmy.canAttack(attackingIdCard)) {
+            final var attackingCard = currentArmy.getPlacedCard(attackingIdCard);
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attackHero(final CardId attackingIdCard) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'attackHero'");
+        try {
+            final var currentArmy = this.gameState.get(this.players.get(this.currentPlayer));
+            if (currentArmy.canAttack(attackingIdCard)) {
+                final var attackingCard = currentArmy.getPlacedCard(attackingIdCard);
+                this.players.get(getDefendingPlayer()).decreaseHealth(((Creature) attackingCard).getAttackValue());
+            }
+            else {
+                throw new IllegalStateException("You cannot use this card right now");
+            }
+        } catch (final IllegalArgumentException e) {
+            throw new IllegalStateException("This is not a valid card", e);
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void place(final CardId selectedIdCard) {
         if (selectedIdCard.type() != CardType.CREATURE) {
             throw new IllegalArgumentException("You cannot place a non-creature card");
         }
         try {
-
-            // TO DO
-
+            final var currentArmy = this.gameState.get(this.players.get(currentPlayer));
+            if (currentArmy.isArmyFull()) {
+                throw new IllegalStateException("your army is full and cannot place the card");
+            }
             final var removed = this.players.get(this.currentPlayer).playCard(selectedIdCard);
             this.gameState.get(this.players.get(currentPlayer)).placeCard((Creature) removed);
         } catch (final IllegalArgumentException | IllegalStateException e) {
@@ -117,6 +157,9 @@ public final class BoardGameImpl implements BoardGame {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void switchTurn() {
         // TODO Auto-generated method stub
