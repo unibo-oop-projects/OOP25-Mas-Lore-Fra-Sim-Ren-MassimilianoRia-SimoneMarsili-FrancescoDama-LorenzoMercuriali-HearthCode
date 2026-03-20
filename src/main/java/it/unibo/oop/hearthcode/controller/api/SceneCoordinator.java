@@ -16,9 +16,9 @@ public interface SceneCoordinator {
     void showSettings();
 
     /**
-     * Shows the match scene.
+     * Create a new match and shows the match scene.
      */
-    void showMatch();
+    void startMatch();
 
     /**
      * Requests the application shutdown.
