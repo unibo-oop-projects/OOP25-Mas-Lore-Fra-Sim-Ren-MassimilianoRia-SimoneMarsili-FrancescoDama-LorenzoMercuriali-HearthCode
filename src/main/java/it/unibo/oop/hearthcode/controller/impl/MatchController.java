@@ -11,13 +11,13 @@ import it.unibo.oop.hearthcode.view.api.MatchView;
  */
 public final class MatchController {
 
-    private BoardGame boardGame;
+    private final BoardGame boardGame;
 
     /**
      * Builds the controller and binds the scene actions.
      *
      * @param scene the controlled scene
-     * @param boardGame 
+     * @param boardGame the boardGame of the match
      * @param coordinator the application scene coordinator
      * @param audioService the audio service
      */
