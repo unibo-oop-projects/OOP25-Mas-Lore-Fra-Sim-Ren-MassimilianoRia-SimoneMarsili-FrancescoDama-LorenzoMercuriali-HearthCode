@@ -15,6 +15,8 @@ import it.unibo.oop.hearthcode.model.creature.api.Creature;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
+import it.unibo.oop.hearthcode.model.player.api.DrawCardResult;
+import it.unibo.oop.hearthcode.model.player.api.DrawCardResultType;
 import it.unibo.oop.hearthcode.model.player.api.Player;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
@@ -171,7 +173,38 @@ public final class BoardGameImpl implements BoardGame {
      */
     @Override
     public void switchTurn() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'switchTurn'");
+        final BoardGameImpl.TurnManager turnManager = new TurnManager();
+        turnManager.switchAndAwake();
+        turnManager.drawNewCard();
+    }
+
+    /**
+     * A inner class that manages the change turn.
+     */
+    class TurnManager {
+
+        private int decreasingHealthTax = 1;
+        private int passedTurns;
+
+        public void switchAndAwake() {
+            if (currentPlayer.equals(new PlayerId(PlayerType.HUMAN_PLAYER))) {
+                currentPlayer = new PlayerId(PlayerType.IA_PLAYER);
+            } else {
+                currentPlayer = new PlayerId(PlayerType.HUMAN_PLAYER);
+            }
+            players.get(currentPlayer).incrementMana();
+            armies.get(players.get(currentPlayer)).awakeCreatures();
+        }
+
+        public void drawNewCard() {
+            final DrawCardResult drawResult = players.get(currentPlayer).drawCard();
+            if (drawResult.result() == DrawCardResultType.DECK_EMPTY) {
+                players.get(currentPlayer).decreaseHealth(this.decreasingHealthTax);
+                this.passedTurns++;
+                if (this.passedTurns == 2) {
+                    this.decreasingHealthTax *= 2;
+                }
+            }
+        }
     }
 }
