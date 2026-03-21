@@ -33,7 +33,7 @@ public final class BoardGameImpl implements BoardGame {
     private static final int DEFAULT_HEALTH = 30;
     private final Map<Player, Army> armies;
     private final Map<PlayerId, Player> players;
-    private PlayerId currentPlayer;
+    private TurnManager turnManager;
 
     /**
      * It constructs a new BoardGameImpl.
@@ -49,14 +49,13 @@ public final class BoardGameImpl implements BoardGame {
         final var database = CreatureDatabaseFactory.createFromFile(DEFAULT_CREATURES_FILE);
         final var creatureFactory = new CreatureImplFactory(generator);
         final var deckFactory = new DeckFactory(database, creatureFactory);
+        this.turnManager = new TurnManager(new PlayerId(PlayerType.HUMAN_PLAYER));
 
         final Player humanPlayer = PlayerFactory.createPlayer(
             deckFactory.createWeighted(DECK_SIZE, def -> Math.max(1, def.manaCost())),
             DEFAULT_HEALTH,
             new PlayerId(PlayerType.HUMAN_PLAYER)
         );
-
-        this.currentPlayer = humanPlayer.getId();
 
         final Player iaPlayer = PlayerFactory.createPlayer(
             deckFactory.createWeighted(DECK_SIZE, def -> Math.max(1, def.manaCost())),
@@ -72,7 +71,7 @@ public final class BoardGameImpl implements BoardGame {
 
     private PlayerId getDefendingPlayer() {
         return this.players.keySet().stream()
-            .filter(i -> !i.equals(this.currentPlayer))
+            .filter(i -> !i.equals(this.turnManager.getCurrentPlayer()))
             .toList()
             .get(0);
     }
@@ -90,7 +89,7 @@ public final class BoardGameImpl implements BoardGame {
         } catch (final IllegalStateException e) {
             throw new IllegalStateException("Could not draw all the requested cards", e);
         }
-        this.players.get(this.currentPlayer).incrementMana();
+        this.players.get(this.turnManager.getCurrentPlayer()).incrementMana();
     }
 
     /**
@@ -109,7 +108,7 @@ public final class BoardGameImpl implements BoardGame {
      */
     @Override
     public void attackCard(final CardId attackingIdCard, final CardId defendingIdCard) {
-        final var currentArmy = this.armies.get(this.players.get(this.currentPlayer));
+        final var currentArmy = this.armies.get(this.players.get(this.turnManager.getCurrentPlayer()));
         final var defendingArmy = this.armies.get(this.players.get(getDefendingPlayer()));
         try {
             final var defendingCard = defendingArmy.getPlacedCard(defendingIdCard);
@@ -135,7 +134,7 @@ public final class BoardGameImpl implements BoardGame {
     @Override
     public void attackHero(final CardId attackingIdCard) {
         try {
-            final var currentArmy = this.armies.get(this.players.get(this.currentPlayer));
+            final var currentArmy = this.armies.get(this.players.get(this.turnManager.getCurrentPlayer()));
             if (currentArmy.canAttack(attackingIdCard)) {
                 final var attackingCard = currentArmy.getPlacedCard(attackingIdCard);
                 this.players.get(getDefendingPlayer()).decreaseHealth(attackingCard.get().getAttackValue());
@@ -156,13 +155,13 @@ public final class BoardGameImpl implements BoardGame {
         if (selectedIdCard.type() != CardType.CREATURE) {
             throw new IllegalArgumentException("You cannot place a non-creature card");
         }
-        final var currentArmy = this.armies.get(this.players.get(currentPlayer));
+        final var currentArmy = this.armies.get(this.players.get(this.turnManager.getCurrentPlayer()));
         if (currentArmy.isArmyFull()) {
             throw new IllegalStateException("your army is full and cannot place the card");
         }
         try {
-            final var removed = this.players.get(this.currentPlayer).playCard(selectedIdCard);
-            this.armies.get(this.players.get(currentPlayer)).placeCard((Creature) removed);
+            final var removed = this.players.get(this.turnManager.getCurrentPlayer()).playCard(selectedIdCard);
+            this.armies.get(this.players.get(this.turnManager.getCurrentPlayer())).placeCard((Creature) removed);
         } catch (final IllegalArgumentException | IllegalStateException e) {
             throw new IllegalStateException("The card cannot be placed on the board", e);
         }
@@ -173,7 +172,6 @@ public final class BoardGameImpl implements BoardGame {
      */
     @Override
     public void switchTurn() {
-        final BoardGameImpl.TurnManager turnManager = new TurnManager();
         turnManager.switchAndAwake();
         turnManager.drawNewCard();
     }
@@ -183,10 +181,19 @@ public final class BoardGameImpl implements BoardGame {
      */
     class TurnManager {
 
+        private PlayerId currentPlayer;
         private int decreasingHealthTax = 1;
         private int passedTurns;
 
-        public void switchAndAwake() {
+        TurnManager(final PlayerId id) {
+            this.currentPlayer = id;
+        }
+
+        private PlayerId getCurrentPlayer() {
+            return this.currentPlayer;
+        }
+
+        private void switchAndAwake() {
             if (currentPlayer.equals(new PlayerId(PlayerType.HUMAN_PLAYER))) {
                 currentPlayer = new PlayerId(PlayerType.IA_PLAYER);
             } else {
@@ -196,12 +203,12 @@ public final class BoardGameImpl implements BoardGame {
             armies.get(players.get(currentPlayer)).awakeCreatures();
         }
 
-        public void drawNewCard() {
+        private void drawNewCard() {
             final DrawCardResult drawResult = players.get(currentPlayer).drawCard();
             if (drawResult.result() == DrawCardResultType.DECK_EMPTY) {
                 players.get(currentPlayer).decreaseHealth(this.decreasingHealthTax);
                 this.passedTurns++;
-                if (this.passedTurns == 2) {
+                if (this.passedTurns % 2 == 0) {
                     this.decreasingHealthTax *= 2;
                 }
             }
