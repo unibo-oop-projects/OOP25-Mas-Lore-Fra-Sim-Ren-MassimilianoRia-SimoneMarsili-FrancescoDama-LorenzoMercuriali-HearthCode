@@ -27,12 +27,18 @@ public final class MatchController {
         final SceneCoordinator coordinator,
         final AudioService audioService
     ) {
-        scene.onBack(() -> {
-            audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showMainMenu();
-        });
 
         this.boardGame = boardGame;
         this.boardGame.startGame();
+
+        scene.onAttack(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            //this.boardGame.attackCard(null, null);
+        });
+
+        scene.onEndTurn(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            this.boardGame.switchTurn();
+        });
     }
 }
