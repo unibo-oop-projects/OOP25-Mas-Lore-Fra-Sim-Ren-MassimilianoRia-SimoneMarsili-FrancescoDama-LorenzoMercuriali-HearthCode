@@ -13,7 +13,10 @@ import javax.swing.JPanel;
 
 import it.unibo.oop.hearthcode.view.api.MatchView;
 
-public class MatchScene extends JPanel implements MatchView {
+/**
+ * Implementation of {@link MatchScene}.
+ */
+public final class MatchScene extends JPanel implements MatchView {
 
     private static final long serialVersionUID = 1L;
     private static final int ACTION_PANEL_WIDTH = 160;
@@ -21,6 +24,9 @@ public class MatchScene extends JPanel implements MatchView {
     private final JButton attackButton;
     private final JButton endTurnButton;
 
+    /**
+     * Initializes the Scene.
+     */
     public MatchScene() {
         super(new BorderLayout());
 
@@ -40,8 +46,8 @@ public class MatchScene extends JPanel implements MatchView {
         actionPanel.setPreferredSize(new Dimension(ACTION_PANEL_WIDTH, 0));
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
 
-        this.attackButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.endTurnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.attackButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.endTurnButton.setAlignmentX(CENTER_ALIGNMENT);
 
         actionPanel.add(this.attackButton);
         actionPanel.add(this.endTurnButton);
