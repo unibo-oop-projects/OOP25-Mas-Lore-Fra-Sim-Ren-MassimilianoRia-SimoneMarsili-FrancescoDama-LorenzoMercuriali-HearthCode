@@ -1,5 +1,7 @@
 package it.unibo.oop.hearthcode.model.boardgame.api;
 
+import java.util.Map;
+
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
@@ -12,12 +14,9 @@ public interface GameObserver {
     /**
      * Notifies that the match started.
      * 
-     * @param aiPlayer the enemy player
-     * @param aiHealth the health of the enemy player
-     * @param humanPlayer the user player
-     * @param humanHealth the health of the user player
+     * @param playersHealth a map mapping players with their health
      */
-    void onGameStarted(PlayerId aiPlayer, int aiHealth, PlayerId humanPlayer, int humanHealth);
+    void onGameStarted(Map<PlayerId, Integer> playersHealth);
 
     /**
      * Notifies that a turn is ended and a new one starts.
