@@ -28,6 +28,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private static final long serialVersionUID = 1L;
     private static final int SIDE_PANEL_WIDTH = 160;
     private static final int PLAYER_PANEL_HEIGHT = 200;
+    private static final String SLASH = " / ";
+    private static final String PLAYER = "Player";
+    private static final String OPPONENT = "Opponent";
 
     private int maxHealth;
 
@@ -53,9 +56,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.attackButton = new JButton("ATTACK");
         this.endTurnButton = new JButton("END TURN");
 
-        this.add(this.createPlayerPanel("Opponent"), BorderLayout.NORTH);
+        this.add(this.createPlayerPanel(OPPONENT), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
-        this.add(this.createPlayerPanel("Player"), BorderLayout.SOUTH);
+        this.add(this.createPlayerPanel(PLAYER), BorderLayout.SOUTH);
     }
 
     private Component createCenterPanel() {
@@ -106,7 +109,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final JPanel statsPanel = createPlayerStatsPanel(title);
         statsPanel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
         playerPanel.add(statsPanel, BorderLayout.WEST);
-        if (title.equals("Player")) {
+        if (PLAYER.equals(title)) {
             this.playerHandPanel = createTitledPanel(title + " Hand");
             playerPanel.add(this.playerHandPanel, BorderLayout.CENTER);
         } else {
@@ -126,7 +129,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         panel.add(health);
         panel.add(mana);
 
-        if (title.equals("Player")) {
+        if (PLAYER.equals(title)) {
             this.playerHealthLabel = health;
             this.playerManaLabel = mana;
         } else {
@@ -153,7 +156,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
-    public void onGameStarted(Map<PlayerId, Integer> playersHealth) {
+    public void onGameStarted(final Map<PlayerId, Integer> playersHealth) {
         this.maxHealth = playersHealth.get(new PlayerId(PlayerType.HUMAN_PLAYER));
         playersHealth.forEach((playerId, health) -> {
             this.updateHealth(playerId, health);
@@ -165,17 +168,17 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private void updateHealth(final PlayerId playerId, final int newHealth) {
         if (this.isHumanPlayer(playerId)) {
-            this.playerHealthLabel.setText("HP: " + newHealth + " / " + maxHealth);
+            this.playerHealthLabel.setText("HP: " + newHealth + SLASH + maxHealth);
         } else {
-            this.opponentHealthLabel.setText("HP: " + newHealth + " / " + maxHealth);
+            this.opponentHealthLabel.setText("HP: " + newHealth + SLASH + maxHealth);
         }
     }
 
     private void updateMana(final PlayerId playerId, final int currentMana, final int maxMana) {
         if (this.isHumanPlayer(playerId)) {
-            this.playerManaLabel.setText("Mana: " + currentMana + " / " + maxMana);
+            this.playerManaLabel.setText("Mana: " + currentMana + SLASH + maxMana);
         } else {
-            this.opponentManaLabel.setText("Mana: " + currentMana + " / " + maxMana);
+            this.opponentManaLabel.setText("Mana: " + currentMana + SLASH + maxMana);
         }
     }
 
@@ -184,48 +187,68 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
-    public void onTurnSwitch(PlayerId nextPlayer) {
+    public void onTurnSwitch(final PlayerId nextPlayer) {
         final boolean isHumanTurn = this.isHumanPlayer(nextPlayer);
         this.attackButton.setEnabled(isHumanTurn);
         this.endTurnButton.setEnabled(isHumanTurn);
     }
 
+    /**
+     * Temp method.
+     * 
+     * @param playerId the id of the player
+     * @return the hand of the player
+     */
+    public JPanel getHandPanel(final PlayerId playerId) {
+        return this.isHumanPlayer(playerId) ? this.playerHandPanel : this.opponentHandPanel;
+    }
+
+    /**
+     * Temp method.
+     * 
+     * @param playerId the id of the player
+     * @return the army of the player
+     */
+    public JPanel getArmyPanel(final PlayerId playerId) {
+        return this.isHumanPlayer(playerId) ? this.playerArmyPanel : this.opponentArmyPanel;
+    }
+
     @Override
-    public void onCreatureDrawn(PlayerId playerId, CardId drawnCard, CreatureDefinition def) {
+    public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCreatureDrawn'");
     }
 
     @Override
-    public void onCardPlaced(PlayerId playerId, CardId placedCard) {
+    public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardPlaced'");
     }
 
     @Override
-    public void onCardHealthChanged(CardId cardId, int newHealth) {
+    public void onCardHealthChanged(final CardId cardId, final int newHealth) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardHealthChanged'");
     }
 
     @Override
-    public void onCardDestroyed(CardId cardId) {
+    public void onCardDestroyed(final CardId cardId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardDestroyed'");
     }
 
     @Override
-    public void onPlayerHealthChanged(PlayerId playerId, int newHealth) {
+    public void onPlayerHealthChanged(final PlayerId playerId, final int newHealth) {
         this.updateHealth(playerId, newHealth);
     }
 
     @Override
-    public void onManaChanged(PlayerId playerId, int actualMana, int manaLimit) {
+    public void onManaChanged(final PlayerId playerId, final int actualMana, final int manaLimit) {
         this.updateMana(playerId, actualMana, manaLimit);
     }
 
     @Override
-    public void onCardExhausted(PlayerId player, CardId exhaustedCard) {
+    public void onCardExhausted(final PlayerId player, final CardId exhaustedCard) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardExhausted'");
     }
