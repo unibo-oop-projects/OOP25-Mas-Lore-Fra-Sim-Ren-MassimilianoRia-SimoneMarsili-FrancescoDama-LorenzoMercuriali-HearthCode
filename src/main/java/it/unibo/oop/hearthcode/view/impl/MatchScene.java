@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -131,26 +132,42 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final boolean isHumanTurn = this.isHumanPlayer(nextPlayer);
         this.attackButton.setEnabled(isHumanTurn);
         this.endTurnButton.setEnabled(isHumanTurn);
+        Stream.concat(
+            this.players.get(IA_PLAYER).getArmyArea().getCards().stream(),
+            Stream.concat(
+                this.players.get(HUMAN_PLAYER).getArmyArea().getCards().stream(),
+                this.players.get(HUMAN_PLAYER).getHandArea().getCards().stream()
+            )
+        ).forEach(card -> ((CardComponentImpl) card).setEnabled(false));
     }
 
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        throw new UnsupportedOperationException("Unimplemented method 'onCreatureDrawn'");
+        final CardComponentImpl card = new CardComponentImpl(drawnCard, def, null);
+        if (!isHumanPlayer(playerId)) {
+            card.setEnabled(false);
+        }
+        this.players.get(playerId).getHandArea().addCard(card);
     }
 
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
-        throw new UnsupportedOperationException("Unimplemented method 'onCardPlaced'");
+        final CardComponentImpl card = (CardComponentImpl) this.players.get(playerId).getHandArea().getCard(placedCard);
+        this.players.get(playerId).getHandArea().removeCard(placedCard);
+        this.players.get(playerId).getArmyArea().addCard(card);
     }
 
     @Override
     public void onCardHealthChanged(final CardId cardId, final int newHealth) {
-        throw new UnsupportedOperationException("Unimplemented method 'onCardHealthChanged'");
+        //MANCA PLAYERID
+        //final CardComponentImpl card = (CardComponentImpl) this.players.get(playerId).getHandArea().getCard(cardId);
+        //card.setHealth(newHealth);
     }
 
     @Override
     public void onCardDestroyed(final CardId cardId) {
-        throw new UnsupportedOperationException("Unimplemented method 'onCardDestroyed'");
+        //MANCA PLAYERID
+        //this.players.get(playerId).getHandArea().removeCard(cardId);
     }
 
     @Override
@@ -164,8 +181,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
-    public void onCardExhausted(final PlayerId player, final CardId exhaustedCard) {
-        throw new UnsupportedOperationException("Unimplemented method 'onCardExhausted'");
+    public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
+        final CardComponentImpl card = (CardComponentImpl) this.players.get(playerId).getArmyArea().getCard(exhaustedCard);
+        card.setEnabled(false);
     }
 
 }
