@@ -45,17 +45,19 @@ public interface GameObserver {
     /**
      * Notifies that the health of a card has changed.
      * 
+     * @param playerId the player owner of the card
      * @param cardId card whose health has changed
      * @param newHealth the new health of the card
      */
-    void onCardHealthChanged(CardId cardId, int newHealth);
+    void onCardHealthChanged(PlayerId playerId, CardId cardId, int newHealth);
 
     /**
      * Notifies that a card was destroyed.
      * 
+     * @param playerId the player owner of the card
      * @param cardId the destroyed card
      */
-    void onCardDestroyed(CardId cardId);
+    void onCardDestroyed(PlayerId playerId, CardId cardId);
 
     /**
      * Notifies that the health of a player has changed.
@@ -77,9 +79,9 @@ public interface GameObserver {
     /**
      * Notifies that a Card is exhausted and cannot be used.
      * 
-     * @param player the player owner of the exhausted card
+     * @param playerId the player owner of the exhausted card
      * @param exhaustedCard the exhausted card
      */
-    void onCardExhausted(PlayerId player, CardId exhaustedCard);
+    void onCardExhausted(PlayerId playerId, CardId exhaustedCard);
 
 }
