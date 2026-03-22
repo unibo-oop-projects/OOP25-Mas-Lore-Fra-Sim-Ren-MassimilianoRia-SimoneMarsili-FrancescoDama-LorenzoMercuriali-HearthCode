@@ -1,16 +1,14 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
@@ -21,50 +19,63 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 
 /**
- * Implementation of {@link MatchScene}.
+ * Implementation of {@link MatchView}.
  */
 public final class MatchScene extends JPanel implements MatchView, GameObserver {
 
     private static final long serialVersionUID = 1L;
-    private static final int SIDE_PANEL_WIDTH = 160;
-    private static final int PLAYER_PANEL_HEIGHT = 200;
-    private static final String SLASH = " / ";
-    private static final String PLAYER = "Player";
-    private static final String OPPONENT = "Opponent";
 
-    private int maxHealth;
+    private static final int SIDE_PANEL_WIDTH = 200;
+    private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
+    private static final PlayerId IA_PLAYER = new PlayerId(PlayerType.IA_PLAYER);
+
+    private final Map<PlayerId, PlayerAreaImpl> players = new HashMap<>();
 
     private final JButton attackButton;
     private final JButton endTurnButton;
 
-    private JPanel playerHandPanel;
-    private JPanel opponentHandPanel;
-    private JPanel playerArmyPanel;
-    private JPanel opponentArmyPanel;
-
-    private JLabel playerHealthLabel;
-    private JLabel playerManaLabel;
-    private JLabel opponentHealthLabel;
-    private JLabel opponentManaLabel;
-
     /**
-     * Initializes the Scene.
+     * Initializes the scene.
      */
     public MatchScene() {
         super(new BorderLayout());
 
+        this.players.put(HUMAN_PLAYER, new PlayerAreaImpl(HUMAN_PLAYER));
+        this.players.put(IA_PLAYER, new PlayerAreaImpl(IA_PLAYER));
+
         this.attackButton = new JButton("ATTACK");
         this.endTurnButton = new JButton("END TURN");
 
-        this.add(this.createPlayerPanel(OPPONENT), BorderLayout.NORTH);
+        this.add(this.players.get(IA_PLAYER), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
-        this.add(this.createPlayerPanel(PLAYER), BorderLayout.SOUTH);
+        this.add(this.players.get(HUMAN_PLAYER), BorderLayout.SOUTH);
     }
 
-    private Component createCenterPanel() {
+    private JPanel createSimplePanel() {
+        final JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        return panel;
+    }
+
+    private JPanel createTitledPanel(final String title) {
+        final JPanel panel = this.createSimplePanel();
+        panel.setBorder(BorderFactory.createTitledBorder(title));
+        return panel;
+    }
+
+    private JComponent createCenterPanel() {
         final JPanel panel = this.createSimplePanel();
         panel.setLayout(new BorderLayout());
+        panel.add(this.createActionPanel(), BorderLayout.WEST);
+        final JPanel armiesPanel = this.createSimplePanel();
+        armiesPanel.setLayout(new BorderLayout());
+        armiesPanel.add(this.players.get(IA_PLAYER).getArmyArea().getComponent(), BorderLayout.NORTH);
+        armiesPanel.add(this.players.get(HUMAN_PLAYER).getArmyArea().getComponent(), BorderLayout.SOUTH);
+        panel.add(armiesPanel, BorderLayout.CENTER);
+        return panel;
+    }
 
+    private JComponent createActionPanel() {
         final JPanel actionPanel = this.createTitledPanel("Actions");
         actionPanel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
@@ -75,69 +86,19 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         actionPanel.add(this.attackButton);
         actionPanel.add(this.endTurnButton);
 
-        final JPanel armiesPanel = this.createSimplePanel();
-        armiesPanel.setLayout(new GridLayout(2, 1, 0, 8));
-
-        this.opponentArmyPanel = this.createTitledPanel("Opponent Army");
-        this.playerArmyPanel = this.createTitledPanel("Player Army");
-
-        armiesPanel.add(this.opponentArmyPanel);
-        armiesPanel.add(this.playerArmyPanel);
-
-        panel.add(actionPanel, BorderLayout.WEST);
-        panel.add(armiesPanel, BorderLayout.CENTER);
-
-        return panel;
+        return actionPanel;
     }
 
-    private JPanel createSimplePanel() {
-        final JPanel panel = new JPanel();
-        panel.setOpaque(false);
-        return panel;
+    private void updateHealth(final PlayerId playerId, final int newHealth) {
+        this.players.get(playerId).setCurrentHealth(newHealth);
     }
 
-    private JPanel createTitledPanel(final String title) {
-        final JPanel panel = createSimplePanel();
-        panel.setBorder(BorderFactory.createTitledBorder(title));
-        return panel;
+    private void updateMana(final PlayerId playerId, final int currentMana, final int maxMana) {
+        this.players.get(playerId).setMana(currentMana, maxMana);
     }
 
-    private JPanel createPlayerPanel(final String title) {
-        final JPanel playerPanel = createSimplePanel();
-        playerPanel.setLayout(new BorderLayout());
-        playerPanel.setPreferredSize(new Dimension(0, PLAYER_PANEL_HEIGHT));
-        final JPanel statsPanel = createPlayerStatsPanel(title);
-        statsPanel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
-        playerPanel.add(statsPanel, BorderLayout.WEST);
-        if (PLAYER.equals(title)) {
-            this.playerHandPanel = createTitledPanel(title + " Hand");
-            playerPanel.add(this.playerHandPanel, BorderLayout.CENTER);
-        } else {
-            this.opponentHandPanel = createTitledPanel(title + " Hand");
-            playerPanel.add(this.opponentHandPanel, BorderLayout.CENTER);
-        }
-        return playerPanel;
-    }
-
-    private JPanel createPlayerStatsPanel(final String title) {
-        final JPanel panel = createTitledPanel(title + " Stats");
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-        final JLabel health = new JLabel("HP: 0 / 0");
-        final JLabel mana = new JLabel("Mana: 0 / 0");
-
-        panel.add(health);
-        panel.add(mana);
-
-        if (PLAYER.equals(title)) {
-            this.playerHealthLabel = health;
-            this.playerManaLabel = mana;
-        } else {
-            this.opponentHealthLabel = health;
-            this.opponentManaLabel = mana;
-        }
-
-        return panel;
+    private boolean isHumanPlayer(final PlayerId playerId) {
+        return playerId.type() == PlayerType.HUMAN_PLAYER;
     }
 
     @Override
@@ -157,33 +118,12 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onGameStarted(final Map<PlayerId, Integer> playersHealth) {
-        this.maxHealth = playersHealth.get(new PlayerId(PlayerType.HUMAN_PLAYER));
         playersHealth.forEach((playerId, health) -> {
-            this.updateHealth(playerId, health);
-            this.updateMana(playerId, 0, 0);
+            this.players.get(playerId).initHealth(health);
+            this.players.get(playerId).setMana(0, 0);
         });
         this.revalidate();
         this.repaint();
-    }
-
-    private void updateHealth(final PlayerId playerId, final int newHealth) {
-        if (this.isHumanPlayer(playerId)) {
-            this.playerHealthLabel.setText("HP: " + newHealth + SLASH + maxHealth);
-        } else {
-            this.opponentHealthLabel.setText("HP: " + newHealth + SLASH + maxHealth);
-        }
-    }
-
-    private void updateMana(final PlayerId playerId, final int currentMana, final int maxMana) {
-        if (this.isHumanPlayer(playerId)) {
-            this.playerManaLabel.setText("Mana: " + currentMana + SLASH + maxMana);
-        } else {
-            this.opponentManaLabel.setText("Mana: " + currentMana + SLASH + maxMana);
-        }
-    }
-
-    private boolean isHumanPlayer(final PlayerId playerId) {
-        return playerId.type() == PlayerType.HUMAN_PLAYER;
     }
 
     @Override
@@ -193,47 +133,23 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.endTurnButton.setEnabled(isHumanTurn);
     }
 
-    /**
-     * Temp method.
-     * 
-     * @param playerId the id of the player
-     * @return the hand of the player
-     */
-    public JPanel getHandPanel(final PlayerId playerId) {
-        return this.isHumanPlayer(playerId) ? this.playerHandPanel : this.opponentHandPanel;
-    }
-
-    /**
-     * Temp method.
-     * 
-     * @param playerId the id of the player
-     * @return the army of the player
-     */
-    public JPanel getArmyPanel(final PlayerId playerId) {
-        return this.isHumanPlayer(playerId) ? this.playerArmyPanel : this.opponentArmyPanel;
-    }
-
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCreatureDrawn'");
     }
 
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardPlaced'");
     }
 
     @Override
     public void onCardHealthChanged(final CardId cardId, final int newHealth) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardHealthChanged'");
     }
 
     @Override
     public void onCardDestroyed(final CardId cardId) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardDestroyed'");
     }
 
@@ -249,7 +165,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCardExhausted(final PlayerId player, final CardId exhaustedCard) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onCardExhausted'");
     }
+
 }

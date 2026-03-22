@@ -1,0 +1,116 @@
+package it.unibo.oop.hearthcode.view.impl;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import it.unibo.oop.hearthcode.model.player.api.PlayerId;
+import it.unibo.oop.hearthcode.view.api.CardArea;
+import it.unibo.oop.hearthcode.view.api.PlayerArea;
+
+public final class PlayerAreaImpl extends JPanel implements PlayerArea {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final int SIDE_PANEL_WIDTH = 200;
+    private static final int PLAYER_PANEL_HEIGHT = 220;
+
+    private final PlayerId playerId;
+
+    private int currentHealth;
+    private int maxHealth;
+    private int currentMana;
+    private int maxMana;
+
+    private final CardAreaImpl handArea;
+    private final CardAreaImpl armyArea;
+    private final JLabel healthLabel;
+    private final JLabel manaLabel;
+
+    public PlayerAreaImpl(final PlayerId playerId) {
+        super(new BorderLayout(8, 8));
+        this.playerId = playerId;
+
+        this.setOpaque(false);
+        this.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        this.setPreferredSize(new Dimension(0, PLAYER_PANEL_HEIGHT));
+
+        this.healthLabel = new JLabel("HP: 0 / 0");
+        this.manaLabel = new JLabel("Mana: 0 / 0");
+
+        this.handArea = new CardAreaImpl(playerId + " Hand");
+        this.armyArea = new CardAreaImpl(playerId + " Army");
+
+        this.add(this.createStatsPanel(), BorderLayout.WEST);
+        this.add(this.createHandPanel(), BorderLayout.CENTER);
+    }
+
+    private JPanel createStatsPanel() {
+        final JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createTitledBorder(this.playerId + " Stats"));
+        panel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        panel.add(this.healthLabel);
+        panel.add(this.manaLabel);
+
+        return panel;
+    }
+
+    private JPanel createHandPanel() {
+        final JPanel panel = new JPanel(new GridLayout(1, 1));
+        panel.setOpaque(false);
+        panel.add(this.handArea);
+        return panel;
+    }
+
+    private void refreshHealth() {
+        this.healthLabel.setText("HP: " + this.currentHealth + " / " + this.maxHealth);
+    }
+
+    private void refreshMana() {
+        this.manaLabel.setText("Mana: " + this.currentMana + " / " + this.maxMana);
+    }
+
+    @Override
+    public PlayerId getPlayerId() {
+        return this.playerId;
+    }
+
+    @Override
+    public CardArea getHandArea() {
+        return this.handArea;
+    }
+
+    @Override
+    public CardArea getArmyArea() {
+        return this.armyArea;
+    }
+
+    @Override
+    public void initHealth(final int maxHealth) {
+        this.maxHealth = maxHealth;
+        this.currentHealth = maxHealth;
+        this.refreshHealth();
+    }
+
+    @Override
+    public void setCurrentHealth(final int currentHealth) {
+        this.currentHealth = currentHealth;
+        this.refreshHealth();
+    }
+
+    @Override
+    public void setMana(final int currentMana, final int maxMana) {
+        this.currentMana = currentMana;
+        this.maxMana = maxMana;
+        this.refreshMana();
+    }
+
+}
