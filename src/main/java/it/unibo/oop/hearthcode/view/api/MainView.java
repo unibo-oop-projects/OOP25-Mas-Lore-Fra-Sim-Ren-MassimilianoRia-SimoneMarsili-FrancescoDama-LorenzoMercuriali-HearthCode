@@ -1,7 +1,7 @@
 package it.unibo.oop.hearthcode.view.api;
 
 /**
- * It represents the main frame of the application.
+ * Main application window.
  */
 public interface MainView {
 

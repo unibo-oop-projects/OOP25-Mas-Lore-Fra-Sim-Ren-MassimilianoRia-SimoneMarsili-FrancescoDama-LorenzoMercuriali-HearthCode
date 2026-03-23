@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 import it.unibo.oop.hearthcode.view.api.SettingsView;
 
 /**
- * It represents the settings scene of the application.
+ * Settings scene.
  */
 public final class SettingsScene extends AbstractBackgroundScene implements SettingsView {
 

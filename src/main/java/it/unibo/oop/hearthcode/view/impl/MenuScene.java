@@ -10,7 +10,7 @@ import javax.swing.JComponent;
 import it.unibo.oop.hearthcode.view.api.MenuView;
 
 /**
- * It represents the menu scene of the application.
+ * Main menu scene.
  */
 public final class MenuScene extends AbstractBackgroundScene implements MenuView {
 
@@ -27,7 +27,7 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
     private final JButton quitButton;
 
     /**
-     * Builds the panel.
+     * Builds the main menu scene.
      */
     public MenuScene() {
         super(BACKGROUND_PATH);

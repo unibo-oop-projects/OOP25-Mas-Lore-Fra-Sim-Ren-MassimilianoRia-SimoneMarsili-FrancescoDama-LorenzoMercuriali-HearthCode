@@ -3,16 +3,23 @@ package it.unibo.oop.hearthcode.view.impl;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.CardArea;
+import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.PlayerArea;
 
+/**
+ * Implementation of {@link PlayerArea}.
+ */
 public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
     private static final long serialVersionUID = 1L;
@@ -20,18 +27,23 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private static final int SIDE_PANEL_WIDTH = 200;
     private static final int PLAYER_PANEL_HEIGHT = 220;
 
-    private final PlayerId playerId;
+    private final transient PlayerId playerId;
 
     private int currentHealth;
     private int maxHealth;
     private int currentMana;
     private int maxMana;
 
-    private final CardAreaImpl handArea;
-    private final CardAreaImpl armyArea;
+    private final CardArea handArea;
+    private final CardArea armyArea;
     private final JLabel healthLabel;
     private final JLabel manaLabel;
 
+    /**
+     * Builds the UI area representing a player.
+     *
+     * @param playerId the identifier of the represented player
+     */
     public PlayerAreaImpl(final PlayerId playerId) {
         super(new BorderLayout(8, 8));
         this.playerId = playerId;
@@ -66,7 +78,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private JPanel createHandPanel() {
         final JPanel panel = new JPanel(new GridLayout(1, 1));
         panel.setOpaque(false);
-        panel.add(this.handArea);
+        panel.add(this.handArea.getComponent());
         return panel;
     }
 
@@ -79,24 +91,19 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     }
 
     @Override
+    public JComponent getComponent() {
+        return this;
+    }
+
+    @Override
     public PlayerId getPlayerId() {
         return this.playerId;
     }
 
     @Override
-    public CardArea getHandArea() {
-        return this.handArea;
-    }
-
-    @Override
-    public CardArea getArmyArea() {
-        return this.armyArea;
-    }
-
-    @Override
-    public void initHealth(final int maxHealth) {
-        this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth;
+    public void initHealth(final int health) {
+        this.maxHealth = health;
+        this.currentHealth = health;
         this.refreshHealth();
     }
 
@@ -107,10 +114,42 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     }
 
     @Override
-    public void setMana(final int currentMana, final int maxMana) {
-        this.currentMana = currentMana;
-        this.maxMana = maxMana;
+    public void setMana(final int newCurrentMana, final int newMaxMana) {
+        this.currentMana = newCurrentMana;
+        this.maxMana = newMaxMana;
         this.refreshMana();
+    }
+
+    @Override
+    public void addHandCard(final CardComponent card) {
+        this.handArea.addCard(card);
+    }
+
+    @Override
+    public void placeCard(final CardId cardId) {
+        final CardComponent card = this.handArea.getCard(cardId);
+        this.handArea.removeCard(cardId);
+        this.armyArea.addCard(card);
+    }
+
+    @Override
+    public CardComponent getArmyCard(final CardId cardId) {
+        return this.armyArea.getCard(cardId);
+    }
+
+    @Override
+    public List<CardComponent> getArmyCards() {
+        return this.armyArea.getCards();
+    }
+
+    @Override
+    public List<CardComponent> getHandCards() {
+        return this.handArea.getCards();
+    }
+
+    @Override
+    public JComponent getArmyAreaComponent() {
+        return this.armyArea.getComponent();
     }
 
 }

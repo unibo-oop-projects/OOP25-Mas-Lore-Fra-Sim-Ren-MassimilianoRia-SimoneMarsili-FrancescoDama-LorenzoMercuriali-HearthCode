@@ -2,7 +2,6 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -12,12 +11,15 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
+import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.MatchView;
+import it.unibo.oop.hearthcode.view.api.PlayerArea;
 
 /**
  * Implementation of {@link MatchView}.
@@ -30,26 +32,36 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
     private static final PlayerId IA_PLAYER = new PlayerId(PlayerType.IA_PLAYER);
 
-    private final Map<PlayerId, PlayerAreaImpl> players = new HashMap<>();
+    @SuppressFBWarnings(
+        value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
+        justification = "This Swing UI component is not meant to support meaningful deserialization."
+    )
+    private final transient PlayerArea humanPlayerArea;
+
+    @SuppressFBWarnings(
+        value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
+        justification = "This Swing UI component is not meant to support meaningful deserialization."
+    )
+    private final transient PlayerArea iaPlayerArea;
 
     private final JButton attackButton;
     private final JButton endTurnButton;
 
     /**
-     * Initializes the scene.
+     * Initializes the match scene.
      */
     public MatchScene() {
         super(new BorderLayout());
 
-        this.players.put(HUMAN_PLAYER, new PlayerAreaImpl(HUMAN_PLAYER));
-        this.players.put(IA_PLAYER, new PlayerAreaImpl(IA_PLAYER));
+        this.humanPlayerArea = new PlayerAreaImpl(HUMAN_PLAYER);
+        this.iaPlayerArea = new PlayerAreaImpl(IA_PLAYER);
 
         this.attackButton = new JButton("ATTACK");
         this.endTurnButton = new JButton("END TURN");
 
-        this.add(this.players.get(IA_PLAYER), BorderLayout.NORTH);
+        this.add(this.iaPlayerArea.getComponent(), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
-        this.add(this.players.get(HUMAN_PLAYER), BorderLayout.SOUTH);
+        this.add(this.humanPlayerArea.getComponent(), BorderLayout.SOUTH);
     }
 
     private JPanel createSimplePanel() {
@@ -64,14 +76,20 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         return panel;
     }
 
+    private PlayerArea getPlayerArea(final PlayerId playerId) {
+        return this.isHumanPlayer(playerId) ? this.humanPlayerArea : this.iaPlayerArea;
+    }
+
     private JComponent createCenterPanel() {
         final JPanel panel = this.createSimplePanel();
         panel.setLayout(new BorderLayout());
         panel.add(this.createActionPanel(), BorderLayout.WEST);
+
         final JPanel armiesPanel = this.createSimplePanel();
         armiesPanel.setLayout(new BorderLayout());
-        armiesPanel.add(this.players.get(IA_PLAYER).getArmyArea().getComponent(), BorderLayout.NORTH);
-        armiesPanel.add(this.players.get(HUMAN_PLAYER).getArmyArea().getComponent(), BorderLayout.SOUTH);
+        armiesPanel.add(this.iaPlayerArea.getArmyAreaComponent(), BorderLayout.NORTH);
+        armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent(), BorderLayout.SOUTH);
+
         panel.add(armiesPanel, BorderLayout.CENTER);
         return panel;
     }
@@ -91,11 +109,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     private void updateHealth(final PlayerId playerId, final int newHealth) {
-        this.players.get(playerId).setCurrentHealth(newHealth);
+        this.getPlayerArea(playerId).setCurrentHealth(newHealth);
     }
 
     private void updateMana(final PlayerId playerId, final int currentMana, final int maxMana) {
-        this.players.get(playerId).setMana(currentMana, maxMana);
+        this.getPlayerArea(playerId).setMana(currentMana, maxMana);
     }
 
     private boolean isHumanPlayer(final PlayerId playerId) {
@@ -120,8 +138,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onGameStarted(final Map<PlayerId, Integer> playersHealth) {
         playersHealth.forEach((playerId, health) -> {
-            this.players.get(playerId).initHealth(health);
-            this.players.get(playerId).setMana(0, 0);
+            this.getPlayerArea(playerId).initHealth(health);
+            this.getPlayerArea(playerId).setMana(0, 0);
         });
         this.revalidate();
         this.repaint();
@@ -132,42 +150,38 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final boolean isHumanTurn = this.isHumanPlayer(nextPlayer);
         this.attackButton.setEnabled(isHumanTurn);
         this.endTurnButton.setEnabled(isHumanTurn);
+
         Stream.concat(
-            this.players.get(IA_PLAYER).getArmyArea().getCards().stream(),
+            this.iaPlayerArea.getArmyCards().stream(),
             Stream.concat(
-                this.players.get(HUMAN_PLAYER).getArmyArea().getCards().stream(),
-                this.players.get(HUMAN_PLAYER).getHandArea().getCards().stream()
+                this.humanPlayerArea.getArmyCards().stream(),
+                this.humanPlayerArea.getHandCards().stream()
             )
-        ).forEach(card -> ((CardComponentImpl) card).setEnabled(false));
+        ).forEach(card -> card.setEnabled(isHumanTurn));
     }
 
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        final CardComponentImpl card = new CardComponentImpl(drawnCard, def, null);
-        if (!isHumanPlayer(playerId)) {
+        final CardComponent card = new CardComponentImpl(drawnCard, def, null);
+        if (!this.isHumanPlayer(playerId)) {
             card.setEnabled(false);
         }
-        this.players.get(playerId).getHandArea().addCard(card);
+        this.getPlayerArea(playerId).addHandCard(card);
     }
 
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
-        final CardComponentImpl card = (CardComponentImpl) this.players.get(playerId).getHandArea().getCard(placedCard);
-        this.players.get(playerId).getHandArea().removeCard(placedCard);
-        this.players.get(playerId).getArmyArea().addCard(card);
+        this.getPlayerArea(playerId).placeCard(placedCard);
     }
 
     @Override
     public void onCardHealthChanged(final CardId cardId, final int newHealth) {
-        //MANCA PLAYERID
-        //final CardComponentImpl card = (CardComponentImpl) this.players.get(playerId).getHandArea().getCard(cardId);
-        //card.setHealth(newHealth);
+        // Missing player/zone information in the observer contract.
     }
 
     @Override
     public void onCardDestroyed(final CardId cardId) {
-        //MANCA PLAYERID
-        //this.players.get(playerId).getHandArea().removeCard(cardId);
+        // Missing player/zone information in the observer contract.
     }
 
     @Override
@@ -182,8 +196,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
-        final CardComponentImpl card = (CardComponentImpl) this.players.get(playerId).getArmyArea().getCard(exhaustedCard);
-        card.setEnabled(false);
+        this.getPlayerArea(playerId).getArmyCard(exhaustedCard).setEnabled(false);
     }
 
 }

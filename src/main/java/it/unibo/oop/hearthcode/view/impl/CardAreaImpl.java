@@ -10,18 +10,31 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.view.api.CardArea;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
 
+/**
+ * Implementation of {@link CardArea}.
+ */
 public final class CardAreaImpl extends JPanel implements CardArea {
 
     private static final long serialVersionUID = 1L;
-    
+
     private static final int PANEL_HEIGHT = 220;
 
-    private final Map<CardId, CardComponentImpl> cards = new LinkedHashMap<>();
+    @SuppressFBWarnings(
+        value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
+        justification = "This Swing UI component is not meant to support meaningful deserialization."
+    )
+    private final transient Map<CardId, CardComponent> cards = new LinkedHashMap<>();
 
+    /**
+     * Builds the UI area containing card components.
+     *
+     * @param title the title of the panel
+     */
     public CardAreaImpl(final String title) {
         super(new FlowLayout(FlowLayout.LEFT, 8, 8));
         this.setOpaque(false);
@@ -30,12 +43,12 @@ public final class CardAreaImpl extends JPanel implements CardArea {
     }
 
     @Override
-    public void addCard(final CardComponentImpl card) {
+    public void addCard(final CardComponent card) {
         if (this.cards.containsKey(card.getCardId())) {
             throw new IllegalArgumentException("Unique CardId already present in this CardArea.");
         }
         this.cards.put(card.getCardId(), card);
-        this.add(card);
+        this.add(card.getComponent());
         this.revalidate();
         this.repaint();
     }
@@ -51,11 +64,11 @@ public final class CardAreaImpl extends JPanel implements CardArea {
 
     @Override
     public void removeCard(final CardId cardId) {
-        final CardComponentImpl card = this.cards.remove(cardId);
+        final CardComponent card = this.cards.remove(cardId);
         if (card == null) {
             throw new IllegalArgumentException("Requested CardId absent in this CardArea.");
         }
-        this.remove(card);
+        this.remove(card.getComponent());
         this.revalidate();
         this.repaint();
     }
@@ -69,5 +82,4 @@ public final class CardAreaImpl extends JPanel implements CardArea {
     public JComponent getComponent() {
         return this;
     }
-
 }

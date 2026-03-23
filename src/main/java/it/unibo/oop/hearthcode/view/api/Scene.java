@@ -3,7 +3,7 @@ package it.unibo.oop.hearthcode.view.api;
 import javax.swing.JComponent;
 
 /**
- * It represents a contract for each Scene in the application.
+ * Contract for an application scene.
  */
 @SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface Scene {

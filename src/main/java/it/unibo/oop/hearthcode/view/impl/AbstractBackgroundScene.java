@@ -17,8 +17,7 @@ import javax.swing.JPanel;
 import it.unibo.oop.hearthcode.view.api.Scene;
 
 /**
- * Base class for scenes with a scalable background image
- * and texture-based buttons.
+ * Base class for scenes with a scalable background image and texture-based buttons.
  */
 public abstract class AbstractBackgroundScene extends JPanel implements Scene {
 
