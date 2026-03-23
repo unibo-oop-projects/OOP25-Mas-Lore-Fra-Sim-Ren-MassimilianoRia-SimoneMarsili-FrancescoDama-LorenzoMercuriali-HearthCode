@@ -8,7 +8,7 @@ import it.unibo.oop.hearthcode.view.api.MenuView;
 /**
  * Controller of the menu scene.
  */
-public class MenuController {
+public final class MenuController {
 
     /**
      * Builds the controller and binds the scene actions.

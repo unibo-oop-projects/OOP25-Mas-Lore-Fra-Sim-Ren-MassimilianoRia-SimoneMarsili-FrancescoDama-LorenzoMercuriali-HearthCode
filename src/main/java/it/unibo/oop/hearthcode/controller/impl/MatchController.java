@@ -4,6 +4,8 @@ import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
+import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
+import it.unibo.oop.hearthcode.model.boardgame.api.ObservableGame;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 
 /**
@@ -27,6 +29,10 @@ public final class MatchController {
         final SceneCoordinator coordinator,
         final AudioService audioService
     ) {
+
+        if (boardGame instanceof ObservableGame observable && scene instanceof GameObserver observer) {
+            observable.addObserver(observer);
+        }
 
         this.boardGame = boardGame;
         this.boardGame.startGame();
