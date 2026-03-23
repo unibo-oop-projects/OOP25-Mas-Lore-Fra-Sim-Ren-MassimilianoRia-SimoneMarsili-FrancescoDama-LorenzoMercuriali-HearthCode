@@ -175,13 +175,13 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
-    public void onCardHealthChanged(final CardId cardId, final int newHealth) {
-        // Missing player/zone information in the observer contract.
+    public void onCardHealthChanged(final PlayerId playerId, final CardId cardId, final int newHealth) {
+        this.getPlayerArea(playerId).getArmyCard(cardId).setHealth(newHealth);
     }
 
     @Override
-    public void onCardDestroyed(final CardId cardId) {
-        // Missing player/zone information in the observer contract.
+    public void onCardDestroyed(final PlayerId playerId, final CardId cardId) {
+        this.getPlayerArea(playerId).removeArmyCard(cardId);
     }
 
     @Override

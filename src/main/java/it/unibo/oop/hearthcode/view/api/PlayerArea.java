@@ -56,6 +56,13 @@ public interface PlayerArea {
     JComponent getArmyAreaComponent();
 
     /**
+     * Removes a card from the army.
+     * 
+     * @param cardId the identifier of the card to remove
+     */
+    void removeArmyCard(CardId cardId);
+
+    /**
      * Initializes the player's health values.
      *
      * @param health the maximum health value, also used as initial current health

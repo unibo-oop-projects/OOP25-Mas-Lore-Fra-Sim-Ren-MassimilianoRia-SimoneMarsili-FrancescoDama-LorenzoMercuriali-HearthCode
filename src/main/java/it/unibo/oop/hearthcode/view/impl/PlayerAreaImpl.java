@@ -101,6 +101,31 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     }
 
     @Override
+    public void removeArmyCard(final CardId cardId) {
+        this.armyArea.removeCard(cardId);
+    }
+
+    @Override
+    public CardComponent getArmyCard(final CardId cardId) {
+        return this.armyArea.getCard(cardId);
+    }
+
+    @Override
+    public List<CardComponent> getArmyCards() {
+        return this.armyArea.getCards();
+    }
+
+    @Override
+    public List<CardComponent> getHandCards() {
+        return this.handArea.getCards();
+    }
+
+    @Override
+    public JComponent getArmyAreaComponent() {
+        return this.armyArea.getComponent();
+    }
+
+    @Override
     public void initHealth(final int health) {
         this.maxHealth = health;
         this.currentHealth = health;
@@ -130,26 +155,6 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         final CardComponent card = this.handArea.getCard(cardId);
         this.handArea.removeCard(cardId);
         this.armyArea.addCard(card);
-    }
-
-    @Override
-    public CardComponent getArmyCard(final CardId cardId) {
-        return this.armyArea.getCard(cardId);
-    }
-
-    @Override
-    public List<CardComponent> getArmyCards() {
-        return this.armyArea.getCards();
-    }
-
-    @Override
-    public List<CardComponent> getHandCards() {
-        return this.handArea.getCards();
-    }
-
-    @Override
-    public JComponent getArmyAreaComponent() {
-        return this.armyArea.getComponent();
     }
 
 }
