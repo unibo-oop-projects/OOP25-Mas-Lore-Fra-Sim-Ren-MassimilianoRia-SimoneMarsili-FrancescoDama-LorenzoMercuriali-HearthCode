@@ -159,19 +159,24 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
             final var defendingCard = defendingArmy.getPlacedCard(defendingIdCard);
             if (defendingCard.isPresent() && currentArmy.canAttack(attackingIdCard)) {
                 final var attackingCard = currentArmy.getPlacedCard(attackingIdCard).get();
+                final var currPlayer = this.turnManager.getCurrentPlayer();
+                final var defPlayer = getDefendingPlayer();
                 attackingCard.decreaseHealth(defendingCard.get().getAttackValue());
-                currentArmy.disableAttack(attackingIdCard);
-                notifyObservers(o -> o.onCardHealthChanged(attackingIdCard, attackingCard.getHealth()));
-                notifyObservers(o -> o.onCardExhausted(this.turnManager.getCurrentPlayer(), attackingIdCard));
                 defendingCard.get().decreaseHealth(attackingCard.getAttackValue());
-                notifyObservers(o -> o.onCardHealthChanged(defendingIdCard, defendingCard.get().getHealth()));
+
+                notifyObservers(o -> o.onCardHealthChanged(currPlayer, attackingIdCard, attackingCard.getHealth()));
+                notifyObservers(o -> o.onCardHealthChanged(defPlayer, defendingIdCard, defendingCard.get().getHealth()));
+
+                currentArmy.disableAttack(attackingIdCard);
+                notifyObservers(o -> o.onCardExhausted(currPlayer, attackingIdCard));
+
                 if (attackingCard.getHealth() == 0) {
                     currentArmy.deleteDeathCreature(attackingIdCard);
-                    notifyObservers(o -> o.onCardDestroyed(attackingIdCard));
+                    notifyObservers(o -> o.onCardDestroyed(currPlayer, attackingIdCard));
                 }
                 if (defendingCard.get().getHealth() == 0) {
                     defendingArmy.deleteDeathCreature(defendingIdCard);
-                    notifyObservers(o -> o.onCardDestroyed(defendingIdCard));
+                    notifyObservers(o -> o.onCardDestroyed(defPlayer, defendingIdCard));
                 }
             } else {
                 throw new IllegalStateException("Your card cannot attack during this turn!");
