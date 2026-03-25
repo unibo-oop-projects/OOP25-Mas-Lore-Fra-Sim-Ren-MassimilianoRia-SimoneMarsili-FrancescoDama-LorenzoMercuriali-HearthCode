@@ -37,8 +37,8 @@ public class PlayerStateImpl implements PlayerState {
         this.playerId = playerId;
         this.playerHealth = playerHealth;
         this.playerActualMana = playerActualMana;
-        this.playerHand = playerHand;
-        this.playerArmy = playerArmy;
+        this.playerHand = playerHand.map(List::copyOf);
+        this.playerArmy = List.copyOf(playerArmy);
     }
 
     /**
@@ -70,7 +70,7 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public Optional<List<CardState>> getPlayerHand() {
-        return this.playerHand;
+        return this.playerHand.map(List::copyOf);
     }
 
     /**
@@ -78,7 +78,7 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public List<CardState> getPlayerArmy() {
-        return this.playerArmy;
+        return List.copyOf(this.playerArmy);
     }
 
 }

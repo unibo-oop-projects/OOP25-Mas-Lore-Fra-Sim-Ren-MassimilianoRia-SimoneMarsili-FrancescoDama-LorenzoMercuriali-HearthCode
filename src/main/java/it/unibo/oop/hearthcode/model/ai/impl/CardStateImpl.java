@@ -7,7 +7,7 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
  * Implementation of {@link CardState}.
  */
 public class CardStateImpl implements CardState {
-    
+
     private final CardId cardId;
     private final int manaCost;
     private final int health;

@@ -20,7 +20,7 @@ public class AiGameStateImpl implements AiGameState {
      * @param humanPlayerState the state of the human player
      * @param aiPlayerState the state of the AI player
      */
-    public AiGameStateImpl(PlayerState humanPlayerState, PlayerState aiPlayerState) {
+    public AiGameStateImpl(final PlayerState humanPlayerState, final PlayerState aiPlayerState) {
         this.players.put(humanPlayerState.getPlayerId(), humanPlayerState);
         this.players.put(aiPlayerState.getPlayerId(), aiPlayerState);
     }

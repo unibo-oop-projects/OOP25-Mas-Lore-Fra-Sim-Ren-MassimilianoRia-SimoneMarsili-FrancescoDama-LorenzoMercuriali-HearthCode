@@ -30,7 +30,7 @@ public interface Player {
      * @return the amount of player's health
      */
     int getHealth();
-    
+
     /**
      * @return a copy of the cards held in hand
      */

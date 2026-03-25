@@ -21,13 +21,13 @@ public class AiGameStateFactoryImpl implements AiGameStateFactory {
      * {@inheritDoc}
      */
     @Override
-    public AiGameState create(BoardGame game) {
+    public AiGameState create(final BoardGame game) {
         final PlayerState humanPlayerState = this.mapHumanPlayer(game, HUMAN_PLAYER);
         final PlayerState aiPlayerState = this.mapAiPlayer(game, AI_PLAYER);
         return new AiGameStateImpl(humanPlayerState, aiPlayerState);
     }
 
-    private PlayerState mapAiPlayer(BoardGame game, PlayerId aiPlayer) {
+    private PlayerState mapAiPlayer(final BoardGame game, final PlayerId aiPlayer) {
         return new PlayerStateImpl(
             aiPlayer,
             game.getPlayerHealth(aiPlayer),
@@ -37,7 +37,7 @@ public class AiGameStateFactoryImpl implements AiGameStateFactory {
         );
     }
 
-    private PlayerState mapHumanPlayer(BoardGame game, PlayerId humanPlayer) {
+    private PlayerState mapHumanPlayer(final BoardGame game, final PlayerId humanPlayer) {
         return new PlayerStateImpl(
             humanPlayer,
             game.getPlayerHealth(humanPlayer),

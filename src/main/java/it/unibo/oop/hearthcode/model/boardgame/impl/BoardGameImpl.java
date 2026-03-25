@@ -242,6 +242,38 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPlayerHealth(final PlayerId playerId) {
+        return this.players.get(playerId).getHealth();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPlayerActualMana(final PlayerId playerId) {
+        return this.players.get(playerId).getActualMana();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardState> getHandCardsCopies(final PlayerId playerId) {
+        return this.players.get(playerId).getHandCardsCopies();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardState> getArmyCardsCopies(final PlayerId playerId) {
+        return this.armies.get(this.players.get(playerId)).getCardsCopies();
+    }
+
+    /**
      * A inner class that manages the change turn.
      */
     class TurnManager {
@@ -282,38 +314,6 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
                 );
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPlayerHealth(PlayerId playerId) {
-        return this.players.get(playerId).getHealth();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPlayerActualMana(PlayerId playerId) {
-        return this.players.get(playerId).getActualMana();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CardState> getHandCardsCopies(PlayerId playerId) {
-        return this.players.get(playerId).getHandCardsCopies();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CardState> getArmyCardsCopies(PlayerId playerId) {
-        return this.armies.get(this.players.get(playerId)).getCardsCopies();
     }
 
 }

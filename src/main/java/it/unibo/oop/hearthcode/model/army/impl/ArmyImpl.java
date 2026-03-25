@@ -53,7 +53,7 @@ public class ArmyImpl implements Army {
 
     /**
      * {@inheritDoc}
-     */    
+     */
     @Override
     public List<CardState> getCardsCopies() {
         return Stream.concat(
