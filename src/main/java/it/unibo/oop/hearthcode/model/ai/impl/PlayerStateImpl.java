@@ -70,7 +70,7 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public Optional<List<CardState>> getPlayerHand() {
-        return this.playerHand.map(List::copyOf);
+        return this.playerHand;
     }
 
     /**
@@ -78,7 +78,7 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public List<CardState> getPlayerArmy() {
-        return List.copyOf(this.playerArmy);
+        return this.playerArmy;
     }
 
 }
