@@ -1,5 +1,8 @@
 package it.unibo.oop.hearthcode.model.player.impl;
 
+import java.util.List;
+
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.deck.api.Deck;
@@ -59,6 +62,14 @@ public class PlayerImpl implements Player {
     @Override
     public int getHealth() {
         return this.health;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardState> getHandCardsCopies() {
+        return this.hand.getCardsCopies();
     }
 
     /**

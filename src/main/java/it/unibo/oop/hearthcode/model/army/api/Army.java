@@ -1,7 +1,9 @@
 package it.unibo.oop.hearthcode.model.army.api;
 
+import java.util.List;
 import java.util.Optional;
 
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
 
@@ -20,6 +22,11 @@ public interface Army {
      * @return an Optional containing the requested creature if present, empty otherwise
      */
     Optional<Creature> getPlacedCard(CardId cardId);
+
+    /**
+     * @return a copy of the cards contained
+     */
+    List<CardState> getCardsCopies();
 
     /**
      * Removes a specific card from the army.
