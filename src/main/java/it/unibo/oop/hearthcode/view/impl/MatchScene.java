@@ -1,7 +1,10 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -10,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -46,8 +50,17 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     )
     private final transient PlayerArea iaPlayerArea;
 
-    private final JButton attackButton;
+    @SuppressFBWarnings(
+        value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
+        justification = "This Swing UI component is not meant to support meaningful deserialization."
+    )
+    private final transient List<CardId> selectedCards = new ArrayList<>();
+
+    private final JButton attackHeroButton;
+    private final JButton attackCreatureButton;
     private final JButton endTurnButton;
+    private final JButton placeCardButton;
+    private final JButton exitButton;
 
     /**
      * Initializes the match scene.
@@ -58,8 +71,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.humanPlayerArea = new PlayerAreaImpl(HUMAN_PLAYER);
         this.iaPlayerArea = new PlayerAreaImpl(IA_PLAYER);
 
-        this.attackButton = new JButton("ATTACK");
+        this.attackHeroButton = new JButton("ATTACK HERO");
+        this.attackCreatureButton = new JButton("ATTACK CREATURE");
+        this.placeCardButton = new JButton("PLACE CARD");
         this.endTurnButton = new JButton("END TURN");
+        this.exitButton = new JButton("EXIT");
 
         this.add(this.iaPlayerArea.getComponent(), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
@@ -101,11 +117,17 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         actionPanel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
 
-        this.attackButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.attackHeroButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.attackCreatureButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.placeCardButton.setAlignmentX(CENTER_ALIGNMENT);
         this.endTurnButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.exitButton.setAlignmentX(CENTER_ALIGNMENT);
 
-        actionPanel.add(this.attackButton);
+        actionPanel.add(this.attackHeroButton);
+        actionPanel.add(this.attackCreatureButton);
+        actionPanel.add(this.placeCardButton);
         actionPanel.add(this.endTurnButton);
+        actionPanel.add(this.exitButton);
 
         return actionPanel;
     }
@@ -128,13 +150,46 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
-    public void onAttack(final Runnable action) {
-        this.attackButton.addActionListener(event -> action.run());
+    public List<CardId> getSelectedCards() {
+        return List.copyOf(this.selectedCards);
+    }
+
+    @Override
+    public void onAttackHero(final Runnable action) {
+        this.attackHeroButton.addActionListener(event -> action.run());
+    }
+
+    @Override
+    public void onAttackCreature(final Runnable action) {
+       this.attackCreatureButton.addActionListener(event -> action.run());
+    }
+
+    @Override
+    public void onPlaceCard(final Runnable action) {
+        this.placeCardButton.addActionListener(event -> action.run());
     }
 
     @Override
     public void onEndTurn(final Runnable action) {
         this.endTurnButton.addActionListener(event -> action.run());
+    }
+
+    @Override
+    public void onExitGame(final Runnable action) {
+       this.exitButton.addActionListener(event -> action.run());
+    }
+
+    @Override
+    public boolean confirmExitGame() {
+        final int result = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to exit the game?",
+            "Exit Application",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+
+        return result == JOptionPane.YES_OPTION;
     }
 
     @Override
@@ -150,8 +205,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onTurnSwitch(final PlayerId nextPlayer) {
         final boolean isHumanTurn = this.isHumanPlayer(nextPlayer);
-        this.attackButton.setEnabled(isHumanTurn);
+        this.attackHeroButton.setEnabled(isHumanTurn);
+        this.attackCreatureButton.setEnabled(isHumanTurn);
+        this.placeCardButton.setEnabled(isHumanTurn);
         this.endTurnButton.setEnabled(isHumanTurn);
+        this.exitButton.setEnabled(isHumanTurn);
 
         Stream.concat(
             this.iaPlayerArea.getArmyCards().stream(),
@@ -159,7 +217,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
                 this.humanPlayerArea.getArmyCards().stream(),
                 this.humanPlayerArea.getHandCards().stream()
             )
-        ).forEach(card -> card.setEnabled(isHumanTurn));
+        ).forEach(card -> card.getComponent().setEnabled(isHumanTurn));
     }
 
     @Override
@@ -168,11 +226,23 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final ImageIcon back = ImageLoader.load("/images/cards/utility/card_cover.png", 40, 80);
         final CardComponent card = new CardComponentImpl(drawnCard, def, front, back);
         if (!this.isHumanPlayer(playerId)) {
-            card.setEnabled(false);
+            card.getComponent().setEnabled(false);
         } else {
             card.setFaceUp(true);
         }
         this.getPlayerArea(playerId).addHandCard(card);
+    }
+
+    private void toggleCardSelection(final CardComponent card) {
+        if (this.selectedCards.contains(card.getCardId())) {
+            this.selectedCards.remove(card.getCardId());
+            card.getComponent().setBorder(null);
+        } else {
+            this.selectedCards.add(card.getCardId());
+            card.getComponent().setBorder(BorderFactory.createLineBorder(Color.RED, 3));
+        }
+        this.revalidate();
+        this.repaint();
     }
 
     @Override
@@ -202,7 +272,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
-        this.getPlayerArea(playerId).getArmyCard(exhaustedCard).setEnabled(false);
+        this.getPlayerArea(playerId).getArmyCard(exhaustedCard).getComponent().setEnabled(false);
     }
 
 }

@@ -1,6 +1,6 @@
 package it.unibo.oop.hearthcode.view.api;
 
-import javax.swing.JComponent;
+import javax.swing.JButton;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 
@@ -28,14 +28,7 @@ public interface CardComponent {
      *
      * @return the root component of the card
      */
-    JComponent getComponent();
-
-    /**
-     * Enables or disables the card component.
-     *
-     * @param enabled {@code true} to enable the component, {@code false} otherwise
-     */
-    void setEnabled(boolean enabled);
+    JButton getComponent();
 
     /**
      * Set a card face up or face down.
