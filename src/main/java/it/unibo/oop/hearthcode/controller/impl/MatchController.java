@@ -37,14 +37,49 @@ public final class MatchController {
         this.boardGame = boardGame;
         this.boardGame.startGame();
 
-        scene.onAttack(() -> {
+        scene.onAttackHero(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            //this.boardGame.attackCard(null, null);
+            if (scene.getSelectedCards().size() == 1) {
+                try {
+                    this.boardGame.attackHero(scene.getSelectedCards().get(0));
+                } catch (final IllegalArgumentException | IllegalStateException e) {
+                    throw new IllegalStateException("An error occured while attacking the hero.", e);
+                }
+            }
+        });
+
+        scene.onAttackCreature(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            if (scene.getSelectedCards().size() == 2) {
+                try {
+                    this.boardGame.attackCard(scene.getSelectedCards().get(0), scene.getSelectedCards().get(1));
+                } catch (final IllegalArgumentException | IllegalStateException e) {
+                    throw new IllegalStateException("An error occured while attacking the card.", e);
+                }
+            }
+        });
+
+        scene.onPlaceCard(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            if (scene.getSelectedCards().size() == 1) {
+                try {
+                    this.boardGame.place(scene.getSelectedCards().get(0));
+                } catch (final IllegalArgumentException | IllegalStateException e) {
+                    throw new IllegalStateException("An error occured while placing the card.", e);
+                }
+            }
         });
 
         scene.onEndTurn(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             this.boardGame.switchTurn();
+        });
+
+        scene.onExitGame(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            if (scene.confirmExitGame()) {
+                coordinator.showMainMenu();
+            }
         });
     }
 }
