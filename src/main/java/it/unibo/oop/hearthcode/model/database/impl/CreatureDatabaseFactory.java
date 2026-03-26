@@ -23,7 +23,7 @@ public final class CreatureDatabaseFactory {
         }
         final var allLines = new TextFileFullReader(stream).readAll();
         if (allLines.isEmpty()) {
-            throw new IllegalArgumentException("The resource has no content: can't create empty database");
+            throw new IllegalArgumentException("The resource has no content: can't create empty database.");
         }
         final var parser = new CreatureDefinitionParser();
         return new CreatureDatabase(allLines.get().stream()

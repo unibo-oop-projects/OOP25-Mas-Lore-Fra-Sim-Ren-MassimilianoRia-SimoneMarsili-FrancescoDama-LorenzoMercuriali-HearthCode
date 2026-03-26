@@ -183,8 +183,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     public boolean confirmExitGame() {
         final int result = JOptionPane.showConfirmDialog(
             this,
-            "Are you sure you want to exit the game?",
-            "Exit Application",
+            "Are you sure you want to quit the match?",
+            "Quit Match",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE
         );

@@ -57,7 +57,7 @@ public class HandImpl implements Hand {
             .filter(c -> c.getId().equals(cardId))
             .findFirst();
         if (card.isEmpty()) {
-            throw new IllegalArgumentException("this card isn't contained in your hand");
+            throw new IllegalArgumentException("This card is not contained in your hand!");
         } else {
             this.hand.remove(card.get());
             return card.get();

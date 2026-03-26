@@ -17,11 +17,11 @@ public class CreatureDefinitionParser implements Parser<CreatureDefinition> {
     @Override
     public CreatureDefinition parseLine(final String line) {
         if (line == null) {
-            throw new IllegalArgumentException("The given line was null");
+            throw new IllegalArgumentException("The given line was null.");
         }
         final String[] components = line.split(SPLIT_CHAR);
         if (components.length != N_FIELDS) {
-            throw new IllegalArgumentException("Couldn't extract the correct number of fields");
+            throw new IllegalArgumentException("Couldn't extract the correct number of fields.");
         }
         return new CreatureDefinition(
             components[0],

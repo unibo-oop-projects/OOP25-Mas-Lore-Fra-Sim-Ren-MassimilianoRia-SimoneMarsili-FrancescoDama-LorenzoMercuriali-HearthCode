@@ -83,7 +83,7 @@ public class DeckFactory {
             }
         }
 
-        throw new IllegalStateException("An error occurred during Weight calculation");
+        throw new IllegalStateException("An error occurred during Weight calculation.");
 
     }
 }

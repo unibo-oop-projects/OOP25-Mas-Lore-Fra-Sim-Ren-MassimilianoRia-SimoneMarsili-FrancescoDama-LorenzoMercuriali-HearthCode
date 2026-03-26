@@ -130,7 +130,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
                 )
             );
         } catch (final IllegalStateException e) {
-            throw new IllegalStateException("Could not draw all the requested cards", e);
+            throw new IllegalStateException("Could not draw all the requested cards.", e);
         }
         this.players.get(this.turnManager.getCurrentPlayer()).incrementMana();
         notifyPlayerMana(this.turnManager.getCurrentPlayer());
@@ -182,7 +182,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
                 throw new IllegalStateException("Your card cannot attack during this turn!");
             }
         } catch (final IllegalArgumentException e) {
-            throw new IllegalArgumentException("Something went wrong with the fight", e);
+            throw new IllegalArgumentException("Something went wrong with the fight.", e);
         }
     }
 
@@ -201,10 +201,10 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
                 currentArmy.disableAttack(attackingIdCard);
                 notifyObservers(o -> o.onCardExhausted(this.turnManager.getCurrentPlayer(), attackingIdCard));
             } else {
-                throw new IllegalStateException("You cannot use this card right now");
+                throw new IllegalStateException("You cannot use this card right now.");
             }
         } catch (final IllegalArgumentException e) {
-            throw new IllegalStateException("This is not a valid card", e);
+            throw new IllegalStateException("This card is not contained in your army!", e);
         }
     }
 
@@ -214,11 +214,11 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
     @Override
     public void place(final CardId selectedIdCard) {
         if (selectedIdCard.type() != CardType.CREATURE) {
-            throw new IllegalArgumentException("You cannot place a non-creature card");
+            throw new IllegalArgumentException("You cannot place a non-creature card.");
         }
         final var currentArmy = this.armies.get(this.players.get(this.turnManager.getCurrentPlayer()));
         if (currentArmy.isArmyFull()) {
-            throw new IllegalStateException("your army is full and cannot place the card");
+            throw new IllegalStateException("Your army is full and cannot place the card.");
         }
         try {
             final var currPlayer = this.turnManager.getCurrentPlayer();
@@ -227,7 +227,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
             this.armies.get(this.players.get(currPlayer)).placeCard((Creature) removed);
             notifyObservers(o -> o.onCardPlaced(currPlayer, removed.getId()));
         } catch (final IllegalArgumentException | IllegalStateException e) {
-            throw new IllegalStateException("The card cannot be placed on the board", e);
+            throw new IllegalStateException("The card cannot be placed on the board.", e);
         }
     }
 

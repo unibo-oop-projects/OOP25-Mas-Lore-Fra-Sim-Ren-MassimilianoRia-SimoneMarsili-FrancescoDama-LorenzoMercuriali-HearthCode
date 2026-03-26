@@ -55,7 +55,7 @@ public class ArmyImpl implements Army {
     public void deleteDeathCreature(final CardId cardId) {
         final Optional<Creature> creature = this.getPlacedCard(cardId);
         if (creature.isEmpty()) {
-            throw new IllegalArgumentException("this card isn't contained in your army");
+            throw new IllegalArgumentException("This card is not contained in your army!");
         }
         if (this.sleepingCreatures.contains(creature.get())) {
             this.sleepingCreatures.remove(creature.get());
@@ -71,7 +71,7 @@ public class ArmyImpl implements Army {
     public boolean canAttack(final CardId cardId) {
         final var creature = this.getPlacedCard(cardId);
         if (creature.isEmpty()) {
-            throw new IllegalArgumentException("this card is not contained in your army");
+            throw new IllegalArgumentException("This card is not contained in your army!");
         }
         return !this.sleepingCreatures.contains(creature.get())
             && this.awakenCreatures.get(creature.get()); 
@@ -104,7 +104,7 @@ public class ArmyImpl implements Army {
     public void disableAttack(final CardId cardId) {
         final var creature = this.getPlacedCard(cardId);
         if (creature.isEmpty()) {
-            throw new IllegalArgumentException("this card is not contained in your army");
+            throw new IllegalArgumentException("This card is not contained in your army!");
         }
         this.awakenCreatures.put(creature.get(), false);
     }
