@@ -2,6 +2,7 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -47,7 +48,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private final JButton attackButton;
     private final JButton endTurnButton;
-    private final JButton PlaceCardButton;
+    private final JButton placeCardButton;
 
     /**
      * Initializes the match scene.
@@ -60,7 +61,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
         this.attackButton = new JButton("ATTACK");
         this.endTurnButton = new JButton("END TURN");
-        this.PlaceCardButton = new JButton("PLACE CARD");
+        this.placeCardButton = new JButton("PLACE CARD");
 
         this.add(this.iaPlayerArea.getComponent(), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
@@ -104,11 +105,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
         this.attackButton.setAlignmentX(CENTER_ALIGNMENT);
         this.endTurnButton.setAlignmentX(CENTER_ALIGNMENT);
-        this.PlaceCardButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.placeCardButton.setAlignmentX(CENTER_ALIGNMENT);
 
         actionPanel.add(this.attackButton);
         actionPanel.add(this.endTurnButton);
-        actionPanel.add(this.PlaceCardButton);
+        actionPanel.add(this.placeCardButton);
 
         return actionPanel;
     }
@@ -141,8 +142,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
-    public void onPlaceCard(Runnable action) {
-        this.PlaceCardButton.addActionListener(event -> action.run());
+    public void onPlaceCard(final Runnable action) {
+        this.placeCardButton.addActionListener(event -> action.run());
     }
 
     @Override
@@ -209,15 +210,14 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.getPlayerArea(playerId).getArmyCard(exhaustedCard).setEnabled(false);
     }
 
-
     @Override
-    public void onAttackCreature(Runnable action) {
+    public void onAttackCreature(final Runnable action) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onAttackCreature'");
     }
 
     @Override
-    public void onExitGame(Runnable action) {
+    public void onExitGame(final Runnable action) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onExitGame'");
     }
@@ -233,6 +233,12 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         );
 
         return result == JOptionPane.YES_OPTION;
+    }
+
+    @Override
+    public List<CardId> getSelectedCards() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSelectedCards'");
     }
 
 }
