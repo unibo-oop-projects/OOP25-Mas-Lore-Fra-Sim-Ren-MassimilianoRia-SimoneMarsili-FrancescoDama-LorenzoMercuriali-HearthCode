@@ -7,6 +7,7 @@ import it.unibo.oop.hearthcode.controller.api.MainController;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameImpl;
+import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.MainView;
 import it.unibo.oop.hearthcode.view.api.SceneId;
 import it.unibo.oop.hearthcode.view.impl.EndMatchScene;
@@ -35,18 +36,15 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
     public void start() {
         final MenuScene menuScene = new MenuScene();
         final SettingsScene settingsScene = new SettingsScene();
-        final EndMatchScene endMatchScene = new EndMatchScene();
 
         new MenuController(menuScene, this, this.audioService);
         new SettingsController(settingsScene, this, this.audioService);
-        new EndMatchController(endMatchScene, this, this.audioService);
 
         this.mainView.addScene(SceneId.MAIN_MENU, menuScene);
         this.mainView.addScene(SceneId.SETTINGS, settingsScene);
-        this.mainView.addScene(SceneId.END_MATCH, endMatchScene);
 
-        this.mainView.show();
         this.showMainMenu();
+        this.mainView.show();
     }
 
     @Override
@@ -62,7 +60,10 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
     }
 
     @Override
-    public void showEndMatch() {
+    public void showEndMatch(final PlayerId playerId) {
+        final EndMatchScene endMatchScene = new EndMatchScene(playerId);
+        new EndMatchController(endMatchScene, this, this.audioService);
+        this.mainView.addScene(SceneId.END_MATCH, endMatchScene);
         this.mainView.showScene(SceneId.END_MATCH);
         this.audioService.playMusic(SoundTrack.MENU);
     }

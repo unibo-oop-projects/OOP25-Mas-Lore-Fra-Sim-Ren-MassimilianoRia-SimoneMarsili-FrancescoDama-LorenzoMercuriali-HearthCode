@@ -1,5 +1,7 @@
 package it.unibo.oop.hearthcode.controller.api;
 
+import it.unibo.oop.hearthcode.model.player.api.PlayerId;
+
 /**
  * Coordinates scene transitions at application level.
  */
@@ -17,8 +19,10 @@ public interface SceneCoordinator {
 
     /**
      * Shows the end match scene.
+     * 
+     * @param playerId the identifier of the winner
      */
-    void showEndMatch();
+    void showEndMatch(PlayerId playerId);
 
     /**
      * Create a new match and shows the match scene.

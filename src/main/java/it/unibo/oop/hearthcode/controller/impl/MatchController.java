@@ -46,6 +46,10 @@ public final class MatchController {
                     throw new IllegalStateException("An error occured while attacking the hero.", e);
                 }
             }
+            final var winner = this.boardGame.getWinner();
+            if (winner.isPresent()) {
+                coordinator.showEndMatch(winner.get());
+            }
         });
 
         scene.onAttackCreature(() -> {
