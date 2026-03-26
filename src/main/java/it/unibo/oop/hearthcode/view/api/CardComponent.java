@@ -37,4 +37,11 @@ public interface CardComponent {
      */
     void setEnabled(boolean enabled);
 
+    /**
+     * Set a card face up or face down.
+     * 
+     * @param faceUp whether the card should be faced up or not.
+     */
+    void setFaceUp(boolean faceUp);
+
 }
