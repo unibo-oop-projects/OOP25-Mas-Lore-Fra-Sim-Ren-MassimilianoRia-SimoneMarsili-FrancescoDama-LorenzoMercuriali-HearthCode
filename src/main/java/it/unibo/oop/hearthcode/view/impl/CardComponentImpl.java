@@ -16,7 +16,6 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     private final transient CardId cardId;
 
-    private final String cardName;
     private final int manaCost;
     private final int attack;
     private int health;
@@ -39,14 +38,16 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         final ImageIcon backIcon
     ) {
         this.cardId = cardId;
-        this.cardName = def.name();
         this.health = def.health();
         this.attack = def.attackValue();
         this.manaCost = def.manaCost();
         this.frontIcon = new ImageIcon(frontIcon.getImage());
         this.backIcon = new ImageIcon(backIcon.getImage());
 
-        this.setFocusPainted(false);
+        this.setIconTextGap(2);
+
+        this.setBorderPainted(true);
+        this.setContentAreaFilled(false);
         this.setVerticalTextPosition(BOTTOM);
         this.setHorizontalTextPosition(CENTER);
 
@@ -58,7 +59,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
             this.setIcon(frontIcon);
             this.setText(
                 "<html><center>"
-                    + "<br>Mana: " + this.manaCost
+                    + "Mana: " + this.manaCost
                     + "<br>Atk: " + this.attack + " | Hp: " + this.health
                     + "</center></html>"
             );
