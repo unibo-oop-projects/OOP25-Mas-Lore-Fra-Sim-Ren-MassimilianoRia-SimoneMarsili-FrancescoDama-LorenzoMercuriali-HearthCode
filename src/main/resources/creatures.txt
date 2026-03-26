@@ -1,10 +1,10 @@
 Murloc,1,2,1
-Bloodfen Raptor,2,3,2
-River Crocolisk,3,2,2
-Raid Leader,2,2,3
-Magma Rager,1,5,3
-Oasis Snapjaw,6,2,4
-Novice Engineer,1,1,1
+Bloodfen_Raptor,2,3,2
+River_Crocolisk,3,2,2
+Raid_Leader,2,2,3
+Magma_Rager,1,5,3
+Oasis_Snapjaw,6,2,4
+Novice_Engineer,1,1,1
 Nightblade,4,4,5
 Wolfrider,1,3,3
-Reckless Rocketeer,2,5,6
+Reckless_Rocketeer,2,5,6
