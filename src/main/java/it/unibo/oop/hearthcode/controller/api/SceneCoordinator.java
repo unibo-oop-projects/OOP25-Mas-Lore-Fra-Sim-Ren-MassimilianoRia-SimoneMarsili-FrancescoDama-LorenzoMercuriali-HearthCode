@@ -16,6 +16,11 @@ public interface SceneCoordinator {
     void showSettings();
 
     /**
+     * Shows the end match scene.
+     */
+    void showEndMatch();
+
+    /**
      * Create a new match and shows the match scene.
      */
     void startMatch();

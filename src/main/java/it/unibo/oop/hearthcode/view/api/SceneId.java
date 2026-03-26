@@ -9,6 +9,8 @@ public enum SceneId {
 
     SETTINGS,
 
-    MATCH
+    MATCH,
+
+    END_MATCH
 
 }

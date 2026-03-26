@@ -6,12 +6,12 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-import it.unibo.oop.hearthcode.view.api.SettingsView;
+import it.unibo.oop.hearthcode.view.api.EndMatchView;
 
 /**
- * Settings scene.
+ * EndMatch scene.
  */
-public final class SettingsScene extends AbstractBackgroundScene implements SettingsView {
+public final class EndMatchScene extends AbstractBackgroundScene implements EndMatchView {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,40 +20,40 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
     private static final int BUTTON_WIDTH = 280;
     private static final int BUTTON_HEIGHT = 100;
 
-    private final JButton backButton;
+    private final JButton menuButton;
 
     /**
-     * Builds the settings scene.
+     * Build the end match scene.
      */
-    public SettingsScene() {
+    public EndMatchScene() {
         super(BACKGROUND_PATH);
 
         this.setLayout(new GridBagLayout());
 
-        this.backButton = this.createImageButton(
-            "/images/back-normal.png",
-            "/images/back-hover.png",
-            "/images/back-pressed.png",
+        this.menuButton = this.createImageButton(
+            "/images/menu-normal.png",
+            "/images/menu-hover.png",
+            "/images/menu-pressed.png",
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
 
-        this.initializeLayout();
+        this.initializedLayout();
     }
 
-    private void initializeLayout() {
+    private void initializedLayout() {
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(this.backButton, gbc);
+        this.add(this.menuButton, gbc);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onBack(final Runnable action) {
-        this.backButton.addActionListener(event -> action.run());
+    public void onMenu(final Runnable action) {
+        this.menuButton.addActionListener(event -> action.run());
     }
 
     /**
@@ -63,4 +63,5 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
     public JComponent getComponent() {
         return this;
     }
+
 }
