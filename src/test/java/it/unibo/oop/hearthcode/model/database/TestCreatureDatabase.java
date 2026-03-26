@@ -17,7 +17,7 @@ import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 final class TestCreatureDatabase {
 
     private static final String TEST_FILE = "creatures.txt";
-    private static final String TEST_NAME = "Reckless Rocketeer";
+    private static final String TEST_NAME = "reckless_rocketeer";
     private static final int TEST_HEALTH = 2;
     private static final int TEST_ATTACK = 5;
     private static final int TEST_MANA = 6;
@@ -36,7 +36,7 @@ final class TestCreatureDatabase {
     @Test
     void testDb() {
         assertEquals(N_CREATURES, this.db.size());
-        assertEquals(new CreatureDefinition("Murloc", 1, 2, 1),
+        assertEquals(new CreatureDefinition("murloc", 1, 2, 1),
             this.db.getAll().get(0)
         );
         assertEquals(new CreatureDefinition(TEST_NAME, TEST_HEALTH, TEST_ATTACK, TEST_MANA),

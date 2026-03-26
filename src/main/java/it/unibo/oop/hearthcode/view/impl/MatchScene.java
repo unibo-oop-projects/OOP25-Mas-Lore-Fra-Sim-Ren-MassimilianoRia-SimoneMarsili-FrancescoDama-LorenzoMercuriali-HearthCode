@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -24,6 +25,7 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 import it.unibo.oop.hearthcode.view.api.PlayerArea;
+import it.unibo.oop.hearthcode.view.utility.ImageLoader;
 
 /**
  * Implementation of {@link MatchView}.
@@ -220,10 +222,15 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        final CardComponent card = new CardComponentImpl(drawnCard, def, null);
+        final ImageIcon front = ImageLoader.load("/images/cards/creatures/" + def.name() + ".png", 100, 150);
+        final ImageIcon back = ImageLoader.load("/images/cards/utility/card_cover.png", 100, 150);
+        final CardComponent card = new CardComponentImpl(drawnCard, def, front, back);
         card.getComponent().addActionListener(e -> this.toggleCardSelection(card));
+        card.getComponent().setOpaque(false);
         if (!this.isHumanPlayer(playerId)) {
             card.getComponent().setEnabled(false);
+        } else {
+            card.setFaceUp(true);
         }
         this.getPlayerArea(playerId).addHandCard(card);
     }
@@ -243,6 +250,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
         this.getPlayerArea(playerId).placeCard(placedCard);
+        this.getPlayerArea(playerId).getArmyCard(placedCard).setFaceUp(true);
     }
 
     @Override
@@ -268,6 +276,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
         this.getPlayerArea(playerId).getArmyCard(exhaustedCard).getComponent().setEnabled(false);
+    }
+
+    @Override
+    public void showErrorPanel(String s) {
+        JOptionPane.showMessageDialog(this, s, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
 }

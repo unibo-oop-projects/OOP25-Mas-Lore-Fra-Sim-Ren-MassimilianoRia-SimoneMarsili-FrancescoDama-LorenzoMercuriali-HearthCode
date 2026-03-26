@@ -43,8 +43,10 @@ public final class MatchController {
                 try {
                     this.boardGame.attackHero(scene.getSelectedCards().get(0));
                 } catch (final IllegalArgumentException | IllegalStateException e) {
-                    throw new IllegalStateException("An error occured while attacking the hero.", e);
+                    scene.showErrorPanel(e.getMessage());
                 }
+            } else {
+                scene.showErrorPanel("Incorrect number of cards selected!");
             }
             final var winner = this.boardGame.getWinner();
             if (winner.isPresent()) {
@@ -58,8 +60,10 @@ public final class MatchController {
                 try {
                     this.boardGame.attackCard(scene.getSelectedCards().get(0), scene.getSelectedCards().get(1));
                 } catch (final IllegalArgumentException | IllegalStateException e) {
-                    throw new IllegalStateException("An error occured while attacking the card.", e);
+                    scene.showErrorPanel(e.getMessage());
                 }
+            } else {
+                scene.showErrorPanel("Incorrect number of cards selected!");
             }
         });
 
@@ -69,8 +73,10 @@ public final class MatchController {
                 try {
                     this.boardGame.place(scene.getSelectedCards().get(0));
                 } catch (final IllegalArgumentException | IllegalStateException e) {
-                    throw new IllegalStateException("An error occured while placing the card.", e);
+                    scene.showErrorPanel(e.getCause().getMessage());
                 }
+            } else {
+                scene.showErrorPanel("Incorrect number of cards selected!");
             }
         });
 

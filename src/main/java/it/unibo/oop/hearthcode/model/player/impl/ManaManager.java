@@ -46,7 +46,7 @@ public class ManaManager {
      */
     void decreaseActualMana(final int amount) {
         if (this.actualMana - amount < 0) {
-            throw new IllegalStateException("Mana resource can't be negative");
+            throw new IllegalStateException("You don't have enough Mana!");
         } else {
            this.actualMana -= amount; 
         }
