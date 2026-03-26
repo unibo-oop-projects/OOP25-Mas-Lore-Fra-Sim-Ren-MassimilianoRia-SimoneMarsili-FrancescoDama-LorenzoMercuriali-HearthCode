@@ -210,9 +210,15 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
 
     @Override
-    public void onAttackCard(Runnable action) {
+    public void onAttackCreature(Runnable action) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onAttackCard'");
+        throw new UnsupportedOperationException("Unimplemented method 'onAttackCreature'");
+    }
+
+    @Override
+    public void onExitGame(Runnable action) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onExitGame'");
     }
 
 }

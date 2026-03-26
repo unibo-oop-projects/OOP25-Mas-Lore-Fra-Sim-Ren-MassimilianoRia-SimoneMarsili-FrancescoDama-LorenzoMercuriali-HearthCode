@@ -29,7 +29,14 @@ public interface MatchView extends Scene {
     /**
      * Binds the attack on a creature action.
      * 
-     * @param action
+     * @param action the action to execute
      */
-    void onAttackCard(Runnable action);
+    void onAttackCreature(Runnable action);
+
+    /**
+     * Binds the action to quit the game.
+     * 
+     * @param action the action to execute
+     */
+    void onExitGame(Runnable action);
 }

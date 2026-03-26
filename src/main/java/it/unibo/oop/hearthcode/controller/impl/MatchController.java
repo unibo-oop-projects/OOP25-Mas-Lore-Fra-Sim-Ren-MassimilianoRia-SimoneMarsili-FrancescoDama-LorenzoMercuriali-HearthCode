@@ -42,24 +42,23 @@ public final class MatchController {
             //this.boardGame.attackCard(null, null);
         });
 
-        scene.onEndTurn(() -> {
+        scene.onAttackCreature(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             this.boardGame.switchTurn();
         });
 
-        scene.onAttackHero(() -> {
+        scene.onPlaceCard(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             //this.boardGame.attackCard(null, null);
         });
 
-        scene.onAttackHero(() -> {
+        scene.onEndTurn(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             //this.boardGame.attackCard(null, null);
         });
 
-        scene.onAttackHero(() -> {
+        scene.onExitGame(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            //this.boardGame.attackCard(null, null);
         });
     }
 }
