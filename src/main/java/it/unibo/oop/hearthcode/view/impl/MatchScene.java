@@ -270,4 +270,14 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.getPlayerArea(playerId).getArmyCard(exhaustedCard).getComponent().setEnabled(false);
     }
 
+    @Override
+    public void showErrorPanel(String s) {
+        JOptionPane.showConfirmDialog(
+            this,
+            s,
+            "Error",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+    }
 }
