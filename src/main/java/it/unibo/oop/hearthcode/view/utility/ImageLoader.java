@@ -13,15 +13,16 @@ public final class ImageLoader {
 
     private static final Map<String, ImageIcon> CACHE = new HashMap<>();
 
-    private ImageLoader() { }
+    private ImageLoader() {
+    }
 
     /**
-     * Loads an Image from a specific path.
-     * 
-     * @param path the path of the file
-     * @param w the width of the image
-     * @param h the height of the image
-     * @return the corresponding ImageIcon
+     * Loads an image from a specific path.
+     *
+     * @param path the resource path
+     * @param w the target width
+     * @param h the target height
+     * @return the corresponding scaled {@link ImageIcon}
      */
     public static ImageIcon load(final String path, final int w, final int h) {
         final String key = path + "_" + w + "x" + h;
@@ -29,8 +30,8 @@ public final class ImageLoader {
         if (CACHE.containsKey(key)) {
             return CACHE.get(key);
         }
-        final var url = ImageLoader.class.getResource(path);
 
+        final var url = ImageLoader.class.getResource(path);
         if (url == null) {
             throw new IllegalArgumentException("Immagine non trovata: " + path);
         }
@@ -38,7 +39,9 @@ public final class ImageLoader {
         final ImageIcon icon = new ImageIcon(url);
         final Image scaled = icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
         final ImageIcon correctIcon = new ImageIcon(scaled);
+
         CACHE.put(key, correctIcon);
         return correctIcon;
     }
+
 }

@@ -112,8 +112,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
         final JPanel armiesPanel = this.createSimplePanel();
         armiesPanel.setLayout(new GridLayout(2, 1, 0, ViewMetrics.verticalGap()));
-        armiesPanel.setPreferredSize(new Dimension(0, ViewMetrics.armiesPanelHeight()));
-        armiesPanel.setMinimumSize(new Dimension(0, ViewMetrics.armiesPanelHeight()));
 
         armiesPanel.add(this.iaPlayerArea.getArmyAreaComponent());
         armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent());
@@ -124,7 +122,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private JComponent createActionPanel() {
         final JPanel actionPanel = this.createTitledPanel("Actions");
-        actionPanel.setPreferredSize(new java.awt.Dimension(ViewMetrics.sidePanelWidth(), 0));
+        actionPanel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
         actionPanel.setLayout(new GridLayout(5, 1, 0, ViewMetrics.verticalGap()));
 
         actionPanel.add(this.attackHeroButton);

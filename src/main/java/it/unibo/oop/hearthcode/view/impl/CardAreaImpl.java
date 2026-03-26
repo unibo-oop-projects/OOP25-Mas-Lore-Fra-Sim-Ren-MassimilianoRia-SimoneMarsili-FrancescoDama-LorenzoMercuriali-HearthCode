@@ -42,7 +42,6 @@ public final class CardAreaImpl extends JPanel implements CardArea {
         ));
         this.setOpaque(false);
         this.setBorder(BorderFactory.createTitledBorder(title));
-        this.setPreferredSize(new Dimension(0, ViewMetrics.cardAreaHeight()));
     }
 
     @Override

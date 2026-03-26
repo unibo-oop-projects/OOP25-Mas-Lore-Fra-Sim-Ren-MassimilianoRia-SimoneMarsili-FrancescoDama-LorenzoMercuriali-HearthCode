@@ -62,8 +62,6 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
 
         final Dimension size = new Dimension(buttonWidth, buttonHeight);
         button.setPreferredSize(size);
-        button.setMinimumSize(size);
-        button.setMaximumSize(size);
 
         return button;
     }

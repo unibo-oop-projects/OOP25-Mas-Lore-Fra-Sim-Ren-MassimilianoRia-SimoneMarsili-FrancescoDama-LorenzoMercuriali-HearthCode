@@ -56,7 +56,6 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
                 ViewMetrics.outerPadding()
             )
         );
-        this.setPreferredSize(new Dimension(0, ViewMetrics.playerPanelHeight()));
 
         this.healthLabel = new JLabel("HP: 0 / 0");
         this.manaLabel = new JLabel("Mana: 0 / 0");
