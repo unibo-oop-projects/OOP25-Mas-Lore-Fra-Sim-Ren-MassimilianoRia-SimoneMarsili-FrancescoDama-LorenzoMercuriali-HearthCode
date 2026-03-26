@@ -276,8 +276,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
             this,
             s,
             "Error",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
+            JOptionPane.OK_OPTION
         );
     }
 }
