@@ -10,6 +10,11 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
 public interface MatchView extends Scene {
 
     /**
+     * @return the list of clicked cards.
+     */
+    List<CardId> getSelectedCards();
+
+    /**
      * Binds the attack on hero action.
      *
      * @param action the action to execute
@@ -50,10 +55,5 @@ public interface MatchView extends Scene {
      * @return wether the player wants to exit or not
      */
     boolean confirmExitGame();
-
-    /**
-     * @return the list of clicked cards.
-     */
-    List<CardId> getSelectedCards();
 
 }

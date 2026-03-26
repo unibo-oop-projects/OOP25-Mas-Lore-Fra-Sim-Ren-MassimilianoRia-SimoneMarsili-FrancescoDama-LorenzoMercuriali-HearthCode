@@ -12,7 +12,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -48,7 +47,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     )
     private final transient PlayerArea iaPlayerArea;
 
-    private final List<CardId> selectedCards = new ArrayList<>();
+    @SuppressFBWarnings(
+        value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
+        justification = "This Swing UI component is not meant to support meaningful deserialization."
+    )
+    private final transient List<CardId> selectedCards = new ArrayList<>();
 
     private final JButton attackHeroButton;
     private final JButton attackCreatureButton;
@@ -144,6 +147,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
+    public List<CardId> getSelectedCards() {
+        return List.copyOf(this.selectedCards);
+    }
+
+    @Override
     public void onAttackHero(final Runnable action) {
         this.attackHeroButton.addActionListener(event -> action.run());
     }
@@ -166,6 +174,12 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onExitGame(final Runnable action) {
        this.exitButton.addActionListener(event -> action.run());
+    }
+
+    @Override
+    public boolean confirmExitGame() {
+        // TODO Auto-generated method stub
+        return true;
     }
 
     @Override
@@ -246,18 +260,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
         this.getPlayerArea(playerId).getArmyCard(exhaustedCard).getComponent().setEnabled(false);
-    }
-
-    @Override
-    public boolean confirmExitGame() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'confirmExitGame'");
-    }
-
-    @Override
-    public List<CardId> getSelectedCards() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSelectedCards'");
     }
 
 }
