@@ -17,6 +17,8 @@ import it.unibo.oop.hearthcode.model.creature.api.Creature;
 public class ArmyImpl implements Army {
 
     private static final int ARMY_MAX_SIZE = 5;
+    private static final String MESSAGE = "This card is not contained in your army!";
+
     private final Map<Creature, Boolean> awakenCreatures;
     private final List<Creature> sleepingCreatures;
 
@@ -55,7 +57,7 @@ public class ArmyImpl implements Army {
     public void deleteDeathCreature(final CardId cardId) {
         final Optional<Creature> creature = this.getPlacedCard(cardId);
         if (creature.isEmpty()) {
-            throw new IllegalArgumentException("This card is not contained in your army!");
+            throw new IllegalArgumentException(MESSAGE);
         }
         if (this.sleepingCreatures.contains(creature.get())) {
             this.sleepingCreatures.remove(creature.get());
@@ -71,7 +73,7 @@ public class ArmyImpl implements Army {
     public boolean canAttack(final CardId cardId) {
         final var creature = this.getPlacedCard(cardId);
         if (creature.isEmpty()) {
-            throw new IllegalArgumentException("This card is not contained in your army!");
+            throw new IllegalArgumentException(MESSAGE);
         }
         return !this.sleepingCreatures.contains(creature.get())
             && this.awakenCreatures.get(creature.get()); 
@@ -104,7 +106,7 @@ public class ArmyImpl implements Army {
     public void disableAttack(final CardId cardId) {
         final var creature = this.getPlacedCard(cardId);
         if (creature.isEmpty()) {
-            throw new IllegalArgumentException("This card is not contained in your army!");
+            throw new IllegalArgumentException(MESSAGE);
         }
         this.awakenCreatures.put(creature.get(), false);
     }
