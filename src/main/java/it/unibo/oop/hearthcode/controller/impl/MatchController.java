@@ -59,6 +59,9 @@ public final class MatchController {
 
         scene.onExitGame(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            if(scene.confirmExitGame()) {
+                coordinator.showMainMenu();
+            }
         });
     }
 }

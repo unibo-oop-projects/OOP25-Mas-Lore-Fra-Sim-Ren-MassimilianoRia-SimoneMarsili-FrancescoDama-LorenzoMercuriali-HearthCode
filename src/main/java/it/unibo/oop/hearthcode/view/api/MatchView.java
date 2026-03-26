@@ -39,4 +39,11 @@ public interface MatchView extends Scene {
      * @param action the action to execute
      */
     void onExitGame(Runnable action);
+
+    /**
+     * A warning panel to confirm the exit.
+     * 
+     * @return wether the player wants to exit or not
+     */
+    boolean confirmExitGame();
 }

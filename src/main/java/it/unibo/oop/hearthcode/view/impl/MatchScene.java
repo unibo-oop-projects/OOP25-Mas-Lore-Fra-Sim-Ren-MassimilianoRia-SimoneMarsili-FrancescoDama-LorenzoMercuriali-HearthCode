@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -219,6 +220,19 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     public void onExitGame(Runnable action) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onExitGame'");
+    }
+
+    @Override
+    public boolean confirmExitGame() {
+        final int result = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to exit?",
+            "Exit Application",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+
+        return result == JOptionPane.YES_OPTION;
     }
 
 }
