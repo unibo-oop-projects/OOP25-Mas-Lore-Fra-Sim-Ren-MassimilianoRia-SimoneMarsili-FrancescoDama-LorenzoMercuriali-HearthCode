@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -178,8 +179,15 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public boolean confirmExitGame() {
-        // TODO Auto-generated method stub
-        return true;
+        final int result = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to exit the game?",
+            "Exit Application",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+
+        return result == JOptionPane.YES_OPTION;
     }
 
     @Override
