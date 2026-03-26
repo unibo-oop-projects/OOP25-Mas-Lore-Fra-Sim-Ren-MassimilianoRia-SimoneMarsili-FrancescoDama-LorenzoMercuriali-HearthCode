@@ -17,7 +17,7 @@ import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 final class TestCreatureDatabase {
 
     private static final String TEST_FILE = "creatures.txt";
-    private static final String TEST_NAME = "Reckless Rocketeer";
+    private static final String TEST_NAME = "Reckless_Rocketeer";
     private static final int TEST_HEALTH = 2;
     private static final int TEST_ATTACK = 5;
     private static final int TEST_MANA = 6;
