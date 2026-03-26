@@ -16,6 +16,9 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.EndMatchView;
 
+/**
+ * Implementation of {@link EndMatchView}.
+ */
 public final class EndMatchScene extends AbstractBackgroundScene implements EndMatchView {
 
     private static final long serialVersionUID = 1L;
@@ -30,6 +33,11 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     private final JButton menuButton;
     private final JLabel resultLabel;
 
+    /**
+     * Initializes the end match scene.
+     * 
+     * @param playerId the winner of the match
+     */
     public EndMatchScene(final PlayerId playerId) {
         super(BACKGROUND_PATH);
 
@@ -54,8 +62,6 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
 
         this.resultLabel.setOpaque(true);
         this.resultLabel.setBackground(Color.WHITE);
-
-        this.resultLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         this.initializeLayout();
     }

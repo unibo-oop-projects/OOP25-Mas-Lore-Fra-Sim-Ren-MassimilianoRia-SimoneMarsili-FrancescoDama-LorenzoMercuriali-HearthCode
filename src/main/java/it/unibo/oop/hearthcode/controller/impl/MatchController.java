@@ -13,6 +13,8 @@ import it.unibo.oop.hearthcode.view.api.MatchView;
  */
 public final class MatchController {
 
+    private static final String MESSAGE = "Incorrect number of cards selected!";
+
     private final BoardGame boardGame;
 
     /**
@@ -46,7 +48,7 @@ public final class MatchController {
                     scene.showErrorPanel(e.getMessage());
                 }
             } else {
-                scene.showErrorPanel("Incorrect number of cards selected!");
+                scene.showErrorPanel(MESSAGE);
             }
             final var winner = this.boardGame.getWinner();
             if (winner.isPresent()) {
@@ -63,7 +65,7 @@ public final class MatchController {
                     scene.showErrorPanel(e.getMessage());
                 }
             } else {
-                scene.showErrorPanel("Incorrect number of cards selected!");
+                scene.showErrorPanel(MESSAGE);
             }
         });
 
@@ -76,7 +78,7 @@ public final class MatchController {
                     scene.showErrorPanel(e.getCause().getMessage());
                 }
             } else {
-                scene.showErrorPanel("Incorrect number of cards selected!");
+                scene.showErrorPanel(MESSAGE);
             }
         });
 

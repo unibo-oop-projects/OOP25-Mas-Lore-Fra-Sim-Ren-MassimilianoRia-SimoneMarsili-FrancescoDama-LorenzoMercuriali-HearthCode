@@ -57,7 +57,7 @@ public interface MatchView extends Scene {
     boolean confirmExitGame();
 
     /**
-     * it creates a JPane showing an error message
+     * Creates a JPane showing an error message.
      * 
      * @param s the message to be shown
      */
