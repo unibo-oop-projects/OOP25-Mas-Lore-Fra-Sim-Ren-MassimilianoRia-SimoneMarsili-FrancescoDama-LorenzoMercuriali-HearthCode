@@ -2,7 +2,6 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
@@ -70,7 +69,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     }
 
     @Override
-    public JComponent getComponent() {
+    public JButton getComponent() {
         return this;
     }
 }
