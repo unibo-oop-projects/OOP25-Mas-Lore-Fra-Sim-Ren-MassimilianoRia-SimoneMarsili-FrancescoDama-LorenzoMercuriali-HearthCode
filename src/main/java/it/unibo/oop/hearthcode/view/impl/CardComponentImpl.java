@@ -58,7 +58,6 @@ public final class CardComponentImpl extends JButton implements CardComponent {
             this.setIcon(frontIcon);
             this.setText(
                 "<html><center>"
-                    + this.cardName
                     + "<br>Mana: " + this.manaCost
                     + "<br>Atk: " + this.attack + " | Hp: " + this.health
                     + "</center></html>"

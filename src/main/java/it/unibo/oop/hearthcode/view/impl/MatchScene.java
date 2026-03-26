@@ -222,10 +222,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        final ImageIcon front = ImageLoader.load("/images/cards/creatures/" + def.name() + ".png", 30, 70);
-        final ImageIcon back = ImageLoader.load("/images/cards/utility/card_cover.png", 40, 80);
+        final ImageIcon front = ImageLoader.load("/images/cards/creatures/" + def.name() + ".png", 100, 150);
+        final ImageIcon back = ImageLoader.load("/images/cards/utility/card_cover.png", 100, 150);
         final CardComponent card = new CardComponentImpl(drawnCard, def, front, back);
         card.getComponent().addActionListener(e -> this.toggleCardSelection(card));
+        card.getComponent().setOpaque(false);
         if (!this.isHumanPlayer(playerId)) {
             card.getComponent().setEnabled(false);
         } else {
@@ -249,6 +250,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
         this.getPlayerArea(playerId).placeCard(placedCard);
+        this.getPlayerArea(playerId).getArmyCard(placedCard).setFaceUp(true);
     }
 
     @Override
