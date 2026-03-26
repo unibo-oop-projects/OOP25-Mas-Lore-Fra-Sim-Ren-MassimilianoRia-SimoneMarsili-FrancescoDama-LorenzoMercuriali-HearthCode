@@ -45,6 +45,8 @@ public final class MatchController {
                 } catch (final IllegalArgumentException | IllegalStateException e) {
                     scene.showErrorPanel(e.getMessage());
                 }
+            } else {
+                scene.showErrorPanel("Incorrect number of cards selected!");
             }
         });
 
@@ -56,6 +58,8 @@ public final class MatchController {
                 } catch (final IllegalArgumentException | IllegalStateException e) {
                     scene.showErrorPanel(e.getMessage());
                 }
+            } else {
+                scene.showErrorPanel("Incorrect number of cards selected!");
             }
         });
 
@@ -67,6 +71,8 @@ public final class MatchController {
                 } catch (final IllegalArgumentException | IllegalStateException e) {
                     scene.showErrorPanel(e.getCause().getMessage());
                 }
+            } else {
+                scene.showErrorPanel("Incorrect number of cards selected!");
             }
         });
 
