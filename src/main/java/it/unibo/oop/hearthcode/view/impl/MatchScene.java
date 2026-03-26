@@ -1,6 +1,7 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,9 +111,12 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         panel.add(this.createActionPanel(), BorderLayout.WEST);
 
         final JPanel armiesPanel = this.createSimplePanel();
-        armiesPanel.setLayout(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
-        armiesPanel.add(this.iaPlayerArea.getArmyAreaComponent(), BorderLayout.NORTH);
-        armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent(), BorderLayout.SOUTH);
+        armiesPanel.setLayout(new GridLayout(2, 1, 0, ViewMetrics.verticalGap()));
+        armiesPanel.setPreferredSize(new Dimension(0, ViewMetrics.armiesPanelHeight()));
+        armiesPanel.setMinimumSize(new Dimension(0, ViewMetrics.armiesPanelHeight()));
+
+        armiesPanel.add(this.iaPlayerArea.getArmyAreaComponent());
+        armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent());
 
         panel.add(armiesPanel, BorderLayout.CENTER);
         return panel;

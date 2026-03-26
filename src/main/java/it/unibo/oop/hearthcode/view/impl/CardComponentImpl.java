@@ -22,7 +22,6 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int TEXT_AREA_HEIGHT = 36;
     private static final int ARC_SIZE = 18;
     private static final int HIGHLIGHT_MARGIN = 3;
     private static final Color SELECTION_COLOR = new Color(255, 245, 170, 120);
@@ -60,17 +59,15 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
         this.setPreferredSize(new Dimension(
             ViewMetrics.cardWidth(),
-            ViewMetrics.cardHeight() + TEXT_AREA_HEIGHT
+            ViewMetrics.cardComponentHeight()
         ));
 
         this.setMargin(new Insets(0, 0, 0, 0));
-        this.setIconTextGap(4);
-
+        this.setIconTextGap(0);
         this.setBorderPainted(true);
         this.setContentAreaFilled(false);
         this.setFocusPainted(false);
         this.setOpaque(false);
-
         this.setVerticalTextPosition(BOTTOM);
         this.setHorizontalTextPosition(CENTER);
 
