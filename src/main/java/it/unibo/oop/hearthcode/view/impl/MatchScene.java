@@ -225,6 +225,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final ImageIcon front = ImageLoader.load("/images/cards/creatures/" + def.name() + ".png", 30, 70);
         final ImageIcon back = ImageLoader.load("/images/cards/utility/card_cover.png", 40, 80);
         final CardComponent card = new CardComponentImpl(drawnCard, def, front, back);
+        card.getComponent().addActionListener(e -> this.toggleCardSelection(card));
         if (!this.isHumanPlayer(playerId)) {
             card.getComponent().setEnabled(false);
         } else {
