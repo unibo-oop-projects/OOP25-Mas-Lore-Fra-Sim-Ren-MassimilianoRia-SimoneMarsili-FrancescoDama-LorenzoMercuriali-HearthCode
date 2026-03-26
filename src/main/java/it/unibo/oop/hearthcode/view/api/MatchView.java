@@ -6,11 +6,11 @@ package it.unibo.oop.hearthcode.view.api;
 public interface MatchView extends Scene {
 
     /**
-     * Binds the attack action.
+     * Binds the attack on hero action.
      *
      * @param action the action to execute
      */
-    void onAttack(Runnable action);
+    void onAttackHero(Runnable action);
 
     /**
      * Binds the end turn action.
@@ -19,4 +19,17 @@ public interface MatchView extends Scene {
      */
     void onEndTurn(Runnable action);
 
+    /**
+     * Binds the place card action.
+     * 
+     * @param action the action to execute
+     */
+    void onPlaceCard(Runnable action);
+
+    /**
+     * Binds the attack on a creature action.
+     * 
+     * @param action
+     */
+    void onAttackCard(Runnable action);
 }

@@ -130,13 +130,18 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     @Override
-    public void onAttack(final Runnable action) {
+    public void onAttackHero(final Runnable action) {
         this.attackButton.addActionListener(event -> action.run());
     }
 
     @Override
     public void onEndTurn(final Runnable action) {
         this.endTurnButton.addActionListener(event -> action.run());
+    }
+
+    @Override
+    public void onPlaceCard(Runnable action) {
+        this.PlaceCardButton.addActionListener(event -> action.run());
     }
 
     @Override
@@ -201,6 +206,13 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
         this.getPlayerArea(playerId).getArmyCard(exhaustedCard).setEnabled(false);
+    }
+
+
+    @Override
+    public void onAttackCard(Runnable action) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onAttackCard'");
     }
 
 }

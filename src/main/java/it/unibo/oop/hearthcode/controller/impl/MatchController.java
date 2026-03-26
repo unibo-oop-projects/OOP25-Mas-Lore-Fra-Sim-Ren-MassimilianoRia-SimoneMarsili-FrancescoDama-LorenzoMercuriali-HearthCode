@@ -37,7 +37,7 @@ public final class MatchController {
         this.boardGame = boardGame;
         this.boardGame.startGame();
 
-        scene.onAttack(() -> {
+        scene.onAttackHero(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             //this.boardGame.attackCard(null, null);
         });
@@ -45,6 +45,21 @@ public final class MatchController {
         scene.onEndTurn(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             this.boardGame.switchTurn();
+        });
+
+        scene.onAttackHero(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            //this.boardGame.attackCard(null, null);
+        });
+
+        scene.onAttackHero(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            //this.boardGame.attackCard(null, null);
+        });
+
+        scene.onAttackHero(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            //this.boardGame.attackCard(null, null);
         });
     }
 }
