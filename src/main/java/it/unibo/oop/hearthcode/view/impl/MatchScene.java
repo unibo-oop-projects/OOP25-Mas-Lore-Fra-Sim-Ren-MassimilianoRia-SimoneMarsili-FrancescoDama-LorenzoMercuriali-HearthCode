@@ -1,16 +1,13 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -55,7 +52,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
         justification = "This Swing UI component is not meant to support meaningful deserialization."
     )
-    private final transient List<CardId> selectedCards = new ArrayList<>();
+    private final transient List<CardComponent> selectedCards = new ArrayList<>();
 
     private final JButton attackHeroButton;
     private final JButton attackCreatureButton;
@@ -123,38 +120,16 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private JComponent createActionPanel() {
         final JPanel actionPanel = this.createTitledPanel("Actions");
-        actionPanel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
-        actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
+        actionPanel.setPreferredSize(new java.awt.Dimension(ViewMetrics.sidePanelWidth(), 0));
+        actionPanel.setLayout(new GridLayout(5, 1, 0, ViewMetrics.verticalGap()));
 
-        this.configureActionButton(this.attackHeroButton);
-        this.configureActionButton(this.attackCreatureButton);
-        this.configureActionButton(this.placeCardButton);
-        this.configureActionButton(this.endTurnButton);
-        this.configureActionButton(this.exitButton);
-
-        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.attackHeroButton);
-        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.attackCreatureButton);
-        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.placeCardButton);
-        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.endTurnButton);
-        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.exitButton);
-        actionPanel.add(Box.createVerticalGlue());
 
         return actionPanel;
-    }
-
-    private void configureActionButton(final JButton button) {
-        final Dimension size = new Dimension(
-            ViewMetrics.actionButtonWidth(),
-            ViewMetrics.actionButtonHeight()
-        );
-        button.setAlignmentX(CENTER_ALIGNMENT);
-        button.setPreferredSize(size);
-        button.setMaximumSize(size);
     }
 
     private void updateHealth(final PlayerId playerId, final int newHealth) {
@@ -169,6 +144,23 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         return playerId.type() == PlayerType.HUMAN_PLAYER;
     }
 
+    private void toggleCardSelection(final CardComponent card) {
+        if (this.selectedCards.contains(card)) {
+            this.selectedCards.remove(card);
+            card.setSelectedVisual(false);
+        } else {
+            this.selectedCards.add(card);
+            card.setSelectedVisual(true);
+        }
+        this.repaint();
+    }
+
+    private void clearSelectedCards() {
+        this.selectedCards.forEach(card -> card.setSelectedVisual(false));
+        this.selectedCards.clear();
+        this.repaint();
+    }
+
     @Override
     public JComponent getComponent() {
         return this;
@@ -176,7 +168,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public List<CardId> getSelectedCards() {
-        return List.copyOf(this.selectedCards);
+        return this.selectedCards.stream()
+            .map(CardComponent::getCardId)
+            .toList();
     }
 
     @Override
@@ -229,6 +223,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onTurnSwitch(final PlayerId nextPlayer) {
+        this.clearSelectedCards();
+
         final boolean isHumanTurn = this.isHumanPlayer(nextPlayer);
         this.attackHeroButton.setEnabled(isHumanTurn);
         this.attackCreatureButton.setEnabled(isHumanTurn);
@@ -260,7 +256,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
         final CardComponent card = new CardComponentImpl(drawnCard, def, front, back);
         card.getComponent().addActionListener(e -> this.toggleCardSelection(card));
-        card.getComponent().setOpaque(false);
 
         if (!this.isHumanPlayer(playerId)) {
             card.getComponent().setEnabled(false);
@@ -271,22 +266,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.getPlayerArea(playerId).addHandCard(card);
     }
 
-    private void toggleCardSelection(final CardComponent card) {
-        if (this.selectedCards.contains(card.getCardId())) {
-            this.selectedCards.remove(card.getCardId());
-            card.getComponent().setBorder(null);
-        } else {
-            this.selectedCards.add(card.getCardId());
-            card.getComponent().setBorder(BorderFactory.createLineBorder(Color.RED, 3));
-        }
-        this.revalidate();
-        this.repaint();
-    }
-
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
         this.getPlayerArea(playerId).placeCard(placedCard);
         this.getPlayerArea(playerId).getArmyCard(placedCard).setFaceUp(true);
+        this.clearSelectedCards();
     }
 
     @Override

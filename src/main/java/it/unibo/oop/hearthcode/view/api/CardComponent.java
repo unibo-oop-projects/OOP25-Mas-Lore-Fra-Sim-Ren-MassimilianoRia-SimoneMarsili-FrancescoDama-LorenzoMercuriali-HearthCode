@@ -31,10 +31,17 @@ public interface CardComponent {
     JButton getComponent();
 
     /**
-     * Set a card face up or face down.
-     * 
-     * @param faceUp whether the card should be faced up or not.
+     * Sets whether the card is shown face up.
+     *
+     * @param faceUp whether the card should be face up
      */
     void setFaceUp(boolean faceUp);
+
+    /**
+     * Updates the visual selection state of the card.
+     *
+     * @param selected whether the card is selected
+     */
+    void setSelectedVisual(boolean selected);
 
 }
