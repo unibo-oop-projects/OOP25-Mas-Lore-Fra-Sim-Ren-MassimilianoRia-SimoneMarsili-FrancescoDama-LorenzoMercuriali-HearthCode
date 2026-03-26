@@ -1,11 +1,15 @@
 package it.unibo.oop.hearthcode.view.impl;
 
+import java.awt.Dimension;
+import java.awt.Insets;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
+import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
  * Implementation of {@link CardComponent}.
@@ -44,10 +48,17 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         this.frontIcon = new ImageIcon(frontIcon.getImage());
         this.backIcon = new ImageIcon(backIcon.getImage());
 
-        this.setIconTextGap(2);
+        this.setPreferredSize(new Dimension(
+            ViewMetrics.cardWidth(),
+            ViewMetrics.cardHeight() + 36
+        ));
+
+        this.setMargin(new Insets(0, 0, 0, 0));
+        this.setIconTextGap(4);
 
         this.setBorderPainted(true);
         this.setContentAreaFilled(false);
+        this.setFocusPainted(false);
         this.setVerticalTextPosition(BOTTOM);
         this.setHorizontalTextPosition(CENTER);
 
@@ -56,7 +67,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     private void refreshText() {
         if (this.isFaceUp) {
-            this.setIcon(frontIcon);
+            this.setIcon(this.frontIcon);
             this.setText(
                 "<html><center>"
                     + "Mana: " + this.manaCost
@@ -64,7 +75,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
                     + "</center></html>"
             );
         } else {
-            this.setIcon(backIcon);
+            this.setIcon(this.backIcon);
             this.setText("");
         }
     }
@@ -90,4 +101,5 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         this.isFaceUp = faceUp;
         this.refreshText();
     }
+
 }

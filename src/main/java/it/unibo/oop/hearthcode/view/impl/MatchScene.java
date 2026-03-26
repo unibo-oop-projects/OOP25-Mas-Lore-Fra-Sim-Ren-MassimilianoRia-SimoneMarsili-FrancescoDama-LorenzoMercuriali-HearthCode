@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +27,7 @@ import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 import it.unibo.oop.hearthcode.view.api.PlayerArea;
 import it.unibo.oop.hearthcode.view.utility.ImageLoader;
+import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
  * Implementation of {@link MatchView}.
@@ -34,7 +36,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private static final long serialVersionUID = 1L;
 
-    private static final int SIDE_PANEL_WIDTH = 200;
     private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
     private static final PlayerId IA_PLAYER = new PlayerId(PlayerType.IA_PLAYER);
 
@@ -66,7 +67,15 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      * Initializes the match scene.
      */
     public MatchScene() {
-        super(new BorderLayout());
+        super(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
+
+        this.setBorder(BorderFactory.createEmptyBorder(
+            ViewMetrics.outerPadding(),
+            ViewMetrics.outerPadding(),
+            ViewMetrics.outerPadding(),
+            ViewMetrics.outerPadding()
+        ));
+        this.setOpaque(false);
 
         this.humanPlayerArea = new PlayerAreaImpl(HUMAN_PLAYER);
         this.iaPlayerArea = new PlayerAreaImpl(IA_PLAYER);
@@ -100,11 +109,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private JComponent createCenterPanel() {
         final JPanel panel = this.createSimplePanel();
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
         panel.add(this.createActionPanel(), BorderLayout.WEST);
 
         final JPanel armiesPanel = this.createSimplePanel();
-        armiesPanel.setLayout(new BorderLayout());
+        armiesPanel.setLayout(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
         armiesPanel.add(this.iaPlayerArea.getArmyAreaComponent(), BorderLayout.NORTH);
         armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent(), BorderLayout.SOUTH);
 
@@ -114,22 +123,38 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private JComponent createActionPanel() {
         final JPanel actionPanel = this.createTitledPanel("Actions");
-        actionPanel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
+        actionPanel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
 
-        this.attackHeroButton.setAlignmentX(CENTER_ALIGNMENT);
-        this.attackCreatureButton.setAlignmentX(CENTER_ALIGNMENT);
-        this.placeCardButton.setAlignmentX(CENTER_ALIGNMENT);
-        this.endTurnButton.setAlignmentX(CENTER_ALIGNMENT);
-        this.exitButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.configureActionButton(this.attackHeroButton);
+        this.configureActionButton(this.attackCreatureButton);
+        this.configureActionButton(this.placeCardButton);
+        this.configureActionButton(this.endTurnButton);
+        this.configureActionButton(this.exitButton);
 
+        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.attackHeroButton);
+        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.attackCreatureButton);
+        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.placeCardButton);
+        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.endTurnButton);
+        actionPanel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         actionPanel.add(this.exitButton);
+        actionPanel.add(Box.createVerticalGlue());
 
         return actionPanel;
+    }
+
+    private void configureActionButton(final JButton button) {
+        final Dimension size = new Dimension(
+            ViewMetrics.actionButtonWidth(),
+            ViewMetrics.actionButtonHeight()
+        );
+        button.setAlignmentX(CENTER_ALIGNMENT);
+        button.setPreferredSize(size);
+        button.setMaximumSize(size);
     }
 
     private void updateHealth(final PlayerId playerId, final int newHealth) {
@@ -161,7 +186,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onAttackCreature(final Runnable action) {
-       this.attackCreatureButton.addActionListener(event -> action.run());
+        this.attackCreatureButton.addActionListener(event -> action.run());
     }
 
     @Override
@@ -176,7 +201,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onExitGame(final Runnable action) {
-       this.exitButton.addActionListener(event -> action.run());
+        this.exitButton.addActionListener(event -> action.run());
     }
 
     @Override
@@ -222,16 +247,27 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        final ImageIcon front = ImageLoader.load("/images/cards/creatures/" + def.name() + ".png", 100, 150);
-        final ImageIcon back = ImageLoader.load("/images/cards/utility/card_cover.png", 100, 150);
+        final ImageIcon front = ImageLoader.load(
+            "/images/cards/creatures/" + def.name() + ".png",
+            ViewMetrics.cardWidth(),
+            ViewMetrics.cardHeight()
+        );
+        final ImageIcon back = ImageLoader.load(
+            "/images/cards/utility/card_cover.png",
+            ViewMetrics.cardWidth(),
+            ViewMetrics.cardHeight()
+        );
+
         final CardComponent card = new CardComponentImpl(drawnCard, def, front, back);
         card.getComponent().addActionListener(e -> this.toggleCardSelection(card));
         card.getComponent().setOpaque(false);
+
         if (!this.isHumanPlayer(playerId)) {
             card.getComponent().setEnabled(false);
         } else {
             card.setFaceUp(true);
         }
+
         this.getPlayerArea(playerId).addHandCard(card);
     }
 

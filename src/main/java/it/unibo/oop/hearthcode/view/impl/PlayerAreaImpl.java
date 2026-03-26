@@ -16,6 +16,7 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.CardArea;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.PlayerArea;
+import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
  * Implementation of {@link PlayerArea}.
@@ -23,9 +24,6 @@ import it.unibo.oop.hearthcode.view.api.PlayerArea;
 public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
     private static final long serialVersionUID = 1L;
-
-    private static final int SIDE_PANEL_WIDTH = 200;
-    private static final int PLAYER_PANEL_HEIGHT = 220;
 
     private final transient PlayerId playerId;
 
@@ -45,12 +43,19 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
      * @param playerId the identifier of the represented player
      */
     public PlayerAreaImpl(final PlayerId playerId) {
-        super(new BorderLayout(8, 8));
+        super(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
         this.playerId = playerId;
 
         this.setOpaque(false);
-        this.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        this.setPreferredSize(new Dimension(0, PLAYER_PANEL_HEIGHT));
+        this.setBorder(
+            BorderFactory.createEmptyBorder(
+                ViewMetrics.outerPadding(),
+                ViewMetrics.outerPadding(),
+                ViewMetrics.outerPadding(),
+                ViewMetrics.outerPadding()
+            )
+        );
+        this.setPreferredSize(new Dimension(0, ViewMetrics.playerPanelHeight()));
 
         this.healthLabel = new JLabel("HP: 0 / 0");
         this.manaLabel = new JLabel("Mana: 0 / 0");
@@ -66,7 +71,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         final JPanel panel = new JPanel();
         panel.setOpaque(false);
         panel.setBorder(BorderFactory.createTitledBorder(this.playerId + " Stats"));
-        panel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, 0));
+        panel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         panel.add(this.healthLabel);

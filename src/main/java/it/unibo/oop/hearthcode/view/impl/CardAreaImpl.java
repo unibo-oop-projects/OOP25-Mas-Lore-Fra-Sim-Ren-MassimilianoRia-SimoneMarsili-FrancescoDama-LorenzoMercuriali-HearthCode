@@ -14,6 +14,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.view.api.CardArea;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
+import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
  * Implementation of {@link CardArea}.
@@ -21,8 +22,6 @@ import it.unibo.oop.hearthcode.view.api.CardComponent;
 public final class CardAreaImpl extends JPanel implements CardArea {
 
     private static final long serialVersionUID = 1L;
-
-    private static final int PANEL_HEIGHT = 220;
 
     @SuppressFBWarnings(
         value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
@@ -36,10 +35,14 @@ public final class CardAreaImpl extends JPanel implements CardArea {
      * @param title the title of the panel
      */
     public CardAreaImpl(final String title) {
-        super(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        super(new FlowLayout(
+            FlowLayout.LEFT,
+            ViewMetrics.horizontalGap(),
+            ViewMetrics.verticalGap()
+        ));
         this.setOpaque(false);
         this.setBorder(BorderFactory.createTitledBorder(title));
-        this.setPreferredSize(new Dimension(0, PANEL_HEIGHT));
+        this.setPreferredSize(new Dimension(0, ViewMetrics.cardAreaHeight()));
     }
 
     @Override
@@ -82,4 +85,5 @@ public final class CardAreaImpl extends JPanel implements CardArea {
     public JComponent getComponent() {
         return this;
     }
+
 }
