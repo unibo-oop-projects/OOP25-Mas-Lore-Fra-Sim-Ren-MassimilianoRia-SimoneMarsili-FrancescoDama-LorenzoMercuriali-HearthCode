@@ -14,10 +14,10 @@ public final class ViewMetrics {
     private static final int H_GAP = clamp((int) (SCREEN_WIDTH * 0.0045), 6, 14);
     private static final int V_GAP = clamp((int) (SCREEN_HEIGHT * 0.0065), 6, 14);
     private static final int OUTER_PADDING = clamp((int) (SCREEN_WIDTH * 0.004), 4, 12);
-    private static final int CARD_WIDTH = clamp((int) (SCREEN_WIDTH * 0.068), 100, 150);
-    private static final int CARD_HEIGHT = (int) Math.round(CARD_WIDTH * 1.3);
-    private static final int CARD_TEXT_HEIGHT = 40;
-    private static final int CARD_COMPONENT_HEIGHT = CARD_HEIGHT + CARD_TEXT_HEIGHT + 4;
+    private static final int CARD_WIDTH = clamp((int) (SCREEN_WIDTH * 0.06), 50, 200);
+    private static final int CARD_HEIGHT = (int) Math.round(CARD_WIDTH * 1.5);
+    private static final int CARD_TEXT_HEIGHT = 35;
+    private static final int CARD_COMPONENT_HEIGHT = CARD_HEIGHT + CARD_TEXT_HEIGHT;
     private static final int CARD_AREA_HEIGHT = clamp(CARD_COMPONENT_HEIGHT + 32, 210, 300);
     private static final int PLAYER_PANEL_HEIGHT = CARD_AREA_HEIGHT + (OUTER_PADDING * 2);
     private static final int ARMIES_PANEL_HEIGHT = (CARD_AREA_HEIGHT * 2) + V_GAP;

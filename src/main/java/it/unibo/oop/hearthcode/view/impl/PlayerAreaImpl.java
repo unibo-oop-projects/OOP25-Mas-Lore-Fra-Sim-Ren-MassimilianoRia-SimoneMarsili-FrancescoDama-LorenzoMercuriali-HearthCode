@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
+import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.CardArea;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.PlayerArea;
@@ -60,17 +61,23 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.healthLabel = new JLabel("HP: 0 / 0");
         this.manaLabel = new JLabel("Mana: 0 / 0");
 
-        this.handArea = new CardAreaImpl(playerId + " Hand");
-        this.armyArea = new CardAreaImpl(playerId + " Army");
+        final String displayName = this.getDisplayName();
 
-        this.add(this.createStatsPanel(), BorderLayout.WEST);
+        this.handArea = new CardAreaImpl(displayName + " Hand");
+        this.armyArea = new CardAreaImpl(displayName + " Army");
+
+        this.add(this.createStatsPanel(displayName), BorderLayout.WEST);
         this.add(this.createHandPanel(), BorderLayout.CENTER);
     }
 
-    private JPanel createStatsPanel() {
+    private String getDisplayName() {
+        return this.playerId.type() == PlayerType.HUMAN_PLAYER ? "Player" : "Enemy";
+    }
+
+    private JPanel createStatsPanel(final String displayName) {
         final JPanel panel = new JPanel();
         panel.setOpaque(false);
-        panel.setBorder(BorderFactory.createTitledBorder(this.playerId + " Stats"));
+        panel.setBorder(BorderFactory.createTitledBorder(displayName + " Stats"));
         panel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
