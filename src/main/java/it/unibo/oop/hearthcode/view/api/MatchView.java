@@ -1,5 +1,9 @@
 package it.unibo.oop.hearthcode.view.api;
 
+import java.util.List;
+
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
+
 /**
  * View contract for the match scene.
  */
@@ -39,4 +43,17 @@ public interface MatchView extends Scene {
      * @param action the action to execute
      */
     void onExitGame(Runnable action);
+
+    /**
+     * A warning panel to confirm the exit.
+     * 
+     * @return wether the player wants to exit or not
+     */
+    boolean confirmExitGame();
+
+    /**
+     * @return the list of clicked cards.
+     */
+    List<CardId> getSelectedCards();
+
 }

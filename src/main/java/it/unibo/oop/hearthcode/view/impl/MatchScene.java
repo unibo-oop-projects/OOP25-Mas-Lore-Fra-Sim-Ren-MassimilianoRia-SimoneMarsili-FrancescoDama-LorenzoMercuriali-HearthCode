@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -51,8 +52,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private final JButton attackHeroButton;
     private final JButton attackCreatureButton;
-    private final JButton placeCardButton;
     private final JButton endTurnButton;
+    private final JButton placeCardButton;
     private final JButton exitButton;
 
     /**
@@ -246,4 +247,17 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
         this.getPlayerArea(playerId).getArmyCard(exhaustedCard).getComponent().setEnabled(false);
     }
+
+    @Override
+    public boolean confirmExitGame() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'confirmExitGame'");
+    }
+
+    @Override
+    public List<CardId> getSelectedCards() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSelectedCards'");
+    }
+
 }
