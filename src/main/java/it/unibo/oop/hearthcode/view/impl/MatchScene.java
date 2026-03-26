@@ -46,6 +46,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private final JButton attackButton;
     private final JButton endTurnButton;
+    private final JButton PlaceCardButton;
 
     /**
      * Initializes the match scene.
@@ -58,6 +59,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
         this.attackButton = new JButton("ATTACK");
         this.endTurnButton = new JButton("END TURN");
+        this.PlaceCardButton = new JButton("PLACE CARD");
 
         this.add(this.iaPlayerArea.getComponent(), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
@@ -101,9 +103,11 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
         this.attackButton.setAlignmentX(CENTER_ALIGNMENT);
         this.endTurnButton.setAlignmentX(CENTER_ALIGNMENT);
+        this.PlaceCardButton.setAlignmentX(CENTER_ALIGNMENT);
 
         actionPanel.add(this.attackButton);
         actionPanel.add(this.endTurnButton);
+        actionPanel.add(this.PlaceCardButton);
 
         return actionPanel;
     }
