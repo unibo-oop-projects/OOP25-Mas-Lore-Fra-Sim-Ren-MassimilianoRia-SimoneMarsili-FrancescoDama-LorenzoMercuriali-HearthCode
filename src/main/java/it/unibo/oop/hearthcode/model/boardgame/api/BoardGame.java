@@ -3,7 +3,7 @@ package it.unibo.oop.hearthcode.model.boardgame.api;
 import java.util.List;
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 

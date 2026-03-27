@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.ai.api;
+package it.unibo.oop.hearthcode.model.ai.simulation.api;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 

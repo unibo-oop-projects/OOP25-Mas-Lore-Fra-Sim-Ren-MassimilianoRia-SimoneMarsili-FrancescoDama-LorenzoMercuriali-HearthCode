@@ -1,9 +1,9 @@
-package it.unibo.oop.hearthcode.model.ai.api;
+package it.unibo.oop.hearthcode.model.ai.simulation.api;
 
 import java.util.List;
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.impl.CardStateImpl;
+import it.unibo.oop.hearthcode.model.ai.simulation.impl.CardStateImpl;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 

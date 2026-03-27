@@ -1,12 +1,12 @@
-package it.unibo.oop.hearthcode.model.ai.impl;
+package it.unibo.oop.hearthcode.model.ai.simulation.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.api.CardState;
-import it.unibo.oop.hearthcode.model.ai.api.PlayerState;
-import it.unibo.oop.hearthcode.model.ai.api.AiGameState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.PlayerState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
