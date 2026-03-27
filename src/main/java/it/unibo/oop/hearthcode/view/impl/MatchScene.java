@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -24,7 +23,6 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 import it.unibo.oop.hearthcode.view.api.PlayerArea;
-import it.unibo.oop.hearthcode.view.utility.ImageLoader;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
@@ -33,6 +31,8 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 public final class MatchScene extends JPanel implements MatchView, GameObserver {
 
     private static final long serialVersionUID = 1L;
+
+    private static final int BUTTONS_NUMBER = 5;
 
     private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
     private static final PlayerId IA_PLAYER = new PlayerId(PlayerType.IA_PLAYER);
@@ -123,7 +123,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private JComponent createActionPanel() {
         final JPanel actionPanel = this.createTitledPanel("Actions");
         actionPanel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
-        actionPanel.setLayout(new GridLayout(5, 1, 0, ViewMetrics.verticalGap()));
+        actionPanel.setLayout(new GridLayout(BUTTONS_NUMBER, 1, 0, ViewMetrics.verticalGap()));
 
         actionPanel.add(this.attackHeroButton);
         actionPanel.add(this.attackCreatureButton);
@@ -245,18 +245,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        final ImageIcon front = ImageLoader.load(
-            "/images/cards/creatures/" + def.name() + ".png",
-            ViewMetrics.cardWidth(),
-            ViewMetrics.cardHeight()
-        );
-        final ImageIcon back = ImageLoader.load(
-            "/images/cards/utility/card_cover.png",
-            ViewMetrics.cardWidth(),
-            ViewMetrics.cardHeight()
-        );
-
-        final CardComponent card = new CardComponentImpl(drawnCard, def, front, back);
+        final CardComponent card = new CardComponentImpl(drawnCard, def);
         card.getComponent().addActionListener(e -> this.toggleCardSelection(card));
 
         if (!this.isHumanPlayer(playerId)) {

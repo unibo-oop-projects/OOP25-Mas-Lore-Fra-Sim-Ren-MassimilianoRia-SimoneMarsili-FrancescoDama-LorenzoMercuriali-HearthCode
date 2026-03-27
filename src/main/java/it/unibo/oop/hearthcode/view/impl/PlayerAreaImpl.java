@@ -25,7 +25,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
     private static final long serialVersionUID = 1L;
 
-    private final PlayerId playerId;
+    private final transient PlayerId playerId;
     private final CardArea handArea;
     private final CardArea armyArea;
     private final JLabel healthLabel;

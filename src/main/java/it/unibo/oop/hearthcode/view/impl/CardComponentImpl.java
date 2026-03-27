@@ -14,6 +14,7 @@ import javax.swing.border.Border;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
+import it.unibo.oop.hearthcode.view.utility.ImageLoader;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
@@ -30,7 +31,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     private static final int TEXT_BOTTOM_MARGIN = 17;
     private static final int SHADOW_OFFSET = 1;
 
-    private final CardId cardId;
+    private final transient CardId cardId;
     private final ImageIcon frontIcon;
     private final ImageIcon backIcon;
     private final int maxHealth;
@@ -43,18 +44,22 @@ public final class CardComponentImpl extends JButton implements CardComponent {
      *
      * @param cardId the identifier of the represented card
      * @param def the card definition
-     * @param frontIcon the front card image
-     * @param backIcon the back card image
      */
     public CardComponentImpl(
         final CardId cardId,
-        final CreatureDefinition def,
-        final ImageIcon frontIcon,
-        final ImageIcon backIcon
+        final CreatureDefinition def
     ) {
         this.cardId = cardId;
-        this.frontIcon = frontIcon;
-        this.backIcon = backIcon;
+        this.frontIcon = ImageLoader.load(
+            "/images/cards/creatures/" + def.name() + ".png",
+            ViewMetrics.cardWidth(),
+            ViewMetrics.cardHeight()
+        );
+        this.backIcon = ImageLoader.load(
+            "/images/cards/utility/card_cover.png",
+            ViewMetrics.cardWidth(),
+            ViewMetrics.cardHeight()
+        );
         this.maxHealth = def.health();
         this.currentHealth = def.health();
 

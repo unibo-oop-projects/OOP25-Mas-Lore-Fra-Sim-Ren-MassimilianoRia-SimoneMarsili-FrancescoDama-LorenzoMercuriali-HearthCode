@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.view.api.CardArea;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
@@ -21,7 +22,11 @@ public final class CardAreaImpl extends JPanel implements CardArea {
 
     private static final long serialVersionUID = 1L;
 
-    private final Map<CardId, CardComponent> cards = new LinkedHashMap<>();
+    @SuppressFBWarnings(
+        value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
+        justification = "This Swing UI component is not meant to support meaningful deserialization."
+    )
+    private final transient Map<CardId, CardComponent> cards = new LinkedHashMap<>();
 
     /**
      * Builds the UI area containing card components.
