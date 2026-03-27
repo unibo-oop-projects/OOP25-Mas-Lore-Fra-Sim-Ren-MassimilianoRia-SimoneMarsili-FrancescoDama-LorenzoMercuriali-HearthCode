@@ -26,8 +26,12 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     private static final Border NORMAL_BORDER = BorderFactory.createEmptyBorder(3, 3, 3, 3);
     private static final Border SELECTED_BORDER = BorderFactory.createLineBorder(new Color(210, 40, 40), 3);
+    private static final Border DORMANT_BORDER = BorderFactory.createLineBorder(new Color(130, 130, 130), 3);
+
     private static final Color TEXT_COLOR = Color.WHITE;
     private static final Color SHADOW_COLOR = new Color(0, 0, 0, 180);
+    private static final Color DORMANT_OVERLAY_COLOR = new Color(120, 120, 120, 110);
+
     private static final int TEXT_BOTTOM_MARGIN = 17;
     private static final int SHADOW_OFFSET = 1;
 
@@ -38,6 +42,8 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     private int currentHealth;
     private boolean faceUp;
+    private boolean selected;
+    private boolean resting;
 
     /**
      * Builds the component representing a specific card.
@@ -62,6 +68,8 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         );
         this.maxHealth = def.health();
         this.currentHealth = def.health();
+        this.selected = false;
+        this.resting = false;
 
         final Dimension size = new Dimension(ViewMetrics.cardWidth(), ViewMetrics.cardHeight());
         this.setPreferredSize(size);
@@ -71,9 +79,10 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         this.setFocusPainted(false);
         this.setContentAreaFilled(false);
         this.setOpaque(false);
-        this.setBorder(NORMAL_BORDER);
         this.setBorderPainted(true);
         this.setText(null);
+
+        this.updateBorder();
         this.setFaceUp(false);
     }
 
@@ -84,9 +93,25 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         this.repaint();
     }
 
+    private void updateBorder() {
+        if (this.selected) {
+            this.setBorder(SELECTED_BORDER);
+        } else if (this.resting) {
+            this.setBorder(DORMANT_BORDER);
+        } else {
+            this.setBorder(NORMAL_BORDER);
+        }
+    }
+
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
+
+        if (this.resting) {
+            g.setColor(DORMANT_OVERLAY_COLOR);
+            g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        }
+
         if (!this.faceUp) {
             return;
         }
@@ -130,7 +155,15 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     @Override
     public void setSelectedVisual(final boolean selected) {
-        this.setBorder(selected ? SELECTED_BORDER : NORMAL_BORDER);
+        this.selected = selected;
+        this.updateBorder();
+        this.repaint();
+    }
+
+    @Override
+    public void setRestingVisual(final boolean resting) {
+        this.resting = resting;
+        this.updateBorder();
         this.repaint();
     }
 

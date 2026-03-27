@@ -44,4 +44,11 @@ public interface CardComponent {
      */
     void setSelectedVisual(boolean selected);
 
+    /**
+     * Updates the visual sleeping/exhausted state of the card.
+     *
+     * @param dormant whether the card is resting
+     */
+    void setRestingVisual(boolean resting);
+
 }

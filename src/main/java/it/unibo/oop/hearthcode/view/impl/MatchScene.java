@@ -163,6 +163,13 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.repaint();
     }
 
+    private Stream<CardComponent> allArmyCards() {
+        return Stream.concat(
+            this.iaPlayerArea.getArmyCards().stream(),
+            this.humanPlayerArea.getArmyCards().stream()
+        );
+    }
+
     @Override
     public JComponent getComponent() {
         return this;
@@ -227,12 +234,14 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     public void onTurnSwitch(final PlayerId nextPlayer) {
         this.clearSelectedCards();
 
+        this.allArmyCards().forEach(card -> card.setRestingVisual(false));
+
         final boolean isHumanTurn = this.isHumanPlayer(nextPlayer);
         this.attackHeroButton.setEnabled(isHumanTurn);
         this.attackCreatureButton.setEnabled(isHumanTurn);
         this.placeCardButton.setEnabled(isHumanTurn);
         this.endTurnButton.setEnabled(isHumanTurn);
-        this.exitButton.setEnabled(isHumanTurn);
+        this.exitButton.setEnabled(true);
 
         Stream.concat(
             this.iaPlayerArea.getArmyCards().stream(),
@@ -260,7 +269,12 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
         this.getPlayerArea(playerId).placeCard(placedCard);
-        this.getPlayerArea(playerId).getArmyCard(placedCard).setFaceUp(true);
+
+        final CardComponent card = this.getPlayerArea(playerId).getArmyCard(placedCard);
+        card.setFaceUp(true);
+        card.getComponent().setEnabled(false);
+        card.setRestingVisual(true);
+
         this.clearSelectedCards();
     }
 
@@ -286,7 +300,10 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
-        this.getPlayerArea(playerId).getArmyCard(exhaustedCard).getComponent().setEnabled(false);
+        final CardComponent card = this.getPlayerArea(playerId).getArmyCard(exhaustedCard);
+        card.getComponent().setEnabled(false);
+        card.setRestingVisual(true);
+        this.clearSelectedCards();
     }
 
     @Override
