@@ -19,6 +19,9 @@ public final class ViewMetrics {
     private static final int SIDE_PANEL_WIDTH = (int) (SCREEN_WIDTH * 0.15);
     private static final int ACTION_BUTTON_WIDTH = (int) (SIDE_PANEL_WIDTH * 0.8);
     private static final int ACTION_BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * 0.05);
+    private static final int MENU_BUTTON_WIDTH = (int) (SCREEN_WIDTH * 0.22);
+    private static final int MENU_BUTTON_HEIGHT = (int) (MENU_BUTTON_WIDTH * 0.35);
+    private static final int MENU_VERTICAL_GAP = (int) (SCREEN_HEIGHT * 0.015);
 
     private ViewMetrics() {
     }
@@ -77,6 +80,18 @@ public final class ViewMetrics {
      */
     public static int outerPadding() {
         return OUTER_PADDING;
+    }
+
+    public static int menuButtonWidth() {
+        return MENU_BUTTON_WIDTH;
+    }
+
+    public static int menuButtonHeight() {
+        return MENU_BUTTON_HEIGHT;
+    }
+
+    public static int menuVerticalGap() {
+        return MENU_VERTICAL_GAP;
     }
 
 }

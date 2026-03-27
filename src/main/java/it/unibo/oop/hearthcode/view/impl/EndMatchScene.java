@@ -15,6 +15,7 @@ import javax.swing.SwingConstants;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.EndMatchView;
+import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
  * Implementation of {@link EndMatchView}.
@@ -25,8 +26,8 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
 
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
 
-    private static final int BUTTON_WIDTH = 280;
-    private static final int BUTTON_HEIGHT = 100;
+    private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
+    private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
 
     private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
 

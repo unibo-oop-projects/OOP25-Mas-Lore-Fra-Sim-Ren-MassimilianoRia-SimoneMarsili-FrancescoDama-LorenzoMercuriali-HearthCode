@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import it.unibo.oop.hearthcode.view.api.SettingsView;
+import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
  * Implementation of {@link SettingsView}.
@@ -17,8 +18,8 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
 
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
 
-    private static final int BUTTON_WIDTH = 280;
-    private static final int BUTTON_HEIGHT = 100;
+    private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
+    private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
 
     private final JButton backButton;
 
