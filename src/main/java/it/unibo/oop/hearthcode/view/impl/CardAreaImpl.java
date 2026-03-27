@@ -1,6 +1,5 @@
 package it.unibo.oop.hearthcode.view.impl;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.LinkedHashMap;
 import java.util.List;
