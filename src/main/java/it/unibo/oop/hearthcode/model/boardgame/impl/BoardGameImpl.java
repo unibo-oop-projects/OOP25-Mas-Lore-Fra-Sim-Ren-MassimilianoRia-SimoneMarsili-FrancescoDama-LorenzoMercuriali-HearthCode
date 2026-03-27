@@ -52,11 +52,17 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
         initGame();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addObserver(final GameObserver obs) {
         this.observers.add(obs);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeObserver(final GameObserver obs) {
         if (this.observers.contains(obs)) {

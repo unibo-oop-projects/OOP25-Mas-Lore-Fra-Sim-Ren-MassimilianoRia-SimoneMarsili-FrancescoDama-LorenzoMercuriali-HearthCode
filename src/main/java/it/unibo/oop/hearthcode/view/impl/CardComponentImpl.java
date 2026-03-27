@@ -103,6 +103,9 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
@@ -131,28 +134,43 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         g.drawString(text, x, y);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CardId getCardId() {
         return this.cardId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setHealth(final int newHealth) {
         this.currentHealth = newHealth;
         this.repaint();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JButton getComponent() {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setFaceUp(final boolean faceUp) {
         this.faceUp = faceUp;
         this.updateIcon();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSelectedVisual(final boolean isCardSelected) {
         this.selected = isCardSelected;
@@ -160,6 +178,9 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         this.repaint();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setRestingVisual(final boolean isCardResting) {
         this.resting = isCardResting;

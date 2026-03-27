@@ -144,41 +144,65 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.manaBar.setValue(Math.max(0, Math.min(this.currentMana, this.manaBar.getMaximum())));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JComponent getComponent() {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public PlayerId getPlayerId() {
         return this.playerId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CardComponent getArmyCard(final CardId cardId) {
         return this.armyArea.getCard(cardId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CardComponent> getArmyCards() {
         return this.armyArea.getCards();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CardComponent> getHandCards() {
         return this.handArea.getCards();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JComponent getArmyAreaComponent() {
         return this.armyArea.getComponent();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeArmyCard(final CardId cardId) {
         this.armyArea.removeCard(cardId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initHealth(final int health) {
         this.maxHealth = health;
@@ -186,12 +210,18 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.refreshHealth();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setCurrentHealth(final int currentHealth) {
         this.currentHealth = currentHealth;
         this.refreshHealth();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setMana(final int newCurrentMana, final int newMaxMana) {
         this.currentMana = newCurrentMana;
@@ -199,11 +229,17 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.refreshMana();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addHandCard(final CardComponent card) {
         this.handArea.addCard(card);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeCard(final CardId cardId) {
         final CardComponent card = this.handArea.getCard(cardId);

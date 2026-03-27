@@ -43,6 +43,9 @@ public final class CardAreaImpl extends JPanel implements CardArea {
         this.setBorder(BorderFactory.createTitledBorder(title));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addCard(final CardComponent card) {
         this.cards.put(card.getCardId(), card);
@@ -51,6 +54,9 @@ public final class CardAreaImpl extends JPanel implements CardArea {
         this.repaint();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CardComponent getCard(final CardId cardId) {
         final CardComponent card = this.cards.get(cardId);
@@ -60,16 +66,25 @@ public final class CardAreaImpl extends JPanel implements CardArea {
         return card;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CardComponent> getCards() {
         return List.copyOf(this.cards.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JComponent getComponent() {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeCard(final CardId cardId) {
         final CardComponent card = this.cards.remove(cardId);

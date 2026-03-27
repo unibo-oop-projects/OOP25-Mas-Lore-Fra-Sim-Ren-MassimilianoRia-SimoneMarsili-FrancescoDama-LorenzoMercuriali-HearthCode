@@ -75,36 +75,36 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
         this.add(this.quitButton, gbc);
     }
 
+
     /**
-     * Binds the play action.
-     *
-     * @param action the action to execute
+     * {@inheritDoc}
      */
     @Override
     public void onPlay(final Runnable action) {
         this.playButton.addActionListener(event -> action.run());
     }
 
+
     /**
-     * Binds the settings action.
-     *
-     * @param action the action to execute
+     * {@inheritDoc}
      */
     @Override
     public void onSettings(final Runnable action) {
         this.settingsButton.addActionListener(event -> action.run());
     }
 
+
     /**
-     * Binds the quit action.
-     *
-     * @param action the action to execute
+     * {@inheritDoc}
      */
     @Override
     public void onQuit(final Runnable action) {
         this.quitButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JComponent getComponent() {
         return this;

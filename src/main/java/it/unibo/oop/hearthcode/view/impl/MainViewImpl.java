@@ -30,6 +30,9 @@ public final class MainViewImpl implements MainView {
         this.cardsPanel = new JPanel(this.cardLayout);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void show() {
         SwingUtilities.invokeLater(() -> {
@@ -42,16 +45,25 @@ public final class MainViewImpl implements MainView {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         SwingUtilities.invokeLater(this.frame::dispose);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addScene(final SceneId id, final Scene scene) {
         SwingUtilities.invokeLater(() -> this.cardsPanel.add(scene.getComponent(), id.name()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showScene(final SceneId id) {
         SwingUtilities.invokeLater(() -> {
@@ -61,6 +73,9 @@ public final class MainViewImpl implements MainView {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean confirmExit() {
         final int result = JOptionPane.showConfirmDialog(

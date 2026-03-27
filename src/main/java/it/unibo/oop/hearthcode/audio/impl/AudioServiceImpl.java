@@ -28,6 +28,9 @@ public final class AudioServiceImpl implements AudioService {
         this.effectsEnabled = true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void playMusic(final SoundTrack track) {
         Objects.requireNonNull(track);
@@ -51,12 +54,18 @@ public final class AudioServiceImpl implements AudioService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void stopMusic() {
         this.stopMusicInternal();
         this.currentTrack = null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void playEffect(final SoundEffect effect) {
         Objects.requireNonNull(effect);
@@ -77,6 +86,9 @@ public final class AudioServiceImpl implements AudioService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void setMusicEnabled(final boolean enabled) {
         this.musicEnabled = enabled;
@@ -86,11 +98,17 @@ public final class AudioServiceImpl implements AudioService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void setEffectsEnabled(final boolean enabled) {
         this.effectsEnabled = enabled;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public synchronized void shutdown() {
         this.stopMusicInternal();

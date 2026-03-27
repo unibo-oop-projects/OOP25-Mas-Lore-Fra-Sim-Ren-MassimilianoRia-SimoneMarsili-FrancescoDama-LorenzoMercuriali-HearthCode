@@ -85,11 +85,17 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
         this.add(centerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onMenu(final Runnable action) {
         this.menuButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JComponent getComponent() {
         return this;

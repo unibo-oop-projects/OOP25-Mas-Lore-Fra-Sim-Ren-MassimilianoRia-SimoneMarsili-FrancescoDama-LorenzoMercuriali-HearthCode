@@ -99,6 +99,9 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected final void paintComponent(final Graphics g) {
         super.paintComponent(g);

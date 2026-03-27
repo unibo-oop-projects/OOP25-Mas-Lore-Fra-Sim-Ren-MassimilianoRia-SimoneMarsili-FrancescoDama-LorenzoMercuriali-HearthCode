@@ -32,6 +32,9 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
         this.audioService = new AudioServiceImpl();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start() {
         final MenuScene menuScene = new MenuScene();
@@ -47,18 +50,27 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
         this.mainView.show();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showMainMenu() {
         this.mainView.showScene(SceneId.MAIN_MENU);
         this.audioService.playMusic(SoundTrack.MENU);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showSettings() {
         this.mainView.showScene(SceneId.SETTINGS);
         this.audioService.playMusic(SoundTrack.MENU);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showEndMatch(final PlayerId playerId) {
         final EndMatchScene endMatchScene = new EndMatchScene(playerId);
@@ -68,6 +80,9 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
         this.audioService.playMusic(SoundTrack.MENU);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void startMatch() {
         final MatchScene matchScene = new MatchScene();
@@ -78,6 +93,9 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
         this.audioService.playMusic(SoundTrack.MATCH);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void requestExit() {
         if (this.mainView.confirmExit()) {

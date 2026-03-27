@@ -21,11 +21,17 @@ public final class CreatureDatabase implements Database<CreatureDefinition> {
         this.definitions = definitions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CreatureDefinition> getAll() {
         return List.copyOf(this.definitions);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int size() {
         return this.definitions.size();

@@ -170,11 +170,17 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JComponent getComponent() {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CardId> getSelectedCards() {
         return this.selectedCards.stream()
@@ -182,31 +188,49 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
             .toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAttackHero(final Runnable action) {
         this.attackHeroButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAttackCreature(final Runnable action) {
         this.attackCreatureButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPlaceCard(final Runnable action) {
         this.placeCardButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onEndTurn(final Runnable action) {
         this.endTurnButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onExitGame(final Runnable action) {
         this.exitButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean confirmExitGame() {
         final int result = JOptionPane.showConfirmDialog(
@@ -220,6 +244,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         return result == JOptionPane.YES_OPTION;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameStarted(final Map<PlayerId, Integer> playersHealth) {
         playersHealth.forEach((playerId, health) -> {
@@ -230,6 +257,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.repaint();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onTurnSwitch(final PlayerId nextPlayer) {
         this.clearSelectedCards();
@@ -252,6 +282,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         ).forEach(card -> card.getComponent().setEnabled(isHumanTurn));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
         final CardComponent card = new CardComponentImpl(drawnCard, def);
@@ -266,6 +299,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.getPlayerArea(playerId).addHandCard(card);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
         this.getPlayerArea(playerId).placeCard(placedCard);
@@ -278,26 +314,41 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.clearSelectedCards();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCardHealthChanged(final PlayerId playerId, final CardId cardId, final int newHealth) {
         this.getPlayerArea(playerId).getArmyCard(cardId).setHealth(newHealth);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCardDestroyed(final PlayerId playerId, final CardId cardId) {
         this.getPlayerArea(playerId).removeArmyCard(cardId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPlayerHealthChanged(final PlayerId playerId, final int newHealth) {
         this.updateHealth(playerId, newHealth);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onManaChanged(final PlayerId playerId, final int actualMana, final int manaLimit) {
         this.updateMana(playerId, actualMana, manaLimit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
         final CardComponent card = this.getPlayerArea(playerId).getArmyCard(exhaustedCard);
@@ -306,6 +357,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.clearSelectedCards();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showErrorPanel(final String s) {
         JOptionPane.showMessageDialog(this, s, "Error", JOptionPane.ERROR_MESSAGE);
