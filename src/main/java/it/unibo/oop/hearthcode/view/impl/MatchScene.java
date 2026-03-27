@@ -35,7 +35,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private static final int BUTTONS_NUMBER = 5;
 
     private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
-    private static final PlayerId IA_PLAYER = new PlayerId(PlayerType.IA_PLAYER);
+    private static final PlayerId AI_PLAYER = new PlayerId(PlayerType.AI_PLAYER);
 
     @SuppressFBWarnings(
         value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
@@ -47,7 +47,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
         justification = "This Swing UI component is not meant to support meaningful deserialization."
     )
-    private final transient PlayerArea iaPlayerArea;
+    private final transient PlayerArea aiPlayerArea;
 
     @SuppressFBWarnings(
         value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
@@ -76,7 +76,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.setOpaque(false);
 
         this.humanPlayerArea = new PlayerAreaImpl(HUMAN_PLAYER);
-        this.iaPlayerArea = new PlayerAreaImpl(IA_PLAYER);
+        this.aiPlayerArea = new PlayerAreaImpl(AI_PLAYER);
 
         this.attackHeroButton = new JButton("ATTACK HERO");
         this.attackCreatureButton = new JButton("ATTACK CREATURE");
@@ -84,7 +84,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.endTurnButton = new JButton("END TURN");
         this.exitButton = new JButton("EXIT");
 
-        this.add(this.iaPlayerArea.getComponent(), BorderLayout.NORTH);
+        this.add(this.aiPlayerArea.getComponent(), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
         this.add(this.humanPlayerArea.getComponent(), BorderLayout.SOUTH);
     }
@@ -102,7 +102,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     private PlayerArea getPlayerArea(final PlayerId playerId) {
-        return this.isHumanPlayer(playerId) ? this.humanPlayerArea : this.iaPlayerArea;
+        return this.isHumanPlayer(playerId) ? this.humanPlayerArea : this.aiPlayerArea;
     }
 
     private JComponent createCenterPanel() {
@@ -113,7 +113,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final JPanel armiesPanel = this.createSimplePanel();
         armiesPanel.setLayout(new GridLayout(2, 1, 0, ViewMetrics.verticalGap()));
 
-        armiesPanel.add(this.iaPlayerArea.getArmyAreaComponent());
+        armiesPanel.add(this.aiPlayerArea.getArmyAreaComponent());
         armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent());
 
         panel.add(armiesPanel, BorderLayout.CENTER);
@@ -165,7 +165,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private Stream<CardComponent> allArmyCards() {
         return Stream.concat(
-            this.iaPlayerArea.getArmyCards().stream(),
+            this.aiPlayerArea.getArmyCards().stream(),
             this.humanPlayerArea.getArmyCards().stream()
         );
     }
@@ -274,7 +274,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.exitButton.setEnabled(true);
 
         Stream.concat(
-            this.iaPlayerArea.getArmyCards().stream(),
+            this.aiPlayerArea.getArmyCards().stream(),
             Stream.concat(
                 this.humanPlayerArea.getArmyCards().stream(),
                 this.humanPlayerArea.getHandCards().stream()

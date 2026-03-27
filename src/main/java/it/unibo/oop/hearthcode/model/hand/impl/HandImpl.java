@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.impl.CardStateImpl;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.impl.CreatureImpl;
 import it.unibo.oop.hearthcode.model.hand.api.Hand;
 
 /**
@@ -18,7 +21,7 @@ public class HandImpl implements Hand {
     private final List<Card> hand;
 
     /**
-     * simple constructor.
+     * Simple constructor.
      */
     public HandImpl() {
         this.hand = new ArrayList<>();
@@ -38,6 +41,21 @@ public class HandImpl implements Hand {
     @Override
     public int getActualSize() {
         return this.hand.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardState> getCardsCopies() {
+        return this.hand.stream().map(card -> (CardState) new CardStateImpl(
+            card.getId(),
+            card.getManaCost(),
+            ((CreatureImpl) card).getHealth(),
+            ((CreatureImpl) card).getAttackValue(),
+            true
+        ))
+        .toList();
     }
 
     /**

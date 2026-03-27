@@ -1,5 +1,8 @@
 package it.unibo.oop.hearthcode.model.player.api;
 
+import java.util.List;
+
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 
@@ -27,6 +30,11 @@ public interface Player {
      * @return the amount of player's health
      */
     int getHealth();
+
+    /**
+     * @return a copy of the cards held in hand
+     */
+    List<CardState> getHandCardsCopies();
 
     /**
      * Decreases the player's current health.

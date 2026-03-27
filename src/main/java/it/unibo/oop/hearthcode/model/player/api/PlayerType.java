@@ -7,6 +7,6 @@ public enum PlayerType {
 
     HUMAN_PLAYER,
 
-    IA_PLAYER
+    AI_PLAYER
 
 }

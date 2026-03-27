@@ -1,7 +1,9 @@
 package it.unibo.oop.hearthcode.model.boardgame.api;
 
+import java.util.List;
 import java.util.Optional;
 
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
@@ -9,6 +11,30 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
  * It represents the main board of the match.
  */
 public interface BoardGame {
+
+    /**
+     * @param playerId the identifier of the player
+     * @return the actual health of the player
+     */
+    int getPlayerHealth(PlayerId playerId);
+
+    /**
+     * @param playerId the identifier of the player
+     * @return the actual mana amount of the player
+     */
+    int getPlayerActualMana(PlayerId playerId);
+
+    /**
+     * @param playerId the identifier of the player
+     * @return a copy of the cards held in the hand of the player
+     */
+    List<CardState> getHandCardsCopies(PlayerId playerId);
+
+    /**
+     * @param playerId the identifier of the player
+     * @return a copy of the cards held in the army of the player
+     */
+    List<CardState> getArmyCardsCopies(PlayerId playerId);
 
     /**
      * It allows to start the game.

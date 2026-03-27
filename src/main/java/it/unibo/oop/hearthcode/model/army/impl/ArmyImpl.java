@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.impl.CardStateImpl;
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
+import it.unibo.oop.hearthcode.model.creature.impl.CreatureImpl;
 
 /**
  * Implementation of {@link Army}.
@@ -48,6 +51,31 @@ public class ArmyImpl implements Army {
         return allCreatures.stream()
             .filter(c -> c.getId().equals(cardId))
             .findFirst();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardState> getCardsCopies() {
+        return Stream.concat(
+            this.awakenCreatures.entrySet().stream()
+                .map(entry -> (CardState) new CardStateImpl(
+                    entry.getKey().getId(),
+                    entry.getKey().getManaCost(),
+                    ((CreatureImpl) entry.getKey()).getHealth(),
+                    ((CreatureImpl) entry.getKey()).getAttackValue(),
+                    true
+                )),
+            this.sleepingCreatures.stream()
+                .map(card -> (CardState) new CardStateImpl(
+                    card.getId(),
+                    card.getManaCost(),
+                    ((CreatureImpl) card).getHealth(),
+                    ((CreatureImpl) card).getAttackValue(),
+                    false
+                ))
+        ).toList();
     }
 
     /**

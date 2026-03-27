@@ -1,5 +1,8 @@
 package it.unibo.oop.hearthcode.model.hand.api;
 
+import java.util.List;
+
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 
@@ -17,6 +20,11 @@ public interface Hand {
      * @return the number of cards in the player's hand
      */
     int getActualSize();
+
+    /**
+     * @return a copy of the cards held
+     */
+    List<CardState> getCardsCopies();
 
     /**
      * It adds the card in the hand.

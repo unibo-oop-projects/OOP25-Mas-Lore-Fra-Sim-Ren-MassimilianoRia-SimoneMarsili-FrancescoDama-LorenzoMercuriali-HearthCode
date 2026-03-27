@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.army.impl.ArmyImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
@@ -88,16 +89,16 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
 
         this.turnManager = new TurnManager(humanPlayer.getId());
 
-        final Player iaPlayer = PlayerFactory.createPlayer(
+        final Player aiPlayer = PlayerFactory.createPlayer(
             deckFactory.createWeighted(DECK_SIZE, def -> Math.max(1, def.manaCost())),
             DEFAULT_HEALTH,
-            new PlayerId(PlayerType.IA_PLAYER)
+            new PlayerId(PlayerType.AI_PLAYER)
         );
 
         this.players.put(humanPlayer.getId(), humanPlayer);
-        this.players.put(iaPlayer.getId(), iaPlayer);
+        this.players.put(aiPlayer.getId(), aiPlayer);
         this.armies.put(humanPlayer, new ArmyImpl());
-        this.armies.put(iaPlayer, new ArmyImpl());
+        this.armies.put(aiPlayer, new ArmyImpl());
     }
 
     private PlayerId getDefendingPlayer() {
@@ -247,6 +248,38 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPlayerHealth(final PlayerId playerId) {
+        return this.players.get(playerId).getHealth();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getPlayerActualMana(final PlayerId playerId) {
+        return this.players.get(playerId).getActualMana();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardState> getHandCardsCopies(final PlayerId playerId) {
+        return this.players.get(playerId).getHandCardsCopies();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardState> getArmyCardsCopies(final PlayerId playerId) {
+        return this.armies.get(this.players.get(playerId)).getCardsCopies();
+    }
+
+    /**
      * A inner class that manages the change turn.
      */
     class TurnManager {
@@ -288,4 +321,5 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
             }
         }
     }
+
 }
