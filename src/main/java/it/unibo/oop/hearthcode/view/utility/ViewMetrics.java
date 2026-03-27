@@ -82,14 +82,23 @@ public final class ViewMetrics {
         return OUTER_PADDING;
     }
 
+    /**
+     * @return the preferred width for menu buttons
+     */
     public static int menuButtonWidth() {
         return MENU_BUTTON_WIDTH;
     }
 
+    /**
+     * @return the preferred height for menu buttons
+     */
     public static int menuButtonHeight() {
         return MENU_BUTTON_HEIGHT;
     }
 
+    /**
+     * @return the vertical gap between menu buttons
+     */
     public static int menuVerticalGap() {
         return MENU_VERTICAL_GAP;
     }

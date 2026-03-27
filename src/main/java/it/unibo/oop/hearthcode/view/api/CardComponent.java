@@ -40,15 +40,15 @@ public interface CardComponent {
     /**
      * Updates the visual selection state of the card.
      *
-     * @param selected whether the card is selected
+     * @param isCardSelected whether the card is selected
      */
-    void setSelectedVisual(boolean selected);
+    void setSelectedVisual(boolean isCardSelected);
 
     /**
      * Updates the visual sleeping/exhausted state of the card.
      *
-     * @param dormant whether the card is resting
+     * @param isCardResting whether the card is resting
      */
-    void setRestingVisual(boolean resting);
+    void setRestingVisual(boolean isCardResting);
 
 }

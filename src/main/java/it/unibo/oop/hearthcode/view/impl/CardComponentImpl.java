@@ -154,15 +154,15 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     }
 
     @Override
-    public void setSelectedVisual(final boolean selected) {
-        this.selected = selected;
+    public void setSelectedVisual(final boolean isCardSelected) {
+        this.selected = isCardSelected;
         this.updateBorder();
         this.repaint();
     }
 
     @Override
-    public void setRestingVisual(final boolean resting) {
-        this.resting = resting;
+    public void setRestingVisual(final boolean isCardResting) {
+        this.resting = isCardResting;
         this.updateBorder();
         this.repaint();
     }
