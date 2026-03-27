@@ -1,10 +1,12 @@
 package it.unibo.oop.hearthcode.model.ai.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.api.PlayerState;
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**
@@ -13,10 +15,10 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 public class PlayerStateImpl implements PlayerState {
 
     private final PlayerId playerId;
-    private final int playerHealth;
-    private final int playerActualMana;
-    private final Optional<List<CardState>> playerHand;
-    private final List<CardState> playerArmy;
+    private int playerHealth;
+    private int playerActualMana;
+    private final Optional<List<CardStateImpl>> playerHand;
+    private final List<CardStateImpl> playerArmy;
 
     /**
      * Creates a player state.
@@ -37,8 +39,32 @@ public class PlayerStateImpl implements PlayerState {
         this.playerId = playerId;
         this.playerHealth = playerHealth;
         this.playerActualMana = playerActualMana;
-        this.playerHand = playerHand.map(List::copyOf);
-        this.playerArmy = List.copyOf(playerArmy);
+        this.playerHand = playerHand.map(hand -> hand.stream()
+            .map(CardStateImpl::new)
+            .toList())
+            .map(ArrayList::new);
+        this.playerArmy = new ArrayList<>(playerArmy.stream()
+            .map(CardStateImpl::new)
+            .toList());
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the source player state
+     */
+    public PlayerStateImpl(final PlayerStateImpl other) {
+        this.playerId = other.playerId;
+        this.playerHealth = other.playerHealth;
+        this.playerActualMana = other.playerActualMana;
+        this.playerHand = other.playerHand
+            .map(hand -> hand.stream()
+                .map(CardStateImpl::new)
+                .toList())
+            .map(ArrayList::new);
+        this.playerArmy = new ArrayList<>(other.playerArmy.stream()
+            .map(CardStateImpl::new)
+            .toList());
     }
 
     /**
@@ -70,7 +96,7 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public Optional<List<CardState>> getPlayerHand() {
-        return this.playerHand;
+        return this.playerHand.map(List::copyOf).map(List.class::cast);
     }
 
     /**
@@ -78,7 +104,76 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public List<CardState> getPlayerArmy() {
-        return this.playerArmy;
+        return List.copyOf(this.playerArmy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Optional<CardStateImpl> getHandCard(final CardId cardId) {
+        return this.playerHand.flatMap(hand -> hand.stream()
+            .filter(card -> card.getCardId().equals(cardId))
+            .findFirst());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Optional<CardStateImpl> getArmyCard(final CardId cardId) {
+        return this.playerArmy.stream()
+            .filter(card -> card.getCardId().equals(cardId))
+            .findFirst();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void damagePlayer(final int damage) {
+        if (damage < 0) {
+            throw new IllegalArgumentException("Damage cannot be negative.");
+        }
+        this.playerHealth = Math.max(0, this.playerHealth - damage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void consumeMana(final int mana) {
+        if (mana < 0) {
+            throw new IllegalArgumentException("Mana cannot be negative.");
+        }
+        if (mana > this.playerActualMana) {
+            throw new IllegalStateException("Not enough mana.");
+        }
+        this.playerActualMana -= mana;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void placeCard(final CardId cardId) {
+        final List<CardStateImpl> hand = this.playerHand.orElseThrow(
+            () -> new IllegalStateException("This player has no visible hand.")
+        );
+
+        final CardStateImpl card = hand.stream()
+            .filter(c -> c.getCardId().equals(cardId))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Card not found in hand."));
+
+        hand.remove(card);
+        card.exhaust();
+        this.playerArmy.add(card);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void destroyArmyCard(final CardId cardId) {
+        final boolean removed = this.playerArmy.removeIf(card -> card.getCardId().equals(cardId));
+        if (!removed) {
+            throw new IllegalArgumentException("Card not found in army.");
+        }
     }
 
 }

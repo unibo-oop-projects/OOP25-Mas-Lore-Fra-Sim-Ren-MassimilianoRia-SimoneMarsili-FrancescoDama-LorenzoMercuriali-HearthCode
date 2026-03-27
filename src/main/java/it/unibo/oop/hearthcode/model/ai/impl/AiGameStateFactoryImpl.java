@@ -2,9 +2,9 @@ package it.unibo.oop.hearthcode.model.ai.impl;
 
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.api.AiGameState;
 import it.unibo.oop.hearthcode.model.ai.api.AiGameStateFactory;
 import it.unibo.oop.hearthcode.model.ai.api.PlayerState;
+import it.unibo.oop.hearthcode.model.ai.api.AiGameState;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;

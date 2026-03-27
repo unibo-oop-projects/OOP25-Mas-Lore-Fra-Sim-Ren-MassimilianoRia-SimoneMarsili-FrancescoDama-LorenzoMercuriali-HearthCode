@@ -2,9 +2,12 @@ package it.unibo.oop.hearthcode.model.ai.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.api.AiGameState;
+import it.unibo.oop.hearthcode.model.ai.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.api.PlayerState;
+import it.unibo.oop.hearthcode.model.ai.api.AiGameState;
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**
@@ -12,7 +15,7 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
  */
 public class AiGameStateImpl implements AiGameState {
 
-    private final Map<PlayerId, PlayerState> players = new HashMap<>();
+    private final Map<PlayerId, PlayerStateImpl> players = new HashMap<>();
 
     /**
      * Creates an AI game state containing the two player states.
@@ -21,8 +24,19 @@ public class AiGameStateImpl implements AiGameState {
      * @param aiPlayerState the state of the AI player
      */
     public AiGameStateImpl(final PlayerState humanPlayerState, final PlayerState aiPlayerState) {
-        this.players.put(humanPlayerState.getPlayerId(), humanPlayerState);
-        this.players.put(aiPlayerState.getPlayerId(), aiPlayerState);
+        this.players.put(humanPlayerState.getPlayerId(), toImpl(humanPlayerState));
+        this.players.put(aiPlayerState.getPlayerId(), toImpl(aiPlayerState));
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the source state
+     */
+    public AiGameStateImpl(final AiGameStateImpl other) {
+        other.players.forEach((playerId, playerState) ->
+            this.players.put(playerId, new PlayerStateImpl(playerState))
+        );
     }
 
     /**
@@ -30,7 +44,116 @@ public class AiGameStateImpl implements AiGameState {
      */
     @Override
     public PlayerState getPlayerState(final PlayerId playerId) {
-        return this.players.get(playerId);
+        return this.getRequiredPlayer(playerId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AiGameState copy() {
+        return new AiGameStateImpl(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void damagePlayer(final PlayerId playerId, final int damage) {
+        this.getRequiredPlayer(playerId).damagePlayer(damage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void consumeMana(final PlayerId playerId, final int mana) {
+        this.getRequiredPlayer(playerId).consumeMana(mana);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void placeCard(final PlayerId playerId, final CardId cardId) {
+        this.getRequiredPlayer(playerId).placeCard(cardId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void damageCard(final PlayerId playerId, final CardId cardId, final int damage) {
+        final CardStateImpl card = this.getRequiredPlayer(playerId)
+            .getArmyCard(cardId)
+            .orElseThrow(() -> new IllegalArgumentException("Card not found in army."));
+        card.damage(damage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exhaustCard(final PlayerId playerId, final CardId cardId) {
+        final CardStateImpl card = this.getRequiredPlayer(playerId)
+            .getArmyCard(cardId)
+            .orElseThrow(() -> new IllegalArgumentException("Card not found in army."));
+        card.exhaust();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroyCard(final PlayerId playerId, final CardId cardId) {
+        this.getRequiredPlayer(playerId).destroyArmyCard(cardId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<CardState> findArmyCard(final PlayerId playerId, final CardId cardId) {
+        return this.getRequiredPlayer(playerId)
+            .getArmyCard(cardId)
+            .map(CardState.class::cast);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<CardState> findHandCard(final PlayerId playerId, final CardId cardId) {
+        return this.getRequiredPlayer(playerId)
+            .getHandCard(cardId)
+            .map(CardState.class::cast);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    private PlayerStateImpl getRequiredPlayer(final PlayerId playerId) {
+        final PlayerStateImpl player = this.players.get(playerId);
+        if (player == null) {
+            throw new IllegalArgumentException("Unknown player: " + playerId);
+        }
+        return player;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    private PlayerStateImpl toImpl(final PlayerState state) {
+        if (state instanceof PlayerStateImpl impl) {
+            return new PlayerStateImpl(impl);
+        }
+        return new PlayerStateImpl(
+            state.getPlayerId(),
+            state.getPlayerHealth(),
+            state.getPlayerActualMana(),
+            state.getPlayerHand(),
+            state.getPlayerArmy()
+        );
     }
 
 }

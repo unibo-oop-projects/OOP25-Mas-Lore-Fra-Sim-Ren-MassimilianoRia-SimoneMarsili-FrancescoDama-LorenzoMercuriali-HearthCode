@@ -10,9 +10,9 @@ public class CardStateImpl implements CardState {
 
     private final CardId cardId;
     private final int manaCost;
-    private final int health;
     private final int attackValue;
-    private final boolean usable;
+    private int health;
+    private boolean usable;
 
     /**
      * Creates a card state.
@@ -26,15 +26,30 @@ public class CardStateImpl implements CardState {
     public CardStateImpl(
         final CardId cardId,
         final int manaCost,
-        final int health,
         final int attackValue,
+        final int health,
         final boolean usable
     ) {
         this.cardId = cardId;
         this.manaCost = manaCost;
-        this.health = health;
         this.attackValue = attackValue;
+        this.health = health;
         this.usable = usable;
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the source card state
+     */
+    public CardStateImpl(final CardState other) {
+        this(
+            other.getCardId(),
+            other.getManaCost(),
+            other.getHealth(),
+            other.getAttackValue(),
+            other.isUsable()
+        );
     }
 
     /**
@@ -75,6 +90,37 @@ public class CardStateImpl implements CardState {
     @Override
     public boolean isUsable() {
         return this.usable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void damage(final int damage) {
+        if (damage < 0) {
+            throw new IllegalArgumentException("Damage cannot be negative.");
+        }
+        this.health = Math.max(0, this.health - damage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void exhaust() {
+        this.usable = false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void awaken() {
+        this.usable = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDead() {
+        return this.health <= 0;
     }
 
 }
