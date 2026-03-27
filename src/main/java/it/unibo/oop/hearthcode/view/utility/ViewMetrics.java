@@ -14,8 +14,8 @@ public final class ViewMetrics {
     private static final int H_GAP = (int) (SCREEN_WIDTH * 0.001);
     private static final int V_GAP = (int) (SCREEN_HEIGHT * 0.001);
     private static final int OUTER_PADDING = (int) (SCREEN_WIDTH * 0.001);
-    private static final int CARD_WIDTH = (int) (SCREEN_WIDTH * 0.093);
-    private static final int CARD_HEIGHT = (int) Math.round(CARD_WIDTH * 1.5);
+    private static final int CARD_HEIGHT = (int) (SCREEN_HEIGHT * 0.22);
+    private static final int CARD_WIDTH = (int) Math.round(CARD_HEIGHT * 0.66);
     private static final int SIDE_PANEL_WIDTH = (int) (SCREEN_WIDTH * 0.15);
     private static final int ACTION_BUTTON_WIDTH = (int) (SIDE_PANEL_WIDTH * 0.8);
     private static final int ACTION_BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * 0.05);
@@ -24,17 +24,17 @@ public final class ViewMetrics {
     }
 
     /**
-     * @return the preferred card width
-     */
-    public static int cardWidth() {
-        return CARD_WIDTH;
-    }
-
-    /**
      * @return the preferred card height
      */
     public static int cardHeight() {
         return CARD_HEIGHT;
+    }
+
+    /**
+     * @return the preferred card width
+     */
+    public static int cardWidth() {
+        return CARD_WIDTH;
     }
 
     /**

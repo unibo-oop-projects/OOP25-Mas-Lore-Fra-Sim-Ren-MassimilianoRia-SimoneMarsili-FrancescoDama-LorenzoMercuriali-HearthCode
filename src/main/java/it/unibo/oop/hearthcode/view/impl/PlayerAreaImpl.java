@@ -2,7 +2,6 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private static final Color HEALTH_COLOR = new Color(185, 45, 45);
     private static final Color MANA_COLOR = new Color(70, 150, 255);
 
-    private final PlayerId playerId;
+    private final transient PlayerId playerId;
     private final CardArea handArea;
     private final CardArea armyArea;
     private final JLabel healthLabel;
@@ -84,7 +83,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
     private JLabel createCenteredLabel() {
         final JLabel label = new JLabel("", SwingConstants.CENTER);
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setAlignmentX(CENTER_ALIGNMENT);
         return label;
     }
 
@@ -96,7 +95,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         bar.setForeground(color);
         bar.setStringPainted(false);
         bar.setBorder(BorderFactory.createEmptyBorder());
-        bar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bar.setAlignmentX(CENTER_ALIGNMENT);
 
         final Dimension size = new Dimension(
             (int) (ViewMetrics.sidePanelWidth() * 0.82),
