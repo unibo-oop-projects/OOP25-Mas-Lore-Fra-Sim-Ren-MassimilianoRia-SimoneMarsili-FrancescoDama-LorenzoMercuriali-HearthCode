@@ -1,17 +1,15 @@
 package it.unibo.oop.hearthcode.view.impl;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.RoundRectangle2D;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.border.Border;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
@@ -19,31 +17,26 @@ import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
- * Texture-based implementation of {@link CardComponent}.
- * The whole button surface is the card image, while only health text
- * is painted at the bottom of the button.
+ * Simple texture-based implementation of {@link CardComponent}.
  */
 public final class CardComponentImpl extends JButton implements CardComponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int ARC_SIZE = 18;
-    private static final int SELECTION_BORDER_THICKNESS = 3;
-    private static final int TEXT_BOTTOM_MARGIN = 8;
-    private static final int TEXT_SHADOW_OFFSET = 1;
+    private static final Border NORMAL_BORDER = BorderFactory.createEmptyBorder(3, 3, 3, 3);
+    private static final Border SELECTED_BORDER = BorderFactory.createLineBorder(new Color(210, 40, 40), 3);
+    private static final Color TEXT_COLOR = Color.WHITE;
+    private static final Color SHADOW_COLOR = new Color(0, 0, 0, 180);
+    private static final int TEXT_BOTTOM_MARGIN = 17;
+    private static final int SHADOW_OFFSET = 1;
 
-    private static final Color SELECTION_BORDER_COLOR = new Color(210, 40, 40, 230);
-    private static final Color HEALTH_TEXT_COLOR = Color.WHITE;
-    private static final Color HEALTH_TEXT_SHADOW_COLOR = new Color(0, 0, 0, 210);
-
-    private final transient CardId cardId;
-    private final transient ImageIcon frontIcon;
-    private final transient ImageIcon backIcon;
-
+    private final CardId cardId;
+    private final ImageIcon frontIcon;
+    private final ImageIcon backIcon;
     private final int maxHealth;
+
     private int currentHealth;
     private boolean faceUp;
-    private boolean selectedVisual;
 
     /**
      * Builds the component representing a specific card.
@@ -60,74 +53,52 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         final ImageIcon backIcon
     ) {
         this.cardId = cardId;
-        this.frontIcon = new ImageIcon(frontIcon.getImage());
-        this.backIcon = new ImageIcon(backIcon.getImage());
+        this.frontIcon = frontIcon;
+        this.backIcon = backIcon;
         this.maxHealth = def.health();
         this.currentHealth = def.health();
-        this.faceUp = false;
-        this.selectedVisual = false;
 
-        final Dimension size = new Dimension(
-            ViewMetrics.cardWidth(),
-            ViewMetrics.cardHeight()
-        );
-
+        final Dimension size = new Dimension(ViewMetrics.cardWidth(), ViewMetrics.cardHeight());
         this.setPreferredSize(size);
-        this.setBorderPainted(false);
-        this.setContentAreaFilled(false);
+        this.setMinimumSize(size);
+        this.setMaximumSize(size);
+
         this.setFocusPainted(false);
+        this.setContentAreaFilled(false);
         this.setOpaque(false);
+        this.setBorder(NORMAL_BORDER);
+        this.setBorderPainted(true);
         this.setText(null);
-        this.setIcon(null);
+        this.setFaceUp(false);
+    }
+
+    private void updateIcon() {
+        final ImageIcon icon = this.faceUp ? this.frontIcon : this.backIcon;
+        this.setIcon(icon);
+        this.setDisabledIcon(icon);
+        this.repaint();
     }
 
     @Override
     protected void paintComponent(final Graphics g) {
-        final Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-        final ImageIcon texture = this.faceUp ? this.frontIcon : this.backIcon;
-        g2.drawImage(texture.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
-
-        if (this.faceUp) {
-            this.paintHealthText(g2);
+        super.paintComponent(g);
+        if (!this.faceUp) {
+            return;
         }
 
-        if (this.selectedVisual) {
-            g2.setStroke(new BasicStroke(SELECTION_BORDER_THICKNESS));
-            g2.setColor(SELECTION_BORDER_COLOR);
-            g2.draw(new RoundRectangle2D.Float(
-                SELECTION_BORDER_THICKNESS / 2.0f,
-                SELECTION_BORDER_THICKNESS / 2.0f,
-                this.getWidth() - SELECTION_BORDER_THICKNESS,
-                this.getHeight() - SELECTION_BORDER_THICKNESS,
-                ARC_SIZE,
-                ARC_SIZE
-            ));
-        }
-
-        g2.dispose();
-    }
-
-    private void paintHealthText(final Graphics2D g2) {
         final String text = this.currentHealth + " / " + this.maxHealth;
-        final int fontSize = Math.max(14, Math.min(22, this.getWidth() / 7));
+        final int fontSize = Math.max(14, this.getWidth() / 9);
         final Font font = this.getFont().deriveFont(Font.BOLD, (float) fontSize);
+        g.setFont(font);
 
-        g2.setFont(font);
-        final FontMetrics fm = g2.getFontMetrics();
+        final FontMetrics metrics = g.getFontMetrics();
+        final int x = (this.getWidth() - metrics.stringWidth(text)) / 2;
+        final int y = this.getHeight() - TEXT_BOTTOM_MARGIN;
 
-        final int textX = (this.getWidth() - fm.stringWidth(text)) / 2;
-        final int textY = this.getHeight() - TEXT_BOTTOM_MARGIN;
-
-        g2.setColor(HEALTH_TEXT_SHADOW_COLOR);
-        g2.drawString(text, textX + TEXT_SHADOW_OFFSET, textY + TEXT_SHADOW_OFFSET);
-
-        g2.setColor(HEALTH_TEXT_COLOR);
-        g2.drawString(text, textX, textY);
+        g.setColor(SHADOW_COLOR);
+        g.drawString(text, x + SHADOW_OFFSET, y + SHADOW_OFFSET);
+        g.setColor(TEXT_COLOR);
+        g.drawString(text, x, y);
     }
 
     @Override
@@ -149,12 +120,12 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     @Override
     public void setFaceUp(final boolean faceUp) {
         this.faceUp = faceUp;
-        this.repaint();
+        this.updateIcon();
     }
 
     @Override
     public void setSelectedVisual(final boolean selected) {
-        this.selectedVisual = selected;
+        this.setBorder(selected ? SELECTED_BORDER : NORMAL_BORDER);
         this.repaint();
     }
 
