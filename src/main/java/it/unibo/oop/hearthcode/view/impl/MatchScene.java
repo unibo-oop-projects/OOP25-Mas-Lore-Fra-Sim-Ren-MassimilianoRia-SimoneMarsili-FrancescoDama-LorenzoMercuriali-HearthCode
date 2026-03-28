@@ -365,4 +365,10 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         JOptionPane.showMessageDialog(this, s, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    @Override
+    public void onCardBurned(final PlayerId playerId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onCardBurned'");
+    }
+
 }
