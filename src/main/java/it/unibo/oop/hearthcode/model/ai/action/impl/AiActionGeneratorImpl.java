@@ -14,7 +14,7 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 /**
  * Implementation of {@link AiActionGenerator}.
  */
-public class AiActionGeneratorImpl implements AiActionGenerator {
+public final class AiActionGeneratorImpl implements AiActionGenerator {
 
     @Override
     public List<AiAction> generateLegalActions(final AiGameState gameState) {

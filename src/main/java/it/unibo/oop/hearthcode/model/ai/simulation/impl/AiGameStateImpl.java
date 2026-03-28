@@ -129,9 +129,6 @@ public class AiGameStateImpl implements AiGameState {
             .map(CardState.class::cast);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private PlayerStateImpl getRequiredPlayer(final PlayerId playerId) {
         final PlayerStateImpl player = this.players.get(playerId);
         if (player == null) {
@@ -140,9 +137,6 @@ public class AiGameStateImpl implements AiGameState {
         return player;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     private PlayerStateImpl toImpl(final PlayerState state) {
         if (state instanceof PlayerStateImpl impl) {
             return new PlayerStateImpl(impl);

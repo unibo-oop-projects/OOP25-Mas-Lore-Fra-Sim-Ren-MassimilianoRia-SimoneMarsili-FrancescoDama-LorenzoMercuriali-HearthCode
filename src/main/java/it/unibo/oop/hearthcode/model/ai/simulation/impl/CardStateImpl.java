@@ -95,6 +95,7 @@ public class CardStateImpl implements CardState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void damage(final int damage) {
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative.");
@@ -105,6 +106,7 @@ public class CardStateImpl implements CardState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void exhaust() {
         this.usable = false;
     }
@@ -112,6 +114,7 @@ public class CardStateImpl implements CardState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void awaken() {
         this.usable = true;
     }
@@ -119,6 +122,7 @@ public class CardStateImpl implements CardState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDead() {
         return this.health <= 0;
     }

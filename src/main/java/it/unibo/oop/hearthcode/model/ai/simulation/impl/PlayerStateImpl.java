@@ -110,6 +110,7 @@ public class PlayerStateImpl implements PlayerState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Optional<CardStateImpl> getHandCard(final CardId cardId) {
         return this.playerHand.flatMap(hand -> hand.stream()
             .filter(card -> card.getCardId().equals(cardId))
@@ -119,6 +120,7 @@ public class PlayerStateImpl implements PlayerState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Optional<CardStateImpl> getArmyCard(final CardId cardId) {
         return this.playerArmy.stream()
             .filter(card -> card.getCardId().equals(cardId))
@@ -128,6 +130,7 @@ public class PlayerStateImpl implements PlayerState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void damagePlayer(final int damage) {
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative.");
@@ -138,6 +141,7 @@ public class PlayerStateImpl implements PlayerState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void consumeMana(final int mana) {
         if (mana < 0) {
             throw new IllegalArgumentException("Mana cannot be negative.");
@@ -151,6 +155,7 @@ public class PlayerStateImpl implements PlayerState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void placeCard(final CardId cardId) {
         final List<CardStateImpl> hand = this.playerHand.orElseThrow(
             () -> new IllegalStateException("This player has no visible hand.")
@@ -169,6 +174,7 @@ public class PlayerStateImpl implements PlayerState {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void destroyArmyCard(final CardId cardId) {
         final boolean removed = this.playerArmy.removeIf(card -> card.getCardId().equals(cardId));
         if (!removed) {

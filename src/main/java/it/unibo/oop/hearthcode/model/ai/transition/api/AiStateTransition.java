@@ -6,6 +6,7 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 /**
  * Applies an AI action to a simulated game state and returns the resulting state.
  */
+@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AiStateTransition {
 
     /**

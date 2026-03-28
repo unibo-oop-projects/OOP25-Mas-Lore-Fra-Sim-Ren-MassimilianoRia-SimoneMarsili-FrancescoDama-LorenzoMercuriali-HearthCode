@@ -7,13 +7,14 @@ import it.unibo.oop.hearthcode.model.ai.action.impl.PlayCardAction;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.transition.api.AiStateTransition;
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 
 /**
  * Implementation of {@link AiStateTransition}.
  */
-public class AiStateTransitionImpl implements AiStateTransition {
+public final class AiStateTransitionImpl implements AiStateTransition {
 
     private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
     private static final PlayerId AI_PLAYER = new PlayerId(PlayerType.AI_PLAYER);
@@ -85,8 +86,8 @@ public class AiStateTransitionImpl implements AiStateTransition {
 
     private void removeDeadIfNecessary(
         final AiGameState gameState,
-        final it.unibo.oop.hearthcode.model.player.api.PlayerId playerId,
-        final it.unibo.oop.hearthcode.model.creature.api.CardId cardId
+        final PlayerId playerId,
+        final CardId cardId
     ) {
         gameState.getArmyCard(playerId, cardId)
             .filter(card -> card.getHealth() <= 0)
