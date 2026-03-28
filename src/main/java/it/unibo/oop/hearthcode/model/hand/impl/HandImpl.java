@@ -51,8 +51,8 @@ public class HandImpl implements Hand {
         return this.hand.stream().map(card -> (CardState) new CardStateImpl(
             card.getId(),
             card.getManaCost(),
-            ((CreatureImpl) card).getHealth(),
             ((CreatureImpl) card).getAttackValue(),
+            ((CreatureImpl) card).getHealth(),
             true
         ))
         .toList();

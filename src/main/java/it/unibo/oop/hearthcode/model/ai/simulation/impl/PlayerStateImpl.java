@@ -111,7 +111,7 @@ public class PlayerStateImpl implements PlayerState {
      * {@inheritDoc}
      */
     @Override
-    public Optional<CardStateImpl> getHandCard(final CardId cardId) {
+    public Optional<CardState> getHandCard(final CardId cardId) {
         return this.playerHand.flatMap(hand -> hand.stream()
             .filter(card -> card.getCardId().equals(cardId))
             .findFirst());

@@ -41,7 +41,7 @@ public interface PlayerState {
      * @param cardId the identifier of the card
      * @return the state of the card requested
      */
-    Optional<CardStateImpl> getHandCard(CardId cardId);
+    Optional<CardState> getHandCard(CardId cardId);
 
     /**
      * @param cardId the identifier of the card

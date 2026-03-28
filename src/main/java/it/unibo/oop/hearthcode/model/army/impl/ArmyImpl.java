@@ -63,16 +63,16 @@ public class ArmyImpl implements Army {
                 .map(entry -> (CardState) new CardStateImpl(
                     entry.getKey().getId(),
                     entry.getKey().getManaCost(),
-                    ((CreatureImpl) entry.getKey()).getHealth(),
                     ((CreatureImpl) entry.getKey()).getAttackValue(),
+                    ((CreatureImpl) entry.getKey()).getHealth(),
                     true
                 )),
             this.sleepingCreatures.stream()
                 .map(card -> (CardState) new CardStateImpl(
                     card.getId(),
                     card.getManaCost(),
-                    ((CreatureImpl) card).getHealth(),
                     ((CreatureImpl) card).getAttackValue(),
+                    ((CreatureImpl) card).getHealth(),
                     false
                 ))
         ).toList();

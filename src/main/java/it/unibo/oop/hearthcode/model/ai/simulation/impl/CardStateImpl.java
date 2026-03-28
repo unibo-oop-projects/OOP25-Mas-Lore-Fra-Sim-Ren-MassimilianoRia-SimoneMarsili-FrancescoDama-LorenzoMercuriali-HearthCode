@@ -46,8 +46,8 @@ public class CardStateImpl implements CardState {
         this(
             other.getCardId(),
             other.getManaCost(),
-            other.getHealth(),
             other.getAttackValue(),
+            other.getHealth(),
             other.isUsable()
         );
     }
