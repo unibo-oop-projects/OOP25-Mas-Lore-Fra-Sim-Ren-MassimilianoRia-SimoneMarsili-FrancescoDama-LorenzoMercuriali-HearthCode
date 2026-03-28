@@ -16,7 +16,7 @@ public final class ViewMetrics {
     private static final int OUTER_PADDING = (int) (SCREEN_WIDTH * 0.001);
     private static final int CARD_HEIGHT = (int) (SCREEN_HEIGHT * 0.22);
     private static final int CARD_WIDTH = (int) Math.round(CARD_HEIGHT * 0.66);
-    private static final int CARD_AREA_HEIGHT = (int) (CARD_HEIGHT + 20);
+    private static final int CARD_AREA_HEIGHT = (int) (CARD_HEIGHT + 25);
     private static final int SIDE_PANEL_WIDTH = (int) (SCREEN_WIDTH * 0.15);
     private static final int ACTION_BUTTON_WIDTH = (int) (SIDE_PANEL_WIDTH * 0.8);
     private static final int ACTION_BUTTON_HEIGHT = (int) (SCREEN_HEIGHT * 0.05);
