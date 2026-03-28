@@ -113,7 +113,7 @@ public class AiGameStateImpl implements AiGameState {
      * {@inheritDoc}
      */
     @Override
-    public Optional<CardState> findArmyCard(final PlayerId playerId, final CardId cardId) {
+    public Optional<CardState> getArmyCard(final PlayerId playerId, final CardId cardId) {
         return this.getRequiredPlayer(playerId)
             .getArmyCard(cardId)
             .map(CardState.class::cast);
@@ -123,7 +123,7 @@ public class AiGameStateImpl implements AiGameState {
      * {@inheritDoc}
      */
     @Override
-    public Optional<CardState> findHandCard(final PlayerId playerId, final CardId cardId) {
+    public Optional<CardState> getHandCard(final PlayerId playerId, final CardId cardId) {
         return this.getRequiredPlayer(playerId)
             .getHandCard(cardId)
             .map(CardState.class::cast);

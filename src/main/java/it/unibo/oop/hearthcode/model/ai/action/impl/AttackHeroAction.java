@@ -1,6 +1,6 @@
-package it.unibo.oop.hearthcode.model.ai.actions.impl;
+package it.unibo.oop.hearthcode.model.ai.action.impl;
 
-import it.unibo.oop.hearthcode.model.ai.actions.api.AiAction;
+import it.unibo.oop.hearthcode.model.ai.action.api.AiAction;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 
 /**

@@ -72,21 +72,17 @@ public interface AiGameState {
     void destroyCard(PlayerId playerId, CardId cardId);
 
     /**
-     * Finds a card in the specified player's army.
-     *
      * @param playerId the owner of the army
      * @param cardId the card identifier
      * @return the card state if present
      */
-    Optional<CardState> findArmyCard(PlayerId playerId, CardId cardId);
+    Optional<CardState> getArmyCard(PlayerId playerId, CardId cardId);
 
     /**
-     * Finds a card in the specified player's hand.
-     *
      * @param playerId the owner of the hand
      * @param cardId the card identifier
      * @return the card state if present
      */
-    Optional<CardState> findHandCard(PlayerId playerId, CardId cardId);
+    Optional<CardState> getHandCard(PlayerId playerId, CardId cardId);
 
 }
