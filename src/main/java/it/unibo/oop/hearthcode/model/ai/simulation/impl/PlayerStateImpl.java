@@ -14,6 +14,8 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
  */
 public class PlayerStateImpl implements PlayerState {
 
+    private static final int ARMY_MAX_SIZE = 5;
+
     private final PlayerId playerId;
     private int playerHealth;
     private int playerActualMana;
@@ -157,6 +159,10 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public void placeCard(final CardId cardId) {
+        if (this.playerArmy.size() >= ARMY_MAX_SIZE) {
+            throw new IllegalStateException("Army is full.");
+        }
+
         final List<CardStateImpl> hand = this.playerHand.orElseThrow(
             () -> new IllegalStateException("This player has no visible hand.")
         );

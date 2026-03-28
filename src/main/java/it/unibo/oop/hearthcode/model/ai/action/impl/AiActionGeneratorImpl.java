@@ -16,6 +16,8 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerType;
  */
 public final class AiActionGeneratorImpl implements AiActionGenerator {
 
+    private static final int ARMY_MAX_SIZE = 5;
+
     @Override
     public List<AiAction> generateLegalActions(final AiGameState gameState) {
         final List<AiAction> actions = new ArrayList<>();
@@ -27,6 +29,9 @@ public final class AiActionGeneratorImpl implements AiActionGenerator {
     }
 
     private void addPlayableCardActions(final List<AiAction> actions, final PlayerState aiPlayer) {
+        if (aiPlayer.getPlayerArmy().size() >= ARMY_MAX_SIZE) {
+            return;
+        }
         aiPlayer.getPlayerHand().ifPresent(hand -> hand.stream()
             .filter(card -> card.getManaCost() <= aiPlayer.getPlayerActualMana())
             .map(card -> new PlayCardAction(card.getCardId()))

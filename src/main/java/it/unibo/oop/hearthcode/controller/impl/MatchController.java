@@ -56,10 +56,7 @@ public final class MatchController {
             } else {
                 scene.showErrorPanel(MESSAGE);
             }
-            final var winner = this.boardGame.getWinner();
-            if (winner.isPresent()) {
-                coordinator.showEndMatch(winner.get());
-            }
+            this.evaluateEndMatch(coordinator);
         });
 
         scene.onAttackCreature(() -> {
@@ -94,7 +91,9 @@ public final class MatchController {
             aiTurnService.decideTurn(this.boardGame).stream().forEach(
                 action -> aiActionExecutor.execute(this.boardGame, action)
             );
+            this.evaluateEndMatch(coordinator);
             this.boardGame.switchTurn();
+            this.evaluateEndMatch(coordinator);
         });
 
         scene.onExitGame(() -> {
@@ -104,4 +103,12 @@ public final class MatchController {
             }
         });
     }
+
+    private void evaluateEndMatch(final SceneCoordinator coordinator) {
+        final var winner = this.boardGame.getWinner();
+        if (winner.isPresent()) {
+            coordinator.showEndMatch(winner.get());
+        }
+    }
+
 }
