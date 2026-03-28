@@ -84,4 +84,11 @@ public interface GameObserver {
      */
     void onCardExhausted(PlayerId playerId, CardId exhaustedCard);
 
+    /**
+     * Notifies that the card was burned during the drawing action.
+     * 
+     * @param playerId the player to be notified
+     */
+    void onCardBurned(PlayerId playerId);
+
 }

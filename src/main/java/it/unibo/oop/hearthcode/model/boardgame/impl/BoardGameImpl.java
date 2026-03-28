@@ -315,9 +315,11 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
                 }
             } else if (drawResult.result() == DrawCardResultType.CARD_ADDED) {
                 final var card = (Creature) drawResult.drawnCard().get();
-                notifyObservers(o -> o.onCreatureDrawn(currentPlayer, card.getId(),
+                notifyObservers(o -> o.onCreatureDrawn(this.currentPlayer, card.getId(),
                     new CreatureDefinition(card.getName(), card.getHealth(), card.getAttackValue(), card.getManaCost()))
                 );
+            } else {
+                notifyObservers(o -> o.onCardBurned(this.currentPlayer));
             }
         }
     }
