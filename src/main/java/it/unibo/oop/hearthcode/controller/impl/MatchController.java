@@ -1,18 +1,13 @@
 package it.unibo.oop.hearthcode.controller.impl;
 
-import java.util.List;
-
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
-import it.unibo.oop.hearthcode.model.ai.action.api.AiAction;
 import it.unibo.oop.hearthcode.model.ai.executor.api.AiActionExecutor;
 import it.unibo.oop.hearthcode.model.ai.service.api.AiTurnService;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
 import it.unibo.oop.hearthcode.model.boardgame.api.ObservableGame;
-import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 
 /**
@@ -20,7 +15,6 @@ import it.unibo.oop.hearthcode.view.api.MatchView;
  */
 public final class MatchController {
 
-    private static final PlayerId AI_PLAYER = new PlayerId(PlayerType.AI_PLAYER);
     private static final String MESSAGE = "Incorrect number of cards selected!";
 
     private final BoardGame boardGame;
@@ -32,6 +26,8 @@ public final class MatchController {
      * @param boardGame the boardGame of the match
      * @param coordinator the application scene coordinator
      * @param audioService the audio service
+     * @param aiTurnService the turn service of the AI
+     * @param aiActionExecutor the executor of the AI actions in the real match
      */
     public MatchController(
         final MatchView scene,
