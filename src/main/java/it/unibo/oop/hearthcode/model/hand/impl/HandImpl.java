@@ -71,13 +71,26 @@ public class HandImpl implements Hand {
      */
     @Override
     public Card removeCard(final CardId cardId) {
+        final Card card = this.cardSearch(cardId);
+        this.hand.remove(card);
+        return card;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Card getCard(final CardId cardId) {
+        return this.cardSearch(cardId);
+    }
+
+    private Card cardSearch(final CardId cardId) {
         final Optional<Card> card = this.hand.stream()
             .filter(c -> c.getId().equals(cardId))
             .findFirst();
         if (card.isEmpty()) {
             throw new IllegalArgumentException("This card is not contained in your hand!");
         } else {
-            this.hand.remove(card.get());
             return card.get();
         }
     }
