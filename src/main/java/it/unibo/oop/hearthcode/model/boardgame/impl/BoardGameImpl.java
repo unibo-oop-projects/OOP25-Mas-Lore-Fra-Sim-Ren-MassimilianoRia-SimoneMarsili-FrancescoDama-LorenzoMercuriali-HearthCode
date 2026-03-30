@@ -234,7 +234,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
             this.armies.get(this.players.get(currPlayer)).placeCard((Creature) removed);
             notifyObservers(o -> o.onCardPlaced(currPlayer, removed.getId()));
         } catch (final IllegalArgumentException | IllegalStateException e) {
-            throw new IllegalStateException("The card cannot be placed on the board.", e);
+            throw e;
         }
     }
 
