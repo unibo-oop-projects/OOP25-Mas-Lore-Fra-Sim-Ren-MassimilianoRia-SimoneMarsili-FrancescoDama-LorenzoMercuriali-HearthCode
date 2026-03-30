@@ -28,8 +28,8 @@ public class AiTurnServiceImpl implements AiTurnService {
         final AiGameStateFactory gameStateFactory,
         final AiDecisionAlgorithm decisionAlgorithm
     ) {
-        this.gameStateFactory = Objects.requireNonNull(gameStateFactory);
-        this.decisionAlgorithm = Objects.requireNonNull(decisionAlgorithm);
+        this.gameStateFactory = gameStateFactory;
+        this.decisionAlgorithm = decisionAlgorithm;
     }
 
     /**

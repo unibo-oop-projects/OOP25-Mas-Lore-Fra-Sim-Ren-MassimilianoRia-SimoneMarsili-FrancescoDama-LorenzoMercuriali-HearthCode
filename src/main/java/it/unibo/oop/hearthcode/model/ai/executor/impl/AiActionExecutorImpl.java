@@ -17,17 +17,14 @@ public final class AiActionExecutorImpl implements AiActionExecutor {
      */
     @Override
     public void execute(final BoardGame game, final AiAction action) {
-
         if (action instanceof PlayCardAction play) {
             game.place(play.cardId());
             return;
         }
-
         if (action instanceof AttackHeroAction attackHero) {
             game.attackHero(attackHero.attackerId());
             return;
         }
-
         if (action instanceof AttackCardAction attackCard) {
             game.attackCard(
                 attackCard.attackerId(),
@@ -35,10 +32,6 @@ public final class AiActionExecutorImpl implements AiActionExecutor {
             );
             return;
         }
-
-        throw new IllegalArgumentException(
-            "Unsupported AI action: " + action.getClass().getSimpleName()
-        );
     }
 
 }
