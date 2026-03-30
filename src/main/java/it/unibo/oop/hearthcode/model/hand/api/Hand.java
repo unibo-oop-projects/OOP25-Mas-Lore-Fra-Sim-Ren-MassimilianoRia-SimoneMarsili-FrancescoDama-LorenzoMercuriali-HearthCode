@@ -22,6 +22,14 @@ public interface Hand {
     int getActualSize();
 
     /**
+     * It returns the card with the specified id.
+     * 
+     * @param cardId the id of the card
+     * @return the card
+     */
+    Card getCard(CardId cardId);
+
+    /**
      * @return a copy of the cards held
      */
     List<CardState> getCardsCopies();
