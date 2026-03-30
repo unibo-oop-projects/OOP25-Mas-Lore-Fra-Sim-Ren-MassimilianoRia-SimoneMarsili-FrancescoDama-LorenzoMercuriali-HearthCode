@@ -1,6 +1,6 @@
-package it.unibo.oop.hearthcode.model.ai.impl;
+package it.unibo.oop.hearthcode.model.ai.simulation.impl;
 
-import it.unibo.oop.hearthcode.model.ai.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 
 /**
@@ -10,9 +10,9 @@ public class CardStateImpl implements CardState {
 
     private final CardId cardId;
     private final int manaCost;
-    private final int health;
     private final int attackValue;
-    private final boolean usable;
+    private int health;
+    private boolean usable;
 
     /**
      * Creates a card state.
@@ -26,15 +26,30 @@ public class CardStateImpl implements CardState {
     public CardStateImpl(
         final CardId cardId,
         final int manaCost,
-        final int health,
         final int attackValue,
+        final int health,
         final boolean usable
     ) {
         this.cardId = cardId;
         this.manaCost = manaCost;
-        this.health = health;
         this.attackValue = attackValue;
+        this.health = health;
         this.usable = usable;
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other the source card state
+     */
+    public CardStateImpl(final CardState other) {
+        this(
+            other.getCardId(),
+            other.getManaCost(),
+            other.getAttackValue(),
+            other.getHealth(),
+            other.isUsable()
+        );
     }
 
     /**
@@ -75,6 +90,41 @@ public class CardStateImpl implements CardState {
     @Override
     public boolean isUsable() {
         return this.usable;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void damage(final int damage) {
+        if (damage < 0) {
+            throw new IllegalArgumentException("Damage cannot be negative.");
+        }
+        this.health = Math.max(0, this.health - damage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exhaust() {
+        this.usable = false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void awaken() {
+        this.usable = true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDead() {
+        return this.health <= 0;
     }
 
 }

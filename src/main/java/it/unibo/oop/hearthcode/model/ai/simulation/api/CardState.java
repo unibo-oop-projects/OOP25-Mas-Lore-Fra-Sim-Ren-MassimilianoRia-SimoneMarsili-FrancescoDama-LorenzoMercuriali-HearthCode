@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.ai.api;
+package it.unibo.oop.hearthcode.model.ai.simulation.api;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 
@@ -31,5 +31,27 @@ public interface CardState {
      * @return whether the card is usable
      */
     boolean isUsable();
+
+    /**
+     * Decreases the health of the card.
+     *
+     * @param damage the amount of damage
+     */
+    void damage(int damage);
+
+    /**
+     * Marks the card as exhausted.
+     */
+    void exhaust();
+
+    /**
+     * Marks the card as usable.
+     */
+    void awaken();
+
+    /**
+     * @return whether the card is dead
+     */
+    boolean isDead();
 
 }

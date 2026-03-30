@@ -3,6 +3,8 @@ package it.unibo.oop.hearthcode.controller.impl;
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
+import it.unibo.oop.hearthcode.model.ai.executor.api.AiActionExecutor;
+import it.unibo.oop.hearthcode.model.ai.service.api.AiTurnService;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
 import it.unibo.oop.hearthcode.model.boardgame.api.ObservableGame;
@@ -24,12 +26,16 @@ public final class MatchController {
      * @param boardGame the boardGame of the match
      * @param coordinator the application scene coordinator
      * @param audioService the audio service
+     * @param aiTurnService the turn service of the AI
+     * @param aiActionExecutor the executor of the AI actions in the real match
      */
     public MatchController(
         final MatchView scene,
         final BoardGame boardGame,
         final SceneCoordinator coordinator,
-        final AudioService audioService
+        final AudioService audioService,
+        final AiTurnService aiTurnService,
+        final AiActionExecutor aiActionExecutor
     ) {
 
         if (boardGame instanceof ObservableGame observable && scene instanceof GameObserver observer) {
@@ -50,10 +56,7 @@ public final class MatchController {
             } else {
                 scene.showErrorPanel(MESSAGE);
             }
-            final var winner = this.boardGame.getWinner();
-            if (winner.isPresent()) {
-                coordinator.showEndMatch(winner.get());
-            }
+            this.evaluateEndMatch(coordinator);
         });
 
         scene.onAttackCreature(() -> {
@@ -85,6 +88,12 @@ public final class MatchController {
         scene.onEndTurn(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             this.boardGame.switchTurn();
+            aiTurnService.decideTurn(this.boardGame).stream().forEach(
+                action -> aiActionExecutor.execute(this.boardGame, action)
+            );
+            this.evaluateEndMatch(coordinator);
+            this.boardGame.switchTurn();
+            this.evaluateEndMatch(coordinator);
         });
 
         scene.onExitGame(() -> {
@@ -94,4 +103,12 @@ public final class MatchController {
             }
         });
     }
+
+    private void evaluateEndMatch(final SceneCoordinator coordinator) {
+        final var winner = this.boardGame.getWinner();
+        if (winner.isPresent()) {
+            coordinator.showEndMatch(winner.get());
+        }
+    }
+
 }

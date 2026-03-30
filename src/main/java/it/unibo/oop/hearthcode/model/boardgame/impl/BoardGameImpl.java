@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import it.unibo.oop.hearthcode.model.ai.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.army.impl.ArmyImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;

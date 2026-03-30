@@ -248,6 +248,14 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      * {@inheritDoc}
      */
     @Override
+    public void showErrorPanel(final String s) {
+        JOptionPane.showMessageDialog(this, s, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onGameStarted(final Map<PlayerId, Integer> playersHealth) {
         playersHealth.forEach((playerId, health) -> {
             this.getPlayerArea(playerId).initHealth(health);
@@ -361,14 +369,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      * {@inheritDoc}
      */
     @Override
-    public void showErrorPanel(final String s) {
-        JOptionPane.showMessageDialog(this, s, "Error", JOptionPane.ERROR_MESSAGE);
-    }
-
-    @Override
     public void onCardBurned(final PlayerId playerId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onCardBurned'");
+        this.showErrorPanel("Your hand is empty. Drawn card is burned!");
     }
 
 }

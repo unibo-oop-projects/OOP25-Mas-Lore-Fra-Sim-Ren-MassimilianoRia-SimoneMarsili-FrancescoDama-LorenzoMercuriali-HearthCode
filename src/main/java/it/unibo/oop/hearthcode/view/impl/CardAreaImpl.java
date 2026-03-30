@@ -1,5 +1,6 @@
 package it.unibo.oop.hearthcode.view.impl;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ public final class CardAreaImpl extends JPanel implements CardArea {
         ));
         this.setOpaque(false);
         this.setBorder(BorderFactory.createTitledBorder(title));
+        this.setPreferredSize(new Dimension(0, ViewMetrics.cardAreaHeight()));
     }
 
     /**

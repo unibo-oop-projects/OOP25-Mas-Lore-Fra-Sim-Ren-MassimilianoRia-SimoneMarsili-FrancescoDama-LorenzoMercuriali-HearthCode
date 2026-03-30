@@ -96,7 +96,6 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         bar.setStringPainted(false);
         bar.setBorder(BorderFactory.createEmptyBorder());
         bar.setAlignmentX(CENTER_ALIGNMENT);
-
         final Dimension size = new Dimension(
             (int) (ViewMetrics.sidePanelWidth() * 0.82),
             Math.max(18, (int) (ViewMetrics.actionButtonHeight() * 0.35))
@@ -104,7 +103,6 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         bar.setPreferredSize(size);
         bar.setMinimumSize(size);
         bar.setMaximumSize(size);
-
         return bar;
     }
 
@@ -114,21 +112,15 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder(this.displayName()));
         panel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
-
         panel.add(Box.createVerticalGlue());
-
         panel.add(this.healthLabel);
         panel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         panel.add(this.healthBar);
-
         panel.add(Box.createVerticalStrut(ViewMetrics.verticalGap() * 3));
-
         panel.add(this.manaLabel);
         panel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         panel.add(this.manaBar);
-
         panel.add(Box.createVerticalGlue());
-
         return panel;
     }
 

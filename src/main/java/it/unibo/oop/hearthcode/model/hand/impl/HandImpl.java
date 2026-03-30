@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.api.CardState;
-import it.unibo.oop.hearthcode.model.ai.impl.CardStateImpl;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.simulation.impl.CardStateImpl;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImpl;
@@ -51,8 +51,8 @@ public class HandImpl implements Hand {
         return this.hand.stream().map(card -> (CardState) new CardStateImpl(
             card.getId(),
             card.getManaCost(),
-            ((CreatureImpl) card).getHealth(),
             ((CreatureImpl) card).getAttackValue(),
+            ((CreatureImpl) card).getHealth(),
             true
         ))
         .toList();

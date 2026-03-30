@@ -5,6 +5,12 @@ import it.unibo.oop.hearthcode.audio.impl.AudioServiceImpl;
 import it.unibo.oop.hearthcode.audio.model.SoundTrack;
 import it.unibo.oop.hearthcode.controller.api.MainController;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
+import it.unibo.oop.hearthcode.model.ai.action.impl.AiActionGeneratorImpl;
+import it.unibo.oop.hearthcode.model.ai.algorithm.impl.AiStupidAlgorithm;
+import it.unibo.oop.hearthcode.model.ai.executor.impl.AiActionExecutorImpl;
+import it.unibo.oop.hearthcode.model.ai.service.impl.AiTurnServiceImpl;
+import it.unibo.oop.hearthcode.model.ai.simulation.impl.AiGameStateFactoryImpl;
+import it.unibo.oop.hearthcode.model.ai.transition.impl.AiStateTransitionImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameImpl;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
@@ -87,7 +93,17 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
     public void startMatch() {
         final MatchScene matchScene = new MatchScene();
         final BoardGame boardGame = new BoardGameImpl();
-        new MatchController(matchScene, boardGame, this, this.audioService);
+        new MatchController(
+            matchScene,
+            boardGame,
+            this,
+            this.audioService,
+            new AiTurnServiceImpl(
+                new AiGameStateFactoryImpl(),
+                new AiStupidAlgorithm(new AiActionGeneratorImpl(), new AiStateTransitionImpl())
+            ),
+            new AiActionExecutorImpl()
+        );
         this.mainView.addScene(SceneId.MATCH, matchScene);
         this.mainView.showScene(SceneId.MATCH);
         this.audioService.playMusic(SoundTrack.MATCH);

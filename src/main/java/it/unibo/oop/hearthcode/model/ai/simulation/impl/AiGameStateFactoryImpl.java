@@ -1,10 +1,10 @@
-package it.unibo.oop.hearthcode.model.ai.impl;
+package it.unibo.oop.hearthcode.model.ai.simulation.impl;
 
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.api.AiGameState;
-import it.unibo.oop.hearthcode.model.ai.api.AiGameStateFactory;
-import it.unibo.oop.hearthcode.model.ai.api.PlayerState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameStateFactory;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.PlayerState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;

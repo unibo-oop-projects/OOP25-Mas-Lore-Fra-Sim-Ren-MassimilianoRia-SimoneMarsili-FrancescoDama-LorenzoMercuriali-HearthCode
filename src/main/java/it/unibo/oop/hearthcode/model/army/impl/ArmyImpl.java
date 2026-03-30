@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import it.unibo.oop.hearthcode.model.ai.api.CardState;
-import it.unibo.oop.hearthcode.model.ai.impl.CardStateImpl;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.ai.simulation.impl.CardStateImpl;
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
@@ -63,16 +63,16 @@ public class ArmyImpl implements Army {
                 .map(entry -> (CardState) new CardStateImpl(
                     entry.getKey().getId(),
                     entry.getKey().getManaCost(),
-                    ((CreatureImpl) entry.getKey()).getHealth(),
                     ((CreatureImpl) entry.getKey()).getAttackValue(),
+                    ((CreatureImpl) entry.getKey()).getHealth(),
                     true
                 )),
             this.sleepingCreatures.stream()
                 .map(card -> (CardState) new CardStateImpl(
                     card.getId(),
                     card.getManaCost(),
-                    ((CreatureImpl) card).getHealth(),
                     ((CreatureImpl) card).getAttackValue(),
+                    ((CreatureImpl) card).getHealth(),
                     false
                 ))
         ).toList();
