@@ -5,16 +5,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
-
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import it.unibo.oop.hearthcode.view.api.Scene;
+import it.unibo.oop.hearthcode.view.utility.ImageLoader;
 
 /**
  * Base class for scenes with a scalable background image and texture-based buttons.
@@ -23,7 +19,7 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
 
     private static final long serialVersionUID = 1L;
 
-    private final transient BufferedImage background;
+    private final transient Image background;
 
     /**
      * Builds the scene with the given background resource.
@@ -31,7 +27,7 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
      * @param backgroundPath the background resource path
      */
     protected AbstractBackgroundScene(final String backgroundPath) {
-        this.background = loadImage(backgroundPath);
+        this.background = ImageLoader.load(backgroundPath).getImage();
     }
 
     /**
@@ -75,28 +71,7 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
      * @return the scaled icon
      */
     protected static ImageIcon loadIcon(final String path, final int width, final int height) {
-        final BufferedImage image = loadImage(path);
-        final Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaledImage);
-    }
-
-    /**
-     * Loads an image from resources.
-     *
-     * @param path the image path
-     * @return the loaded image
-     */
-    protected static BufferedImage loadImage(final String path) {
-        try {
-            return ImageIO.read(
-                Objects.requireNonNull(
-                    AbstractBackgroundScene.class.getResource(path),
-                    "Resource not found: " + path
-                )
-            );
-        } catch (final IOException e) {
-            throw new IllegalStateException("Cannot load resource: " + path, e);
-        }
+        return ImageLoader.load(path, width, height);
     }
 
     /**
@@ -114,12 +89,12 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
         }
 
         final double scale = Math.max(
-            (double) panelWidth / this.background.getWidth(),
-            (double) panelHeight / this.background.getHeight()
+            (double) panelWidth / this.background.getWidth(null),
+            (double) panelHeight / this.background.getHeight(null)
         );
 
-        final int width = (int) Math.ceil(this.background.getWidth() * scale);
-        final int height = (int) Math.ceil(this.background.getHeight() * scale);
+        final int width = (int) Math.ceil(this.background.getWidth(null) * scale);
+        final int height = (int) Math.ceil(this.background.getHeight(null) * scale);
 
         final int x = (panelWidth - width) / 2;
         final int y = (panelHeight - height) / 2;

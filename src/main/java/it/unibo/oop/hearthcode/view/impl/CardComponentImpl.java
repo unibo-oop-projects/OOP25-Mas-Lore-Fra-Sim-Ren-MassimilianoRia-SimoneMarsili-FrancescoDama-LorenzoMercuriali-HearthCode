@@ -1,15 +1,16 @@
 package it.unibo.oop.hearthcode.view.impl;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.border.Border;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
@@ -24,14 +25,18 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Border NORMAL_BORDER = BorderFactory.createEmptyBorder(3, 3, 3, 3);
-    private static final Border SELECTED_BORDER = BorderFactory.createLineBorder(new Color(210, 40, 40), 3);
-    private static final Border DORMANT_BORDER = BorderFactory.createLineBorder(new Color(130, 130, 130), 3);
+    private static final Color SELECTED_BORDER_COLOR = new Color(226, 183, 76);
+    private static final Color DORMANT_BORDER_COLOR = new Color(102, 131, 89);
 
     private static final Color TEXT_COLOR = Color.WHITE;
     private static final Color SHADOW_COLOR = new Color(0, 0, 0, 180);
-    private static final Color DORMANT_OVERLAY_COLOR = new Color(120, 120, 120, 110);
+    private static final Color DORMANT_OVERLAY_COLOR = new Color(61, 89, 57, 110);
+    private static final Color SELECTED_OVERLAY_COLOR = new Color(232, 201, 112, 48);
 
+    private static final int OVERLAY_MARGIN = 2;
+    private static final int OVERLAY_SIZE_OFFSET = 4;
+    private static final int BORDER_SIZE_OFFSET = 5;
+    private static final int CARD_CORNER_RADIUS = 18;
     private static final int TEXT_BOTTOM_MARGIN = 17;
     private static final int SHADOW_OFFSET = 1;
 
@@ -79,28 +84,11 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         this.setFocusPainted(false);
         this.setContentAreaFilled(false);
         this.setOpaque(false);
-        this.setBorderPainted(true);
+        this.setRolloverEnabled(false);
+        this.setBorderPainted(false);
         this.setText(null);
 
-        this.updateBorder();
         this.setFaceUp(false);
-    }
-
-    private void updateIcon() {
-        final ImageIcon icon = this.faceUp ? this.frontIcon : this.backIcon;
-        this.setIcon(icon);
-        this.setDisabledIcon(icon);
-        this.repaint();
-    }
-
-    private void updateBorder() {
-        if (this.selected) {
-            this.setBorder(SELECTED_BORDER);
-        } else if (this.resting) {
-            this.setBorder(DORMANT_BORDER);
-        } else {
-            this.setBorder(NORMAL_BORDER);
-        }
     }
 
     /**
@@ -108,30 +96,79 @@ public final class CardComponentImpl extends JButton implements CardComponent {
      */
     @Override
     protected void paintComponent(final Graphics g) {
-        super.paintComponent(g);
+        final Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        final ImageIcon icon = this.faceUp ? this.frontIcon : this.backIcon;
+        icon.paintIcon(this, g2d, 0, 0);
 
         if (this.resting) {
-            g.setColor(DORMANT_OVERLAY_COLOR);
-            g.fillRect(0, 0, this.getWidth(), this.getHeight());
+            g2d.setColor(DORMANT_OVERLAY_COLOR);
+            g2d.fillRoundRect(
+                OVERLAY_MARGIN,
+                OVERLAY_MARGIN,
+                this.getWidth() - OVERLAY_SIZE_OFFSET,
+                this.getHeight() - OVERLAY_SIZE_OFFSET,
+                CARD_CORNER_RADIUS,
+                CARD_CORNER_RADIUS
+            );
+        }
+
+        if (this.selected) {
+            g2d.setColor(SELECTED_OVERLAY_COLOR);
+            g2d.fillRoundRect(
+                OVERLAY_MARGIN,
+                OVERLAY_MARGIN,
+                this.getWidth() - OVERLAY_SIZE_OFFSET,
+                this.getHeight() - OVERLAY_SIZE_OFFSET,
+                CARD_CORNER_RADIUS,
+                CARD_CORNER_RADIUS
+            );
         }
 
         if (!this.faceUp) {
+            g2d.dispose();
             return;
         }
 
         final String text = this.currentHealth + " / " + this.maxHealth;
         final int fontSize = Math.max(14, this.getWidth() / 9);
         final Font font = this.getFont().deriveFont(Font.BOLD, (float) fontSize);
-        g.setFont(font);
+        g2d.setFont(font);
 
-        final FontMetrics metrics = g.getFontMetrics();
+        final FontMetrics metrics = g2d.getFontMetrics();
         final int x = (this.getWidth() - metrics.stringWidth(text)) / 2;
         final int y = this.getHeight() - TEXT_BOTTOM_MARGIN;
 
-        g.setColor(SHADOW_COLOR);
-        g.drawString(text, x + SHADOW_OFFSET, y + SHADOW_OFFSET);
-        g.setColor(TEXT_COLOR);
-        g.drawString(text, x, y);
+        g2d.setColor(SHADOW_COLOR);
+        g2d.drawString(text, x + SHADOW_OFFSET, y + SHADOW_OFFSET);
+        g2d.setColor(TEXT_COLOR);
+        g2d.drawString(text, x, y);
+        g2d.dispose();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void paintBorder(final Graphics g) {
+        if (!this.selected && !this.resting) {
+            return;
+        }
+
+        final Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setStroke(new BasicStroke(4f));
+        g2d.setColor(this.selected ? SELECTED_BORDER_COLOR : DORMANT_BORDER_COLOR);
+        g2d.drawRoundRect(
+            OVERLAY_MARGIN,
+            OVERLAY_MARGIN,
+            this.getWidth() - BORDER_SIZE_OFFSET,
+            this.getHeight() - BORDER_SIZE_OFFSET,
+            CARD_CORNER_RADIUS,
+            CARD_CORNER_RADIUS
+        );
+        g2d.dispose();
     }
 
     /**
@@ -165,7 +202,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     @Override
     public void setFaceUp(final boolean faceUp) {
         this.faceUp = faceUp;
-        this.updateIcon();
+        this.repaint();
     }
 
     /**
@@ -174,7 +211,6 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     @Override
     public void setSelectedVisual(final boolean isCardSelected) {
         this.selected = isCardSelected;
-        this.updateBorder();
         this.repaint();
     }
 
@@ -184,7 +220,6 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     @Override
     public void setRestingVisual(final boolean isCardResting) {
         this.resting = isCardResting;
-        this.updateBorder();
         this.repaint();
     }
 

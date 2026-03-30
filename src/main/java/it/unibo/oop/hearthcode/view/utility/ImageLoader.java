@@ -11,9 +11,31 @@ import javax.swing.ImageIcon;
  */
 public final class ImageLoader {
 
+    private static final Map<String, ImageIcon> RAW_CACHE = new HashMap<>();
     private static final Map<String, ImageIcon> CACHE = new HashMap<>();
 
     private ImageLoader() {
+    }
+
+    /**
+     * Loads an image from a specific path without resizing it.
+     *
+     * @param path the resource path
+     * @return the corresponding {@link ImageIcon}
+     */
+    public static ImageIcon load(final String path) {
+        if (RAW_CACHE.containsKey(path)) {
+            return RAW_CACHE.get(path);
+        }
+
+        final var url = ImageLoader.class.getResource(path);
+        if (url == null) {
+            throw new IllegalArgumentException("Immagine non trovata: " + path);
+        }
+
+        final ImageIcon icon = new ImageIcon(url);
+        RAW_CACHE.put(path, icon);
+        return icon;
     }
 
     /**
@@ -31,12 +53,7 @@ public final class ImageLoader {
             return CACHE.get(key);
         }
 
-        final var url = ImageLoader.class.getResource(path);
-        if (url == null) {
-            throw new IllegalArgumentException("Immagine non trovata: " + path);
-        }
-
-        final ImageIcon icon = new ImageIcon(url);
+        final ImageIcon icon = load(path);
         final Image scaled = icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
         final ImageIcon correctIcon = new ImageIcon(scaled);
 

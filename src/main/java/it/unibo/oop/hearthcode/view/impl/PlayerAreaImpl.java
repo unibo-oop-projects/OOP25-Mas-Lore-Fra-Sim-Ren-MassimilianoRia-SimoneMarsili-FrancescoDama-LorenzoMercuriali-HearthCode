@@ -3,6 +3,7 @@ package it.unibo.oop.hearthcode.view.impl;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -13,6 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
@@ -28,11 +33,19 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
     private static final long serialVersionUID = 1L;
+    private static final float LABEL_FONT_SIZE = 15f;
+    private static final float PANEL_TITLE_FONT_SIZE = 14f;
+    private static final int MIN_PROGRESS_BAR_HEIGHT = 18;
 
-    private static final Color HEALTH_COLOR = new Color(185, 45, 45);
-    private static final Color MANA_COLOR = new Color(70, 150, 255);
+    private static final Color HEALTH_COLOR = new Color(184, 74, 49);
+    private static final Color MANA_COLOR = new Color(72, 135, 122);
+    private static final Color PANEL_BACKGROUND = new Color(45, 60, 39, 210);
+    private static final Color PANEL_BORDER = new Color(176, 145, 79);
+    private static final Color TEXT_COLOR = new Color(244, 232, 194);
+    private static final Color BAR_BACKGROUND = new Color(82, 73, 50, 220);
 
     private final transient PlayerId playerId;
+    private final String displayName;
     private final CardArea handArea;
     private final CardArea armyArea;
     private final JLabel healthLabel;
@@ -53,8 +66,9 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     public PlayerAreaImpl(final PlayerId playerId) {
         super(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
         this.playerId = playerId;
-        this.handArea = new CardAreaImpl(this.displayName() + " Hand");
-        this.armyArea = new CardAreaImpl(this.displayName() + " Army");
+        this.displayName = playerId.type() == PlayerType.HUMAN_PLAYER ? "Player" : "Enemy";
+        this.handArea = new CardAreaImpl(this.displayName + " Hand");
+        this.armyArea = new CardAreaImpl(this.displayName + " Army");
 
         this.healthLabel = this.createCenteredLabel();
         this.manaLabel = this.createCenteredLabel();
@@ -64,10 +78,10 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
         this.setOpaque(false);
         this.setBorder(BorderFactory.createEmptyBorder(
-            ViewMetrics.outerPadding(),
-            ViewMetrics.outerPadding(),
-            ViewMetrics.outerPadding(),
-            ViewMetrics.outerPadding()
+            ViewMetrics.outerPadding() * 2,
+            ViewMetrics.outerPadding() * 2,
+            ViewMetrics.outerPadding() * 2,
+            ViewMetrics.outerPadding() * 2
         ));
 
         this.add(this.createStatsPanel(), BorderLayout.WEST);
@@ -77,13 +91,11 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.refreshMana();
     }
 
-    private String displayName() {
-        return this.playerId.type() == PlayerType.HUMAN_PLAYER ? "Player" : "Enemy";
-    }
-
     private JLabel createCenteredLabel() {
         final JLabel label = new JLabel("", SwingConstants.CENTER);
         label.setAlignmentX(CENTER_ALIGNMENT);
+        label.setForeground(TEXT_COLOR);
+        label.setFont(label.getFont().deriveFont(Font.BOLD, LABEL_FONT_SIZE));
         return label;
     }
 
@@ -93,12 +105,16 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         bar.setMaximum(1);
         bar.setValue(0);
         bar.setForeground(color);
+        bar.setBackground(BAR_BACKGROUND);
         bar.setStringPainted(false);
-        bar.setBorder(BorderFactory.createEmptyBorder());
+        bar.setBorder(new CompoundBorder(
+            new LineBorder(PANEL_BORDER, 1, true),
+            new EmptyBorder(1, 1, 1, 1)
+        ));
         bar.setAlignmentX(CENTER_ALIGNMENT);
         final Dimension size = new Dimension(
             (int) (ViewMetrics.sidePanelWidth() * 0.82),
-            Math.max(18, (int) (ViewMetrics.actionButtonHeight() * 0.35))
+            Math.max(MIN_PROGRESS_BAR_HEIGHT, (int) (ViewMetrics.actionButtonHeight() * 0.35))
         );
         bar.setPreferredSize(size);
         bar.setMinimumSize(size);
@@ -108,9 +124,19 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
     private JPanel createStatsPanel() {
         final JPanel panel = new JPanel();
-        panel.setOpaque(false);
+        panel.setOpaque(true);
+        panel.setBackground(PANEL_BACKGROUND);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder(this.displayName()));
+        final TitledBorder titledBorder = BorderFactory.createTitledBorder(
+            new CompoundBorder(
+                new LineBorder(PANEL_BORDER, 1, true),
+                new EmptyBorder(10, 10, 10, 10)
+            ),
+            this.displayName
+        );
+        titledBorder.setTitleColor(TEXT_COLOR);
+        titledBorder.setTitleFont(titledBorder.getTitleFont().deriveFont(Font.BOLD, PANEL_TITLE_FONT_SIZE));
+        panel.setBorder(titledBorder);
         panel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
         panel.add(Box.createVerticalGlue());
         panel.add(this.healthLabel);

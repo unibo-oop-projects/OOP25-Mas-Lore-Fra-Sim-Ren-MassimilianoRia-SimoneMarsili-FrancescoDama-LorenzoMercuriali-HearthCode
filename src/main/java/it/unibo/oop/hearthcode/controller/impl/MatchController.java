@@ -1,5 +1,8 @@
 package it.unibo.oop.hearthcode.controller.impl;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
@@ -8,6 +11,7 @@ import it.unibo.oop.hearthcode.model.ai.service.api.AiTurnService;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
 import it.unibo.oop.hearthcode.model.boardgame.api.ObservableGame;
+import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 
 /**
@@ -45,45 +49,24 @@ public final class MatchController {
         this.boardGame = boardGame;
         this.boardGame.startGame();
 
-        scene.onAttackHero(() -> {
-            audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            if (scene.getSelectedCards().size() == 1) {
-                try {
-                    this.boardGame.attackHero(scene.getSelectedCards().get(0));
-                } catch (final IllegalArgumentException | IllegalStateException e) {
-                    scene.showErrorPanel(e.getMessage());
-                }
-            } else {
-                scene.showErrorPanel(MESSAGE);
-            }
-            this.evaluateEndMatch(coordinator);
-        });
+        scene.onAttackHero(() -> this.runSingleCardAction(
+            scene,
+            audioService,
+            this.boardGame::attackHero,
+            () -> this.evaluateEndMatch(coordinator)
+        ));
 
-        scene.onAttackCreature(() -> {
-            audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            if (scene.getSelectedCards().size() == 2) {
-                try {
-                    this.boardGame.attackCard(scene.getSelectedCards().get(0), scene.getSelectedCards().get(1));
-                } catch (final IllegalArgumentException | IllegalStateException e) {
-                    scene.showErrorPanel(e.getMessage());
-                }
-            } else {
-                scene.showErrorPanel(MESSAGE);
-            }
-        });
+        scene.onAttackCreature(() -> this.runTwoCardsAction(
+            scene,
+            audioService,
+            selected -> this.boardGame.attackCard(selected.get(0), selected.get(1))
+        ));
 
-        scene.onPlaceCard(() -> {
-            audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            if (scene.getSelectedCards().size() == 1) {
-                try {
-                    this.boardGame.place(scene.getSelectedCards().get(0));
-                } catch (final IllegalArgumentException | IllegalStateException e) {
-                    scene.showErrorPanel(e.getMessage());
-                }
-            } else {
-                scene.showErrorPanel(MESSAGE);
-            }
-        });
+        scene.onPlaceCard(() -> this.runSingleCardAction(
+            scene,
+            audioService,
+            this.boardGame::place
+        ));
 
         scene.onEndTurn(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
@@ -108,6 +91,47 @@ public final class MatchController {
         final var winner = this.boardGame.getWinner();
         if (winner.isPresent()) {
             coordinator.showEndMatch(winner.get());
+        }
+    }
+
+    private void runSingleCardAction(
+        final MatchView scene,
+        final AudioService audioService,
+        final Consumer<CardId> action,
+        final Runnable... trailingActions
+    ) {
+        this.runMatchAction(scene, audioService, 1, selected -> action.accept(selected.get(0)), trailingActions);
+    }
+
+    private void runTwoCardsAction(
+        final MatchView scene,
+        final AudioService audioService,
+        final Consumer<List<CardId>> action,
+        final Runnable... trailingActions
+    ) {
+        this.runMatchAction(scene, audioService, 2, action, trailingActions);
+    }
+
+    private void runMatchAction(
+        final MatchView scene,
+        final AudioService audioService,
+        final int expectedSelectionSize,
+        final Consumer<List<CardId>> action,
+        final Runnable... trailingActions
+    ) {
+        audioService.playEffect(SoundEffect.BUTTON_CLICK);
+        final List<CardId> selectedCards = scene.getSelectedCards();
+        if (selectedCards.size() != expectedSelectionSize) {
+            scene.showErrorPanel(MESSAGE);
+            return;
+        }
+        try {
+            action.accept(selectedCards);
+            for (final Runnable trailingAction : trailingActions) {
+                trailingAction.run();
+            }
+        } catch (final IllegalArgumentException | IllegalStateException e) {
+            scene.showErrorPanel(e.getMessage());
         }
     }
 
