@@ -13,7 +13,6 @@ import it.unibo.oop.hearthcode.model.deck.api.Deck;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
 import it.unibo.oop.hearthcode.model.player.api.Player;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerFactory;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerImpl;
 

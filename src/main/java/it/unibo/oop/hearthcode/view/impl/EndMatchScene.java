@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.EndMatchView;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
