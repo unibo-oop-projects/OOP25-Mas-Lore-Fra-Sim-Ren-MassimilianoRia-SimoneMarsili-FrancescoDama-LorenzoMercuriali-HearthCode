@@ -16,7 +16,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.Color;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.view.api.CardArea;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
@@ -32,11 +31,6 @@ public final class CardAreaImpl extends JPanel implements CardArea {
     private static final Color AREA_BACKGROUND = new Color(50, 68, 43, 185);
     private static final Color AREA_BORDER = new Color(163, 132, 70);
     private static final Color AREA_TITLE = new Color(243, 228, 183);
-
-    @SuppressFBWarnings(
-        value = "SE_TRANSIENT_FIELD_NOT_RESTORED",
-        justification = "This Swing UI component is not meant to support meaningful deserialization."
-    )
     private final transient Map<CardId, CardComponent> cards = new LinkedHashMap<>();
 
     /**

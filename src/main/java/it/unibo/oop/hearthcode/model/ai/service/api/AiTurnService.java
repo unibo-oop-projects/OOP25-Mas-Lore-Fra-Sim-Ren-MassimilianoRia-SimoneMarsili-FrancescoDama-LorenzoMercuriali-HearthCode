@@ -8,7 +8,6 @@ import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 /**
  * Service responsible for producing the action plan for an AI turn.
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AiTurnService {
 
     /**

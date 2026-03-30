@@ -6,7 +6,6 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 /**
  * Scores an AI action in a given simulated game state.
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AiActionScorer {
 
     /**

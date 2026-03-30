@@ -7,7 +7,6 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 /**
  * Generates all legal actions available to the AI in a given game state.
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AiActionGenerator {
 
     /**

@@ -8,7 +8,6 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 /**
  * Represents an AI decision algorithm that computes a turn plan.
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface AiDecisionAlgorithm {
 
     /**

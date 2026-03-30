@@ -5,7 +5,6 @@ import javax.swing.JComponent;
 /**
  * Contract for an application scene.
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface Scene {
 
     /**
