@@ -30,7 +30,6 @@ public final class AiActionExecutorImpl implements AiActionExecutor {
                 attackCard.attackerId(),
                 attackCard.defenderId()
             );
-            return;
         }
     }
 
