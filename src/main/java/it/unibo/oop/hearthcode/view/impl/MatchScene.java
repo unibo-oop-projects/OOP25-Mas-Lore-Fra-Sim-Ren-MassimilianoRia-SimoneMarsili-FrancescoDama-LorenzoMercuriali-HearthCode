@@ -249,7 +249,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void showErrorPanel(final String s) {
-        JOptionPane.showMessageDialog(this, s, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, s, "Error", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
