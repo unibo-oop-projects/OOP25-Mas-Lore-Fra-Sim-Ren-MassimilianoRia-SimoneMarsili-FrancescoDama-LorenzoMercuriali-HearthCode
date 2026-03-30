@@ -7,15 +7,14 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.PlayerState;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 
 /**
  * Implementation of {@link AiGameStateFactory}.
  */
 public class AiGameStateFactoryImpl implements AiGameStateFactory {
 
-    private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
-    private static final PlayerId AI_PLAYER = new PlayerId(PlayerType.AI_PLAYER);
+    private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
+    private static final PlayerId AI_PLAYER = PlayerId.AI;
 
     /**
      * {@inheritDoc}

@@ -33,7 +33,7 @@ final class PlayerTest {
             new CreatureImplFactory(new IdGenerator())
         );
         final Deck deck = factory.createWeighted(db.size(), def -> 1);
-        final PlayerId id = new PlayerId(PlayerType.HUMAN_PLAYER);
+        final PlayerId id = PlayerId.HUMAN;
         this.player = PlayerFactory.createPlayer(deck, 10, id);
     }
 

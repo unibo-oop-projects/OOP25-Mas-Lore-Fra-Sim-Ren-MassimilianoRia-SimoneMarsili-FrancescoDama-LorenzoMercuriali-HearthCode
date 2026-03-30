@@ -3,7 +3,6 @@ package it.unibo.oop.hearthcode.model.ai.simulation.api;
 import java.util.List;
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.simulation.impl.CardStateImpl;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
@@ -47,7 +46,7 @@ public interface PlayerState {
      * @param cardId the identifier of the card
      * @return the state of the card requested
      */
-    Optional<CardStateImpl> getArmyCard(CardId cardId);
+    Optional<CardState> getArmyCard(CardId cardId);
 
     /**
      * Simulates a reduction of the player's health.

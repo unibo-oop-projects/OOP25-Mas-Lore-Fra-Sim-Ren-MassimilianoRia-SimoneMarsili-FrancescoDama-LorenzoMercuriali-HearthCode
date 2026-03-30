@@ -123,9 +123,10 @@ public class PlayerStateImpl implements PlayerState {
      * {@inheritDoc}
      */
     @Override
-    public Optional<CardStateImpl> getArmyCard(final CardId cardId) {
+    public Optional<CardState> getArmyCard(final CardId cardId) {
         return this.playerArmy.stream()
             .filter(card -> card.getCardId().equals(cardId))
+            .map(CardState.class::cast)
             .findFirst();
     }
 

@@ -9,15 +9,14 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.transition.api.AiStateTransition;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 
 /**
  * Implementation of {@link AiStateTransition}.
  */
 public final class AiStateTransitionImpl implements AiStateTransition {
 
-    private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
-    private static final PlayerId AI_PLAYER = new PlayerId(PlayerType.AI_PLAYER);
+    private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
+    private static final PlayerId AI_PLAYER = PlayerId.AI;
 
     @Override
     public AiGameState apply(final AiGameState gameState, final AiAction action) {

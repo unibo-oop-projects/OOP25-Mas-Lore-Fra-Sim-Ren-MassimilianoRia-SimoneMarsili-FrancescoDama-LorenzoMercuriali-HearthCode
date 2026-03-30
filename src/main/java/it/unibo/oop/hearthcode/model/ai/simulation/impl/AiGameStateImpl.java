@@ -84,7 +84,7 @@ public class AiGameStateImpl implements AiGameState {
      */
     @Override
     public void damageCard(final PlayerId playerId, final CardId cardId, final int damage) {
-        final CardStateImpl card = this.getRequiredPlayer(playerId)
+        final CardStateImpl card = (CardStateImpl) this.getRequiredPlayer(playerId)
             .getArmyCard(cardId)
             .orElseThrow(() -> new IllegalArgumentException("Card not found in army."));
         card.damage(damage);
@@ -95,7 +95,7 @@ public class AiGameStateImpl implements AiGameState {
      */
     @Override
     public void exhaustCard(final PlayerId playerId, final CardId cardId) {
-        final CardStateImpl card = this.getRequiredPlayer(playerId)
+        final CardStateImpl card = (CardStateImpl) this.getRequiredPlayer(playerId)
             .getArmyCard(cardId)
             .orElseThrow(() -> new IllegalArgumentException("Card not found in army."));
         card.exhaust();

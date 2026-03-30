@@ -34,8 +34,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private static final int BUTTONS_NUMBER = 5;
 
-    private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
-    private static final PlayerId AI_PLAYER = new PlayerId(PlayerType.AI_PLAYER);
+    private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
+    private static final PlayerId AI_PLAYER = PlayerId.AI;
 
     @SuppressFBWarnings(
         value = "SE_TRANSIENT_FIELD_NOT_RESTORED",

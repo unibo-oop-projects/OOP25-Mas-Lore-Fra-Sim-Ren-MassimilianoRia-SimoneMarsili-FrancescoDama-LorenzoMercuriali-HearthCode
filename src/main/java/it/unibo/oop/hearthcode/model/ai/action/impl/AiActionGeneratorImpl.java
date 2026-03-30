@@ -9,7 +9,6 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.PlayerState;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 
 /**
  * Implementation of {@link AiActionGenerator}.
@@ -21,8 +20,8 @@ public final class AiActionGeneratorImpl implements AiActionGenerator {
     @Override
     public List<AiAction> generateLegalActions(final AiGameState gameState) {
         final List<AiAction> actions = new ArrayList<>();
-        final PlayerState aiPlayer = gameState.getPlayerState(new PlayerId(PlayerType.AI_PLAYER));
-        final PlayerState humanPlayer = gameState.getPlayerState(new PlayerId(PlayerType.HUMAN_PLAYER));
+        final PlayerState aiPlayer = gameState.getPlayerState(PlayerId.AI);
+        final PlayerState humanPlayer = gameState.getPlayerState(PlayerId.HUMAN);
         this.addPlayableCardActions(actions, aiPlayer);
         this.addAttackActions(actions, aiPlayer, humanPlayer);
         return List.copyOf(actions);

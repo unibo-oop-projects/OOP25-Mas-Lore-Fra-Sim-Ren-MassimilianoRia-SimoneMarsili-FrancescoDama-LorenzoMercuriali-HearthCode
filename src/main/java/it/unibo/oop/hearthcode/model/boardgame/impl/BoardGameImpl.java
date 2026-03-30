@@ -26,7 +26,6 @@ import it.unibo.oop.hearthcode.model.player.api.DrawCardResult;
 import it.unibo.oop.hearthcode.model.player.api.DrawCardResultType;
 import it.unibo.oop.hearthcode.model.player.api.Player;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.model.player.impl.PlayerFactory;
 
 /**
@@ -84,7 +83,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
         final Player humanPlayer = PlayerFactory.createPlayer(
             deckFactory.createWeighted(DECK_SIZE, def -> Math.max(1, def.manaCost())),
             DEFAULT_HEALTH,
-            new PlayerId(PlayerType.HUMAN_PLAYER)
+            PlayerId.HUMAN
         );
 
         this.turnManager = new TurnManager(humanPlayer.getId());
@@ -92,7 +91,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
         final Player aiPlayer = PlayerFactory.createPlayer(
             deckFactory.createWeighted(DECK_SIZE, def -> Math.max(1, def.manaCost())),
             DEFAULT_HEALTH,
-            new PlayerId(PlayerType.AI_PLAYER)
+            PlayerId.AI
         );
 
         this.players.put(humanPlayer.getId(), humanPlayer);

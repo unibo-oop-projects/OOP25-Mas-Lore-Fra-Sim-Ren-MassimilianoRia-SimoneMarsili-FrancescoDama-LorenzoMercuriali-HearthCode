@@ -29,7 +29,7 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
     private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
 
-    private static final PlayerId HUMAN_PLAYER = new PlayerId(PlayerType.HUMAN_PLAYER);
+    private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
 
     private final JButton menuButton;
     private final JLabel resultLabel;
