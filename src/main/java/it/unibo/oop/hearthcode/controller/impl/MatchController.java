@@ -78,7 +78,7 @@ public final class MatchController {
                 try {
                     this.boardGame.place(scene.getSelectedCards().get(0));
                 } catch (final IllegalArgumentException | IllegalStateException e) {
-                    scene.showErrorPanel(e.getCause().getMessage());
+                    scene.showErrorPanel(e.getMessage());
                 }
             } else {
                 scene.showErrorPanel(MESSAGE);
