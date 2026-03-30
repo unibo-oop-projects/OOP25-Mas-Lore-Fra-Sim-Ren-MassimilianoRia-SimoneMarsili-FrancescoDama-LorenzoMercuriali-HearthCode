@@ -5,6 +5,7 @@ import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 /**
  * Factory for creating AI game states starting from a board game instance.
  */
+@FunctionalInterface
 public interface AiGameStateFactory {
 
     /**

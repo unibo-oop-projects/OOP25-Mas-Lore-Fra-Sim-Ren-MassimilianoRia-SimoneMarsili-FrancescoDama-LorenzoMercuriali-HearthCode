@@ -5,6 +5,7 @@ import javax.swing.JComponent;
 /**
  * Contract for an application scene.
  */
+@FunctionalInterface
 public interface Scene {
 
     /**

@@ -40,7 +40,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     private static final int TEXT_BOTTOM_MARGIN = 17;
     private static final int SHADOW_OFFSET = 1;
 
-    private final transient CardId cardId;
+    private final CardId cardId;
     private final ImageIcon frontIcon;
     private final ImageIcon backIcon;
     private final int maxHealth;

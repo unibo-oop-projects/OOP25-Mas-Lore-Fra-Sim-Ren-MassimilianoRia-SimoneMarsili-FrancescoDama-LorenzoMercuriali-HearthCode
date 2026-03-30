@@ -6,6 +6,7 @@ import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 /**
  * Executes a given {@link AiAction} on the real {@link BoardGame} model.
  */
+@FunctionalInterface
 public interface AiActionExecutor {
 
     /**

@@ -1,10 +1,14 @@
 package it.unibo.oop.hearthcode.view.impl;
 
+import java.io.Serializable;
+
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
 
-final class MatchCardSlot {
+final class MatchCardSlot implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final CardComponent card;
     private final PlayerId owner;

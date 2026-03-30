@@ -31,7 +31,7 @@ public final class CardAreaImpl extends JPanel implements CardArea {
     private static final Color AREA_BACKGROUND = new Color(50, 68, 43, 185);
     private static final Color AREA_BORDER = new Color(163, 132, 70);
     private static final Color AREA_TITLE = new Color(243, 228, 183);
-    private final transient Map<CardId, CardComponent> cards = new LinkedHashMap<>();
+    private final Map<CardId, CardComponent> cards = new LinkedHashMap<>();
 
     /**
      * Builds the UI area containing card components.

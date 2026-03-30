@@ -44,7 +44,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private static final Color TEXT_COLOR = new Color(244, 232, 194);
     private static final Color BAR_BACKGROUND = new Color(82, 73, 50, 220);
 
-    private final transient PlayerId playerId;
+    private final PlayerId playerId;
     private final String displayName;
     private final CardArea handArea;
     private final CardArea armyArea;

@@ -37,15 +37,15 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private static final Color PRIMARY_BUTTON_HOVER = new Color(103, 136, 83);
     private static final Color DANGER_BUTTON = new Color(136, 78, 52);
     private static final Color DANGER_BUTTON_HOVER = new Color(160, 97, 66);
-    private final transient PlayerArea humanPlayerArea;
-    private final transient PlayerArea aiPlayerArea;
-    private final transient Map<CardId, MatchCardSlot> cardsById = new LinkedHashMap<>();
+    private final PlayerArea humanPlayerArea;
+    private final PlayerArea aiPlayerArea;
+    private final Map<CardId, MatchCardSlot> cardsById = new LinkedHashMap<>();
     private final JButton attackHeroButton;
     private final JButton attackCreatureButton;
     private final JButton endTurnButton;
     private final JButton placeCardButton;
     private final JButton exitButton;
-    private transient PlayerId currentTurnPlayer = HUMAN_PLAYER;
+    private PlayerId currentTurnPlayer = HUMAN_PLAYER;
     private final transient MatchSelectionState selection = new MatchSelectionState();
     private transient int humanCurrentMana;
 
