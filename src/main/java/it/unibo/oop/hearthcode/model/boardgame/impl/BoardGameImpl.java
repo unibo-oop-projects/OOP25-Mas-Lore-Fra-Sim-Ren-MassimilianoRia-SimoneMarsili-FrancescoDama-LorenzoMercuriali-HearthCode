@@ -224,7 +224,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
         }
         final var currentArmy = this.armies.get(this.players.get(this.turnManager.getCurrentPlayer()));
         if (currentArmy.isArmyFull()) {
-            throw new IllegalStateException("Your army is full and cannot place the card.");
+            throw new IllegalStateException("Your army is full and cannot place the card!");
         }
         try {
             final var currPlayer = this.turnManager.getCurrentPlayer();
@@ -233,7 +233,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
             this.armies.get(this.players.get(currPlayer)).placeCard((Creature) removed);
             notifyObservers(o -> o.onCardPlaced(currPlayer, removed.getId()));
         } catch (final IllegalArgumentException | IllegalStateException e) {
-            throw new IllegalStateException("The card cannot be placed on the board.", e);
+            throw new IllegalStateException("an error occured while placing the card.");
         }
     }
 

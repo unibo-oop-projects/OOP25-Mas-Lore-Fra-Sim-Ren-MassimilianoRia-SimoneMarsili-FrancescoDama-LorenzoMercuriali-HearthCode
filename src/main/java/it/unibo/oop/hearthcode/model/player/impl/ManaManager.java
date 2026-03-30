@@ -6,11 +6,12 @@ package it.unibo.oop.hearthcode.model.player.impl;
 public class ManaManager {
 
     private static final int START_MANA = 0;
+    private static final int MAXIMUM_MANA = 10;
     private int maxMana;
     private int actualMana;
 
     /**
-     * Inizializes the actual and the max Mana at 1.
+     * Inizializes the actual and the max Mana at 0.
      */
     public ManaManager() {
         this.maxMana = START_MANA;
@@ -35,7 +36,9 @@ public class ManaManager {
      * this method increments Mana Limit and set actual Mana to maxMana.
      */
     void updateMana() {
-        this.maxMana++;
+        if (this.maxMana < MAXIMUM_MANA) {
+            this.maxMana++;
+        }
         this.actualMana = this.maxMana; 
     }
 
