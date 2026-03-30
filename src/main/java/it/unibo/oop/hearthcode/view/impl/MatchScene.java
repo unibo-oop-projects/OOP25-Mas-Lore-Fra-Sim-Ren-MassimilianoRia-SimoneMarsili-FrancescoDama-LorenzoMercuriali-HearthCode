@@ -94,29 +94,24 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      * Initializes the match scene.
      */
     public MatchScene() {
-        super(new BorderLayout(ViewMetrics.horizontalGap() * 2, ViewMetrics.verticalGap() * 2));
-
+        super(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
         this.setBorder(BorderFactory.createEmptyBorder(
-            ViewMetrics.outerPadding() * 4,
-            ViewMetrics.outerPadding() * 4,
-            ViewMetrics.outerPadding() * 4,
-            ViewMetrics.outerPadding() * 4
+            ViewMetrics.outerPadding(),
+            ViewMetrics.outerPadding(),
+            ViewMetrics.outerPadding(),
+            ViewMetrics.outerPadding()
         ));
         this.setOpaque(false);
-
         this.humanPlayerArea = new PlayerAreaImpl(HUMAN_PLAYER);
         this.aiPlayerArea = new PlayerAreaImpl(AI_PLAYER);
-
         this.attackHeroButton = this.createActionButton("ATTACK HERO", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
         this.attackCreatureButton = this.createActionButton("ATTACK CREATURE", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
         this.placeCardButton = this.createActionButton("PLACE CARD", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
         this.endTurnButton = this.createActionButton("END TURN", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
         this.exitButton = this.createActionButton("EXIT", DANGER_BUTTON, DANGER_BUTTON_HOVER);
-
         this.add(this.aiPlayerArea.getComponent(), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
         this.add(this.humanPlayerArea.getComponent(), BorderLayout.SOUTH);
-
         this.refreshInteractionState();
     }
 
