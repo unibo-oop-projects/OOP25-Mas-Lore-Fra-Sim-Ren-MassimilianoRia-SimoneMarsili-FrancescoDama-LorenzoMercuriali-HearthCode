@@ -26,7 +26,6 @@ final class MatchSceneUiFactory {
     private static final int BUTTON_HORIZONTAL_PADDING = 12;
     private static final int PANEL_INNER_PADDING = 10;
     private static final int PANEL_OUTER_PADDING = 4;
-
     private static final Color ACTION_PANEL_BACKGROUND = new Color(41, 57, 39, 220);
     private static final Color ACTION_PANEL_BORDER = new Color(172, 141, 74);
     private static final Color ACTION_PANEL_TITLE = new Color(241, 225, 178);
@@ -138,4 +137,5 @@ final class MatchSceneUiFactory {
             button.setBackground(background);
         }
     }
+
 }

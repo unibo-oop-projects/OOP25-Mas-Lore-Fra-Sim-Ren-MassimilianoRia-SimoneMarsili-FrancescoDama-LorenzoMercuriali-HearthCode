@@ -18,11 +18,9 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
     private static final long serialVersionUID = 1L;
 
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
-
     private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
     private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
     private static final int BUTTON_PADDING_Y = ViewMetrics.menuVerticalGap();
-
     private final JButton playButton;
     private final JButton settingsButton;
     private final JButton quitButton;
@@ -32,9 +30,7 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
      */
     public MenuScene() {
         super(BACKGROUND_PATH);
-
         this.setLayout(new GridBagLayout());
-
         this.playButton = this.createImageButton(
             "/images/play-normal.png",
             "/images/play-hover.png",
@@ -56,7 +52,6 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
-
         this.initializeLayout();
     }
 
@@ -64,13 +59,10 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.insets = new Insets(BUTTON_PADDING_Y, 0, BUTTON_PADDING_Y, 0);
-
         gbc.gridy = 0;
         this.add(this.playButton, gbc);
-
         gbc.gridy = 1;
         this.add(this.settingsButton, gbc);
-
         gbc.gridy = 2;
         this.add(this.quitButton, gbc);
     }
@@ -109,4 +101,5 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
     public JComponent getComponent() {
         return this;
     }
+
 }

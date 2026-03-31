@@ -27,12 +27,10 @@ public final class ImageLoader {
         if (RAW_CACHE.containsKey(path)) {
             return RAW_CACHE.get(path);
         }
-
         final var url = ImageLoader.class.getResource(path);
         if (url == null) {
             throw new IllegalArgumentException("Immagine non trovata: " + path);
         }
-
         final ImageIcon icon = new ImageIcon(url);
         RAW_CACHE.put(path, icon);
         return icon;
@@ -48,15 +46,12 @@ public final class ImageLoader {
      */
     public static ImageIcon load(final String path, final int w, final int h) {
         final String key = path + "_" + w + "x" + h;
-
         if (CACHE.containsKey(key)) {
             return CACHE.get(key);
         }
-
         final ImageIcon icon = load(path);
         final Image scaled = icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
         final ImageIcon correctIcon = new ImageIcon(scaled);
-
         CACHE.put(key, correctIcon);
         return correctIcon;
     }

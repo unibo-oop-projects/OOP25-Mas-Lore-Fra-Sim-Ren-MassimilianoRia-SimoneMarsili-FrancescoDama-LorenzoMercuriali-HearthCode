@@ -24,12 +24,9 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     private static final long serialVersionUID = 1L;
 
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
-
     private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
     private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
-
     private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
-
     private final JButton menuButton;
     private final JLabel resultLabel;
 
@@ -40,9 +37,7 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
      */
     public EndMatchScene(final PlayerId playerId) {
         super(BACKGROUND_PATH);
-
         this.setLayout(new BorderLayout());
-
         this.menuButton = this.createImageButton(
             "/images/menu-normal.png",
             "/images/menu-hover.png",
@@ -50,37 +45,28 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
-
         this.resultLabel = new JLabel(
             playerId.equals(HUMAN_PLAYER) ? "YOU WON" : "YOU LOST",
             SwingConstants.CENTER
         );
-
         this.resultLabel.setFont(new Font("Arial Black", Font.BOLD, 100));
-
         this.resultLabel.setForeground(Color.BLACK);
-
         this.resultLabel.setOpaque(true);
         this.resultLabel.setBackground(Color.WHITE);
-
         this.initializeLayout();
     }
 
     private void initializeLayout() {
-        // pannello centrale verticale
         final JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-
         this.resultLabel.setAlignmentX(CENTER_ALIGNMENT);
         this.menuButton.setAlignmentX(CENTER_ALIGNMENT);
-
         centerPanel.add(Box.createVerticalGlue());
         centerPanel.add(this.resultLabel);
         centerPanel.add(Box.createVerticalStrut(10)); // spazio piccolo
         centerPanel.add(this.menuButton);
         centerPanel.add(Box.createVerticalGlue());
-
         this.add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -99,4 +85,5 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     public JComponent getComponent() {
         return this;
     }
+
 }

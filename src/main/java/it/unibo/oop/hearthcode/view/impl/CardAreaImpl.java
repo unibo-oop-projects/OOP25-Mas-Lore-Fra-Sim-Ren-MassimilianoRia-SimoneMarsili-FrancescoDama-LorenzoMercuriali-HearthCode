@@ -27,6 +27,7 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 public final class CardAreaImpl extends JPanel implements CardArea {
 
     private static final long serialVersionUID = 1L;
+
     private static final float PANEL_TITLE_FONT_SIZE = 14f;
     private static final Color AREA_BACKGROUND = new Color(50, 68, 43, 185);
     private static final Color AREA_BORDER = new Color(163, 132, 70);

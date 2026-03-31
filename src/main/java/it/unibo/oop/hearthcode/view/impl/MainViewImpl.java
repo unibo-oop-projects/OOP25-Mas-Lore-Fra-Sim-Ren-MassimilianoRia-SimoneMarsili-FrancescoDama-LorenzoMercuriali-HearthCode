@@ -85,7 +85,7 @@ public final class MainViewImpl implements MainView {
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE
         );
-
         return result == JOptionPane.YES_OPTION;
     }
+
 }

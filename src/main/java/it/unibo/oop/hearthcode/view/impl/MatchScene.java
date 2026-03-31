@@ -30,6 +30,7 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 public final class MatchScene extends JPanel implements MatchView, GameObserver {
 
     private static final long serialVersionUID = 1L;
+    
     private static final int MAX_ARMY_SIZE = 5;
     private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
     private static final PlayerId AI_PLAYER = PlayerId.AI;
@@ -102,12 +103,10 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final JPanel panel = this.createPanel();
         panel.setLayout(new BorderLayout(ViewMetrics.horizontalGap() * 2, ViewMetrics.verticalGap() * 2));
         panel.add(this.createActionPanel(), BorderLayout.WEST);
-
         final JPanel armiesPanel = this.createPanel();
         armiesPanel.setLayout(new GridLayout(2, 1, 0, ViewMetrics.verticalGap() * 2));
         armiesPanel.add(this.aiPlayerArea.getArmyAreaComponent());
         armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent());
-
         panel.add(armiesPanel, BorderLayout.CENTER);
         return panel;
     }
@@ -183,7 +182,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         if (!slot.card().getComponent().isEnabled()) {
             return;
         }
-
         if (slot.zone() == MatchCardZone.HAND) {
             this.toggleHandSelection(cardId);
         } else if (this.isHumanPlayer(slot.owner())) {
@@ -191,7 +189,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         } else {
             this.toggleEnemyArmySelection(cardId);
         }
-
         this.refreshInteractionState();
     }
 
@@ -283,7 +280,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         } else {
             enabled = this.canSelectEnemyArmyCard(slot);
         }
-
         slot.card().setSelectedVisual(this.isSelected(cardId));
         slot.card().setRestingVisual(slot.isDormantForVisuals());
         slot.card().getComponent().setEnabled(enabled);
@@ -373,7 +369,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE
         );
-
         return result == JOptionPane.YES_OPTION;
     }
 
@@ -419,11 +414,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
         final CardComponent card = new CardComponentImpl(drawnCard, def);
         card.getComponent().addActionListener(event -> this.handleCardSelection(card.getCardId()));
-
         if (this.isHumanPlayer(playerId)) {
             card.setFaceUp(true);
         }
-
         this.registerCard(playerId, card, def.manaCost(), MatchCardZone.HAND);
         this.getPlayerArea(playerId).addHandCard(card);
         this.refreshInteractionState();

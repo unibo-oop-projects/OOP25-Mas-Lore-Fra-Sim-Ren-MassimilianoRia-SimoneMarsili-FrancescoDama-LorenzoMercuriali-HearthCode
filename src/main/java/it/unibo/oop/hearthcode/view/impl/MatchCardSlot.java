@@ -71,4 +71,5 @@ final class MatchCardSlot implements Serializable {
         }
         return this.sleeping;
     }
+
 }

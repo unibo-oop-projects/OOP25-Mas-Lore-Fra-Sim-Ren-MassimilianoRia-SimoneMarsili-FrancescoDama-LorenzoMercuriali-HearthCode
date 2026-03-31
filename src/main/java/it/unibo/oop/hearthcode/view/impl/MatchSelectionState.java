@@ -104,4 +104,5 @@ final class MatchSelectionState {
         }
         return List.of(this.attacker, this.target);
     }
+
 }

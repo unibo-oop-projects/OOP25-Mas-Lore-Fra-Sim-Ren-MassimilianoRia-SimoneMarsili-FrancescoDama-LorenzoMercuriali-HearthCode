@@ -17,10 +17,8 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
     private static final long serialVersionUID = 1L;
 
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
-
     private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
     private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
-
     private final JButton backButton;
 
     /**
@@ -28,9 +26,7 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
      */
     public SettingsScene() {
         super(BACKGROUND_PATH);
-
         this.setLayout(new GridBagLayout());
-
         this.backButton = this.createImageButton(
             "/images/back-normal.png",
             "/images/back-hover.png",
@@ -38,7 +34,6 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
-
         this.initializeLayout();
     }
 
@@ -64,4 +59,5 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
     public JComponent getComponent() {
         return this;
     }
+
 }

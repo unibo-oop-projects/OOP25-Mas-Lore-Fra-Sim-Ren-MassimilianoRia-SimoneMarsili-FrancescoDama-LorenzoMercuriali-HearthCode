@@ -50,15 +50,12 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
         final JButton button = new JButton(loadIcon(normalPath, buttonWidth, buttonHeight));
         button.setRolloverIcon(loadIcon(hoverPath, buttonWidth, buttonHeight));
         button.setPressedIcon(loadIcon(pressedPath, buttonWidth, buttonHeight));
-
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setOpaque(false);
-
         final Dimension size = new Dimension(buttonWidth, buttonHeight);
         button.setPreferredSize(size);
-
         return button;
     }
 
@@ -80,25 +77,19 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
     @Override
     protected final void paintComponent(final Graphics g) {
         super.paintComponent(g);
-
         final int panelWidth = this.getWidth();
         final int panelHeight = this.getHeight();
-
         if (panelWidth <= 0 || panelHeight <= 0) {
             return;
         }
-
         final double scale = Math.max(
             (double) panelWidth / this.background.getWidth(null),
             (double) panelHeight / this.background.getHeight(null)
         );
-
         final int width = (int) Math.ceil(this.background.getWidth(null) * scale);
         final int height = (int) Math.ceil(this.background.getHeight(null) * scale);
-
         final int x = (panelWidth - width) / 2;
         final int y = (panelHeight - height) / 2;
-
         final Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(
             RenderingHints.KEY_INTERPOLATION,
@@ -108,8 +99,8 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
             RenderingHints.KEY_RENDERING,
             RenderingHints.VALUE_RENDER_QUALITY
         );
-
         g2d.drawImage(this.background, x, y, width, height, null);
         g2d.dispose();
     }
+
 }

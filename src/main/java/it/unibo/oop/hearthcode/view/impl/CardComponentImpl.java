@@ -27,24 +27,20 @@ public final class CardComponentImpl extends JButton implements CardComponent {
 
     private static final Color SELECTED_BORDER_COLOR = new Color(226, 183, 76);
     private static final Color DORMANT_BORDER_COLOR = new Color(102, 131, 89);
-
     private static final Color TEXT_COLOR = Color.WHITE;
     private static final Color SHADOW_COLOR = new Color(0, 0, 0, 180);
     private static final Color DORMANT_OVERLAY_COLOR = new Color(61, 89, 57, 110);
     private static final Color SELECTED_OVERLAY_COLOR = new Color(232, 201, 112, 48);
-
     private static final int OVERLAY_MARGIN = 2;
     private static final int OVERLAY_SIZE_OFFSET = 4;
     private static final int BORDER_SIZE_OFFSET = 5;
     private static final int CARD_CORNER_RADIUS = 18;
     private static final int TEXT_BOTTOM_MARGIN = 17;
     private static final int SHADOW_OFFSET = 1;
-
     private final CardId cardId;
     private final ImageIcon frontIcon;
     private final ImageIcon backIcon;
     private final int maxHealth;
-
     private int currentHealth;
     private boolean faceUp;
     private boolean selected;
@@ -75,19 +71,16 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         this.currentHealth = def.health();
         this.selected = false;
         this.resting = false;
-
         final Dimension size = new Dimension(ViewMetrics.cardWidth(), ViewMetrics.cardHeight());
         this.setPreferredSize(size);
         this.setMinimumSize(size);
         this.setMaximumSize(size);
-
         this.setFocusPainted(false);
         this.setContentAreaFilled(false);
         this.setOpaque(false);
         this.setRolloverEnabled(false);
         this.setBorderPainted(false);
         this.setText(null);
-
         this.setFaceUp(false);
     }
 
@@ -98,10 +91,8 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     protected void paintComponent(final Graphics g) {
         final Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         final ImageIcon icon = this.faceUp ? this.frontIcon : this.backIcon;
         icon.paintIcon(this, g2d, 0, 0);
-
         if (this.resting) {
             g2d.setColor(DORMANT_OVERLAY_COLOR);
             g2d.fillRoundRect(
@@ -113,7 +104,6 @@ public final class CardComponentImpl extends JButton implements CardComponent {
                 CARD_CORNER_RADIUS
             );
         }
-
         if (this.selected) {
             g2d.setColor(SELECTED_OVERLAY_COLOR);
             g2d.fillRoundRect(
@@ -125,21 +115,17 @@ public final class CardComponentImpl extends JButton implements CardComponent {
                 CARD_CORNER_RADIUS
             );
         }
-
         if (!this.faceUp) {
             g2d.dispose();
             return;
         }
-
         final String text = this.currentHealth + " / " + this.maxHealth;
         final int fontSize = Math.max(14, this.getWidth() / 9);
         final Font font = this.getFont().deriveFont(Font.BOLD, (float) fontSize);
         g2d.setFont(font);
-
         final FontMetrics metrics = g2d.getFontMetrics();
         final int x = (this.getWidth() - metrics.stringWidth(text)) / 2;
         final int y = this.getHeight() - TEXT_BOTTOM_MARGIN;
-
         g2d.setColor(SHADOW_COLOR);
         g2d.drawString(text, x + SHADOW_OFFSET, y + SHADOW_OFFSET);
         g2d.setColor(TEXT_COLOR);
@@ -155,7 +141,6 @@ public final class CardComponentImpl extends JButton implements CardComponent {
         if (!this.selected && !this.resting) {
             return;
         }
-
         final Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(new BasicStroke(4f));

@@ -33,17 +33,16 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 public final class PlayerAreaImpl extends JPanel implements PlayerArea {
 
     private static final long serialVersionUID = 1L;
+
     private static final float LABEL_FONT_SIZE = 15f;
     private static final float PANEL_TITLE_FONT_SIZE = 14f;
     private static final int MIN_PROGRESS_BAR_HEIGHT = 18;
-
     private static final Color HEALTH_COLOR = new Color(184, 74, 49);
     private static final Color MANA_COLOR = new Color(72, 135, 122);
     private static final Color PANEL_BACKGROUND = new Color(45, 60, 39, 210);
     private static final Color PANEL_BORDER = new Color(176, 145, 79);
     private static final Color TEXT_COLOR = new Color(244, 232, 194);
     private static final Color BAR_BACKGROUND = new Color(82, 73, 50, 220);
-
     private final PlayerId playerId;
     private final String displayName;
     private final CardArea handArea;
@@ -52,7 +51,6 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private final JLabel manaLabel;
     private final JProgressBar healthBar;
     private final JProgressBar manaBar;
-
     private int currentHealth;
     private int maxHealth;
     private int currentMana;
@@ -69,13 +67,10 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.displayName = playerId.type() == PlayerType.HUMAN_PLAYER ? "Player" : "Enemy";
         this.handArea = new CardAreaImpl(this.displayName + " Hand");
         this.armyArea = new CardAreaImpl(this.displayName + " Army");
-
         this.healthLabel = this.createCenteredLabel();
         this.manaLabel = this.createCenteredLabel();
-
         this.healthBar = this.createProgressBar(HEALTH_COLOR);
         this.manaBar = this.createProgressBar(MANA_COLOR);
-
         this.setOpaque(false);
         this.setBorder(BorderFactory.createEmptyBorder(
             ViewMetrics.outerPadding() * 2,
@@ -83,10 +78,8 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
             ViewMetrics.outerPadding() * 2,
             ViewMetrics.outerPadding() * 2
         ));
-
         this.add(this.createStatsPanel(), BorderLayout.WEST);
         this.add(this.handArea.getComponent(), BorderLayout.CENTER);
-
         this.refreshHealth();
         this.refreshMana();
     }
