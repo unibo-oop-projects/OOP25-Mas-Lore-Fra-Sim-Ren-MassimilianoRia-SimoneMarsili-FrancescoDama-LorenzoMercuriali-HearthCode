@@ -30,7 +30,7 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 public final class MatchScene extends JPanel implements MatchView, GameObserver {
 
     private static final long serialVersionUID = 1L;
-    
+
     private static final int MAX_ARMY_SIZE = 5;
     private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
     private static final PlayerId AI_PLAYER = PlayerId.AI;
