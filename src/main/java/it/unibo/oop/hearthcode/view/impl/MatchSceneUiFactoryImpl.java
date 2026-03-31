@@ -15,9 +15,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import it.unibo.oop.hearthcode.view.api.MatchSceneUiFactory;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
-final class MatchSceneUiFactory {
+/**
+ * Default implementation of {@link MatchSceneUiFactory}.
+ */
+public final class MatchSceneUiFactoryImpl implements MatchSceneUiFactory {
 
     private static final int BUTTONS_NUMBER = 5;
     private static final float ACTION_BUTTON_FONT_SIZE = 14f;
@@ -32,10 +36,17 @@ final class MatchSceneUiFactory {
     private static final Color PRIMARY_BUTTON_DISABLED = new Color(73, 78, 61);
     private static final Color BUTTON_TEXT = new Color(247, 239, 214);
 
-    private MatchSceneUiFactory() {
+    /**
+     * Builds a factory for match scene UI components.
+     */
+    public MatchSceneUiFactoryImpl() {
     }
 
-    static JButton createActionButton(
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JButton createActionButton(
         final String text,
         final Color background,
         final Color hoverBackground
@@ -66,20 +77,28 @@ final class MatchSceneUiFactory {
         return button;
     }
 
-    static JPanel createPanel() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JPanel createPanel() {
         final JPanel panel = new JPanel();
         panel.setOpaque(false);
         return panel;
     }
 
-    static JComponent createActionPanel(
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JComponent createActionPanel(
         final JButton attackHeroButton,
         final JButton attackCreatureButton,
         final JButton placeCardButton,
         final JButton endTurnButton,
         final JButton exitButton
     ) {
-        final JPanel actionPanel = createTitledPanel("Actions");
+        final JPanel actionPanel = this.createTitledPanel("Actions");
         actionPanel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
         actionPanel.setLayout(new GridLayout(BUTTONS_NUMBER, 1, 0, ViewMetrics.verticalGap() * 2));
         actionPanel.add(attackHeroButton);
@@ -90,8 +109,8 @@ final class MatchSceneUiFactory {
         return actionPanel;
     }
 
-    private static JPanel createTitledPanel(final String title) {
-        final JPanel panel = createPanel();
+    private JPanel createTitledPanel(final String title) {
+        final JPanel panel = this.createPanel();
         final TitledBorder titledBorder = BorderFactory.createTitledBorder(
             new CompoundBorder(
                 new LineBorder(ACTION_PANEL_BORDER, 1, true),
@@ -120,7 +139,7 @@ final class MatchSceneUiFactory {
         return panel;
     }
 
-    private static void updateButtonBackground(
+    private void updateButtonBackground(
         final JButton button,
         final Color background,
         final Color hoverBackground

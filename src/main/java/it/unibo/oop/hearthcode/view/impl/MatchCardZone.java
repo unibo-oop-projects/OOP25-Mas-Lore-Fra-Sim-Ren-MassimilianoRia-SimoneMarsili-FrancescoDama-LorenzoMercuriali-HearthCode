@@ -1,6 +1,9 @@
 package it.unibo.oop.hearthcode.view.impl;
 
-enum MatchCardZone {
+/**
+ * Logical zones a tracked card can belong to during a match.
+ */
+public enum MatchCardZone {
 
     HAND,
 

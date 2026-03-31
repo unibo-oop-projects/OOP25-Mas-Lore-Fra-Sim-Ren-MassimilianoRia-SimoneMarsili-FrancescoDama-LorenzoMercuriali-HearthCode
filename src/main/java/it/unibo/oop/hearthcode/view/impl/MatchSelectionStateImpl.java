@@ -4,26 +4,42 @@ import java.util.List;
 import java.util.Objects;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.view.api.MatchSelectionState;
 
-final class MatchSelectionState {
+/**
+ * Default implementation of {@link MatchSelectionState}.
+ */
+public final class MatchSelectionStateImpl implements MatchSelectionState {
 
     private CardId handCard;
     private CardId attacker;
     private CardId target;
 
-    void clear() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clear() {
         this.handCard = null;
         this.attacker = null;
         this.target = null;
     }
 
-    boolean contains(final CardId cardId) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean contains(final CardId cardId) {
         return Objects.equals(this.handCard, cardId)
             || Objects.equals(this.attacker, cardId)
             || Objects.equals(this.target, cardId);
     }
 
-    void remove(final CardId cardId) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void remove(final CardId cardId) {
         if (Objects.equals(this.handCard, cardId)) {
             this.handCard = null;
         }
@@ -35,15 +51,27 @@ final class MatchSelectionState {
         }
     }
 
-    CardId handCard() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CardId getHandCard() {
         return this.handCard;
     }
 
-    void clearHandCard() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clearHandCard() {
         this.handCard = null;
     }
 
-    void toggleHandCard(final CardId cardId) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void toggleHandCard(final CardId cardId) {
         if (Objects.equals(this.handCard, cardId)) {
             this.handCard = null;
             return;
@@ -53,28 +81,52 @@ final class MatchSelectionState {
         this.target = null;
     }
 
-    CardId attacker() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CardId getAttacker() {
         return this.attacker;
     }
 
-    void clearAttacker() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clearAttacker() {
         this.attacker = null;
     }
 
-    CardId target() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CardId getTarget() {
         return this.target;
     }
 
-    void clearTarget() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clearTarget() {
         this.target = null;
     }
 
-    void clearCombatSelection() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clearCombatSelection() {
         this.attacker = null;
         this.target = null;
     }
 
-    void toggleAttacker(final CardId cardId) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void toggleAttacker(final CardId cardId) {
         if (Objects.equals(this.attacker, cardId)) {
             this.attacker = null;
             this.target = null;
@@ -84,7 +136,11 @@ final class MatchSelectionState {
         this.attacker = cardId;
     }
 
-    void toggleTarget(final CardId cardId) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void toggleTarget(final CardId cardId) {
         if (Objects.equals(this.target, cardId)) {
             this.target = null;
             return;
@@ -92,7 +148,11 @@ final class MatchSelectionState {
         this.target = cardId;
     }
 
-    List<CardId> toSelectedCards() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<CardId> toSelectedCards() {
         if (this.handCard != null) {
             return List.of(this.handCard);
         }

@@ -5,14 +5,8 @@ package it.unibo.oop.hearthcode.audio.model;
  */
 public enum SoundTrack {
 
-    /**
-     * Background music for menu-like scenes.
-     */
     MENU("/audio/music/menu_audio_background.wav"),
 
-    /**
-     * Background music for the match scene.
-     */
     MATCH("/audio/music/match_audio_background.wav");
 
     private final String resourcePath;

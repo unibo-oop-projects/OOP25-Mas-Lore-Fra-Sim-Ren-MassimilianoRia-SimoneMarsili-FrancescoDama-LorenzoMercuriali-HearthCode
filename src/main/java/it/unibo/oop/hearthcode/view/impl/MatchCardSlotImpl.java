@@ -5,8 +5,12 @@ import java.io.Serializable;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
+import it.unibo.oop.hearthcode.view.api.MatchCardSlot;
 
-final class MatchCardSlot implements Serializable {
+/**
+ * Default implementation of {@link MatchCardSlot}.
+ */
+public final class MatchCardSlotImpl implements Serializable, MatchCardSlot {
 
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +21,15 @@ final class MatchCardSlot implements Serializable {
     private boolean sleeping;
     private boolean exhausted;
 
-    MatchCardSlot(
+    /**
+     * Builds the tracked state for a card shown in the match scene.
+     *
+     * @param card the rendered card component
+     * @param owner the owner of the card
+     * @param manaCost the mana cost of the card
+     * @param zone the initial zone of the card
+     */
+    public MatchCardSlotImpl(
         final CardComponent card,
         final PlayerId owner,
         final int manaCost,
@@ -29,43 +41,79 @@ final class MatchCardSlot implements Serializable {
         this.zone = zone;
     }
 
-    CardComponent card() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CardComponent getCard() {
         return this.card;
     }
 
-    PlayerId owner() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PlayerId getOwner() {
         return this.owner;
     }
 
-    int manaCost() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getManaCost() {
         return this.manaCost;
     }
 
-    MatchCardZone zone() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MatchCardZone getZone() {
         return this.zone;
     }
 
-    void moveToArmy() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void moveToArmy() {
         this.zone = MatchCardZone.ARMY;
         this.sleeping = true;
         this.exhausted = false;
         this.card.setFaceUp(true);
     }
 
-    void wakeUp() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void wakeUp() {
         this.sleeping = false;
         this.exhausted = false;
     }
 
-    void exhaust() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exhaust() {
         this.exhausted = true;
     }
 
-    boolean isDormantForInteraction() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDormantForInteraction() {
         return this.sleeping || this.exhausted;
     }
 
-    boolean isDormantForVisuals() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isDormantForVisuals() {
         if (this.owner.type() == PlayerType.HUMAN_PLAYER) {
             return this.isDormantForInteraction();
         }

@@ -20,6 +20,7 @@ import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
+import it.unibo.oop.hearthcode.view.api.MatchCardSlot;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 import it.unibo.oop.hearthcode.view.api.PlayerArea;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
@@ -38,6 +39,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private static final Color PRIMARY_BUTTON_HOVER = new Color(103, 136, 83);
     private static final Color DANGER_BUTTON = new Color(136, 78, 52);
     private static final Color DANGER_BUTTON_HOVER = new Color(160, 97, 66);
+    private final transient MatchSceneUiFactoryImpl uiFactory = new MatchSceneUiFactoryImpl();
     private final PlayerArea humanPlayerArea;
     private final PlayerArea aiPlayerArea;
     private final Map<CardId, MatchCardSlot> cardsById = new LinkedHashMap<>();
@@ -47,7 +49,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private final JButton placeCardButton;
     private final JButton exitButton;
     private PlayerId currentTurnPlayer = HUMAN_PLAYER;
-    private final transient MatchSelectionState selection = new MatchSelectionState();
+    private final transient MatchSelectionStateImpl selection = new MatchSelectionStateImpl();
     private transient int humanCurrentMana;
 
     /**
@@ -64,27 +66,27 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.setOpaque(false);
         this.humanPlayerArea = new PlayerAreaImpl(HUMAN_PLAYER);
         this.aiPlayerArea = new PlayerAreaImpl(AI_PLAYER);
-        this.attackHeroButton = MatchSceneUiFactory.createActionButton(
+        this.attackHeroButton = this.uiFactory.createActionButton(
             "ATTACK HERO",
             PRIMARY_BUTTON,
             PRIMARY_BUTTON_HOVER
         );
-        this.attackCreatureButton = MatchSceneUiFactory.createActionButton(
+        this.attackCreatureButton = this.uiFactory.createActionButton(
             "ATTACK CREATURE",
             PRIMARY_BUTTON,
             PRIMARY_BUTTON_HOVER
         );
-        this.placeCardButton = MatchSceneUiFactory.createActionButton(
+        this.placeCardButton = this.uiFactory.createActionButton(
             "PLACE CARD",
             PRIMARY_BUTTON,
             PRIMARY_BUTTON_HOVER
         );
-        this.endTurnButton = MatchSceneUiFactory.createActionButton(
+        this.endTurnButton = this.uiFactory.createActionButton(
             "END TURN",
             PRIMARY_BUTTON,
             PRIMARY_BUTTON_HOVER
         );
-        this.exitButton = MatchSceneUiFactory.createActionButton("EXIT", DANGER_BUTTON, DANGER_BUTTON_HOVER);
+        this.exitButton = this.uiFactory.createActionButton("EXIT", DANGER_BUTTON, DANGER_BUTTON_HOVER);
         this.add(this.aiPlayerArea.getComponent(), BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
         this.add(this.humanPlayerArea.getComponent(), BorderLayout.SOUTH);
@@ -92,7 +94,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     private JPanel createPanel() {
-        return MatchSceneUiFactory.createPanel();
+        return this.uiFactory.createPanel();
     }
 
     private PlayerArea getPlayerArea(final PlayerId playerId) {
@@ -112,7 +114,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     private JComponent createActionPanel() {
-        return MatchSceneUiFactory.createActionPanel(
+        return this.uiFactory.createActionPanel(
             this.attackHeroButton,
             this.attackCreatureButton,
             this.placeCardButton,
@@ -158,7 +160,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final int manaCost,
         final MatchCardZone zone
     ) {
-        this.cardsById.put(card.getCardId(), new MatchCardSlot(card, owner, manaCost, zone));
+        this.cardsById.put(card.getCardId(), new MatchCardSlotImpl(card, owner, manaCost, zone));
     }
 
     private void moveCardToArmy(final PlayerId playerId, final CardId cardId) {
@@ -179,12 +181,12 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private void handleCardSelection(final CardId cardId) {
         final MatchCardSlot slot = this.getCardSlot(cardId);
-        if (!slot.card().getComponent().isEnabled()) {
+        if (!slot.getCard().getComponent().isEnabled()) {
             return;
         }
-        if (slot.zone() == MatchCardZone.HAND) {
+        if (slot.getZone() == MatchCardZone.HAND) {
             this.toggleHandSelection(cardId);
-        } else if (this.isHumanPlayer(slot.owner())) {
+        } else if (this.isHumanPlayer(slot.getOwner())) {
             this.toggleHumanArmySelection(cardId);
         } else {
             this.toggleEnemyArmySelection(cardId);
@@ -201,7 +203,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     private void toggleEnemyArmySelection(final CardId cardId) {
-        if (this.selection.attacker() == null) {
+        if (this.selection.getAttacker() == null) {
             return;
         }
         this.selection.toggleTarget(cardId);
@@ -209,40 +211,41 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
 
     private boolean canPlayCard(final MatchCardSlot slot) {
         return this.isHumanTurn()
-            && slot.zone() == MatchCardZone.HAND
-            && this.isHumanPlayer(slot.owner())
-            && slot.manaCost() <= this.humanCurrentMana
+            && slot.getZone() == MatchCardZone.HAND
+            && this.isHumanPlayer(slot.getOwner())
+            && slot.getManaCost() <= this.humanCurrentMana
             && this.humanPlayerArea.getArmyCards().size() < MAX_ARMY_SIZE;
     }
 
     private boolean canSelectHumanArmyCard(final MatchCardSlot slot) {
         return this.isHumanTurn()
-            && slot.zone() == MatchCardZone.ARMY
-            && this.isHumanPlayer(slot.owner())
+            && slot.getZone() == MatchCardZone.ARMY
+            && this.isHumanPlayer(slot.getOwner())
             && !slot.isDormantForInteraction();
     }
 
     private boolean canSelectEnemyArmyCard(final MatchCardSlot slot) {
         return this.isHumanTurn()
-            && slot.zone() == MatchCardZone.ARMY
-            && !this.isHumanPlayer(slot.owner())
-            && this.selection.attacker() != null;
+            && slot.getZone() == MatchCardZone.ARMY
+            && !this.isHumanPlayer(slot.getOwner())
+            && this.selection.getAttacker() != null;
     }
 
     private boolean canAttackHero() {
         return this.isHumanTurn()
-            && this.selection.attacker() != null
-            && this.selection.target() == null;
+            && this.selection.getAttacker() != null
+            && this.selection.getTarget() == null;
     }
 
     private boolean canAttackCreature() {
         return this.isHumanTurn()
-            && this.selection.attacker() != null
-            && this.selection.target() != null;
+            && this.selection.getAttacker() != null
+            && this.selection.getTarget() != null;
     }
 
     private boolean canPlaceSelectedCard() {
-        return this.selection.handCard() != null && this.canPlayCard(this.getCardSlot(this.selection.handCard()));
+        return this.selection.getHandCard() != null
+            && this.canPlayCard(this.getCardSlot(this.selection.getHandCard()));
     }
 
     private boolean isTracked(final CardId cardId) {
@@ -250,39 +253,43 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     private void sanitizeSelection() {
-        if (!this.isTracked(this.selection.handCard())) {
+        if (!this.isTracked(this.selection.getHandCard())) {
             this.selection.clearHandCard();
         }
-        if (!this.isTracked(this.selection.attacker())) {
+        if (!this.isTracked(this.selection.getAttacker())) {
             this.selection.clearAttacker();
         }
-        if (!this.isTracked(this.selection.target())) {
+        if (!this.isTracked(this.selection.getTarget())) {
             this.selection.clearTarget();
         }
-        if (this.selection.attacker() != null
-            && this.getCardSlot(this.selection.attacker()).isDormantForInteraction()) {
+        if (this.selection.getAttacker() != null
+            && this.getCardSlot(this.selection.getAttacker()).isDormantForInteraction()) {
             this.selection.clearCombatSelection();
         }
-        if (this.selection.handCard() != null && !this.canPlayCard(this.getCardSlot(this.selection.handCard()))) {
+        if (this.selection.getHandCard() != null
+            && !this.canPlayCard(this.getCardSlot(this.selection.getHandCard()))) {
             this.selection.clearHandCard();
         }
-        if (this.selection.target() != null && this.selection.attacker() == null) {
+        if (this.selection.getTarget() != null && this.selection.getAttacker() == null) {
             this.selection.clearTarget();
         }
     }
 
-    private void refreshCardState(final CardId cardId, final MatchCardSlot slot) {
+    private void refreshCardState(
+        final CardId cardId,
+        final MatchCardSlot slot
+    ) {
         final boolean enabled;
-        if (slot.zone() == MatchCardZone.HAND) {
+        if (slot.getZone() == MatchCardZone.HAND) {
             enabled = this.canPlayCard(slot);
-        } else if (this.isHumanPlayer(slot.owner())) {
+        } else if (this.isHumanPlayer(slot.getOwner())) {
             enabled = this.canSelectHumanArmyCard(slot);
         } else {
             enabled = this.canSelectEnemyArmyCard(slot);
         }
-        slot.card().setSelectedVisual(this.isSelected(cardId));
-        slot.card().setRestingVisual(slot.isDormantForVisuals());
-        slot.card().getComponent().setEnabled(enabled);
+        slot.getCard().setSelectedVisual(this.isSelected(cardId));
+        slot.getCard().setRestingVisual(slot.isDormantForVisuals());
+        slot.getCard().getComponent().setEnabled(enabled);
     }
 
     private void refreshActionButtons() {
@@ -474,7 +481,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     @Override
     public void onCardExhausted(final PlayerId playerId, final CardId exhaustedCard) {
         this.getCardSlot(exhaustedCard).exhaust();
-        if (this.isHumanPlayer(playerId) && Objects.equals(this.selection.attacker(), exhaustedCard)) {
+        if (this.isHumanPlayer(playerId) && Objects.equals(this.selection.getAttacker(), exhaustedCard)) {
             this.selection.clearCombatSelection();
         }
         this.refreshInteractionState();

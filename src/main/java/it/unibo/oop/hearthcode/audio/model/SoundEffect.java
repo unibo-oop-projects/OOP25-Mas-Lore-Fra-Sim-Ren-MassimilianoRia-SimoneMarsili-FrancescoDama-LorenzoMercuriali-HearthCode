@@ -5,9 +5,6 @@ package it.unibo.oop.hearthcode.audio.model;
  */
 public enum SoundEffect {
 
-    /**
-     * Generic button click.
-     */
     BUTTON_CLICK("/audio/effects/click_audio.wav");
 
     private final String resourcePath;
