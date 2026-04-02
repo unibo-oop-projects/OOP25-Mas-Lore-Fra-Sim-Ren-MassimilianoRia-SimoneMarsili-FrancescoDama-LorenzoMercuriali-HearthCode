@@ -9,13 +9,6 @@ import it.unibo.oop.hearthcode.view.impl.MatchCardZone;
 public interface MatchCardSlot {
 
     /**
-     * Returns the rendered card component.
-     *
-     * @return the tracked card component
-     */
-    CardComponent getCard();
-
-    /**
      * Returns the owner of the tracked card.
      *
      * @return the owning player identifier

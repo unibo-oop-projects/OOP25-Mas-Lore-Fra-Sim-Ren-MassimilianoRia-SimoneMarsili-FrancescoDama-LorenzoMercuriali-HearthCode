@@ -1,20 +1,14 @@
 package it.unibo.oop.hearthcode.view.impl;
 
-import java.io.Serializable;
-
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
-import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.api.MatchCardSlot;
 
 /**
  * Default implementation of {@link MatchCardSlot}.
  */
-public final class MatchCardSlotImpl implements Serializable, MatchCardSlot {
+public final class MatchCardSlotImpl implements MatchCardSlot {
 
-    private static final long serialVersionUID = 1L;
-
-    private final CardComponent card;
     private final PlayerId owner;
     private final int manaCost;
     private MatchCardZone zone;
@@ -24,29 +18,18 @@ public final class MatchCardSlotImpl implements Serializable, MatchCardSlot {
     /**
      * Builds the tracked state for a card shown in the match scene.
      *
-     * @param card the rendered card component
      * @param owner the owner of the card
      * @param manaCost the mana cost of the card
      * @param zone the initial zone of the card
      */
     public MatchCardSlotImpl(
-        final CardComponent card,
         final PlayerId owner,
         final int manaCost,
         final MatchCardZone zone
     ) {
-        this.card = card;
         this.owner = owner;
         this.manaCost = manaCost;
         this.zone = zone;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CardComponent getCard() {
-        return this.card;
     }
 
     /**
@@ -81,7 +64,6 @@ public final class MatchCardSlotImpl implements Serializable, MatchCardSlot {
         this.zone = MatchCardZone.ARMY;
         this.sleeping = true;
         this.exhausted = false;
-        this.card.setFaceUp(true);
     }
 
     /**

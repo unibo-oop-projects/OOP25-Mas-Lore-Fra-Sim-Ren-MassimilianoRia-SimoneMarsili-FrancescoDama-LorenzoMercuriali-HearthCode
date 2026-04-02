@@ -37,12 +37,6 @@ public final class MatchSceneUiFactoryImpl implements MatchSceneUiFactory {
     private static final Color BUTTON_TEXT = new Color(247, 239, 214);
 
     /**
-     * Builds a factory for match scene UI components.
-     */
-    public MatchSceneUiFactoryImpl() {
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override

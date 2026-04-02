@@ -106,4 +106,5 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     public JComponent getComponent() {
         return this;
     }
+
 }
