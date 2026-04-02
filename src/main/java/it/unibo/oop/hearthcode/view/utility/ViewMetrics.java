@@ -23,8 +23,23 @@ public final class ViewMetrics {
     private static final int MENU_BUTTON_WIDTH = (int) (SCREEN_WIDTH * 0.21);
     private static final int MENU_BUTTON_HEIGHT = (int) (MENU_BUTTON_WIDTH * 0.35);
     private static final int MENU_VERTICAL_GAP = (int) (SCREEN_HEIGHT * 0.015);
+    private static final int END_BANNER_HEIGHT = (int) (SCREEN_WIDTH * 0.13);
 
     private ViewMetrics() {
+    }
+
+    /**
+     * @return the screen height
+     */
+    public static int screenHeight() {
+        return SCREEN_HEIGHT;
+    }
+
+    /**
+     * @return the screen width
+     */
+    public static int screenWidth() {
+        return SCREEN_WIDTH;
     }
 
     /**
@@ -109,6 +124,13 @@ public final class ViewMetrics {
      */
     public static int menuVerticalGap() {
         return MENU_VERTICAL_GAP;
+    }
+
+    /**
+     * @return the preferred height for end banner
+     */
+    public static int endBannerHeight() {
+        return END_BANNER_HEIGHT;
     }
 
 }

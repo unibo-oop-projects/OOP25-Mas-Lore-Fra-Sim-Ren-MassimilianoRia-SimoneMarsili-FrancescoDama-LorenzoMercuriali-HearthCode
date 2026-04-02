@@ -1,16 +1,16 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.Image;
+import java.net.URL;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.EndMatchView;
@@ -26,18 +26,22 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
     private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
     private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
+    private static final int RESULT_WIDTH = ViewMetrics.screenWidth();
+    private static final int RESULT_HEIGHT = ViewMetrics.endBannerHeight();
     private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
+
     private final JButton menuButton;
-    private final JLabel resultLabel;
+    private final JLabel resultImageLabel;
 
     /**
      * Initializes the end match scene.
-     * 
+     *
      * @param playerId the winner of the match
      */
     public EndMatchScene(final PlayerId playerId) {
         super(BACKGROUND_PATH);
         this.setLayout(new BorderLayout());
+
         this.menuButton = this.createImageButton(
             "/images/menu-normal.png",
             "/images/menu-hover.png",
@@ -45,14 +49,10 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
-        this.resultLabel = new JLabel(
-            playerId.equals(HUMAN_PLAYER) ? "YOU WON" : "YOU LOST",
-            SwingConstants.CENTER
-        );
-        this.resultLabel.setFont(new Font("Arial Black", Font.BOLD, 100));
-        this.resultLabel.setForeground(Color.BLACK);
-        this.resultLabel.setOpaque(true);
-        this.resultLabel.setBackground(Color.WHITE);
+
+        this.resultImageLabel = new JLabel(this.loadResultIcon(playerId));
+        this.resultImageLabel.setAlignmentX(CENTER_ALIGNMENT);
+
         this.initializeLayout();
     }
 
@@ -60,14 +60,35 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
         final JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        this.resultLabel.setAlignmentX(CENTER_ALIGNMENT);
+
         this.menuButton.setAlignmentX(CENTER_ALIGNMENT);
+
         centerPanel.add(Box.createVerticalGlue());
-        centerPanel.add(this.resultLabel);
-        centerPanel.add(Box.createVerticalStrut(10)); // spazio piccolo
+        centerPanel.add(this.resultImageLabel);
+        centerPanel.add(Box.createVerticalStrut(ViewMetrics.menuVerticalGap()));
         centerPanel.add(this.menuButton);
         centerPanel.add(Box.createVerticalGlue());
+
         this.add(centerPanel, BorderLayout.CENTER);
+    }
+
+    private ImageIcon loadResultIcon(final PlayerId playerId) {
+        final String imagePath = playerId.equals(HUMAN_PLAYER)
+            ? "/images/you-won.png"
+            : "/images/you-lost.png";
+
+        final URL resource = getClass().getResource(imagePath);
+        if (resource == null) {
+            throw new IllegalStateException("Image not found: " + imagePath);
+        }
+
+        final ImageIcon originalIcon = new ImageIcon(resource);
+        final Image scaledImage = originalIcon.getImage().getScaledInstance(
+            RESULT_WIDTH,
+            RESULT_HEIGHT,
+            Image.SCALE_SMOOTH
+        );
+        return new ImageIcon(scaledImage);
     }
 
     /**
@@ -85,5 +106,4 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     public JComponent getComponent() {
         return this;
     }
-
 }
