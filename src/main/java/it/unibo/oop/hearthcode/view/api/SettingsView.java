@@ -11,4 +11,11 @@ public interface SettingsView extends Scene {
      * @param action the action to execute
      */
     void onBack(Runnable action);
+
+    /**
+     * Binds the Database showing action.
+     * 
+     * @param action the action to execute
+     */
+    void onDatabase(Runnable action);
 }
