@@ -3,12 +3,13 @@ package it.unibo.oop.hearthcode.controller.impl;
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
-import it.unibo.oop.hearthcode.view.api.SettingsView;
+import it.unibo.oop.hearthcode.view.api.DatabaseView;
+import it.unibo.oop.hearthcode.view.api.MenuView;
 
 /**
- * Controller of the settings scene.
+ * Controller of the database scene.
  */
-public final class SettingsController {
+public final class DatabaseController {
 
     /**
      * Builds the controller and binds the scene actions.
@@ -17,19 +18,15 @@ public final class SettingsController {
      * @param coordinator the application scene coordinator
      * @param audioService the audio service
      */
-    public SettingsController(
-        final SettingsView scene,
+    public DatabaseController(
+        final DatabaseView scene,
         final SceneCoordinator coordinator,
         final AudioService audioService
     ) {
         scene.onBack(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showMainMenu();
-        });
-
-        scene.onDatabase(() -> {
-            audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showDatabase();
+            coordinator.showSettings();
         });
     }
+
 }

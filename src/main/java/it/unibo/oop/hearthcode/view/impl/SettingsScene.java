@@ -49,9 +49,9 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(this.backButton, gbc);
-        gbc.gridy = 1;
         this.add(this.databaseButton, gbc);
+        gbc.gridy = 1;
+        this.add(this.backButton, gbc);
     }
 
     /**

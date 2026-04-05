@@ -18,6 +18,11 @@ public interface SceneCoordinator {
     void showSettings();
 
     /**
+     * Shows the Database scene;
+     */
+    void showDatabase();
+
+    /**
      * Shows the end match scene.
      * 
      * @param playerId the identifier of the winner

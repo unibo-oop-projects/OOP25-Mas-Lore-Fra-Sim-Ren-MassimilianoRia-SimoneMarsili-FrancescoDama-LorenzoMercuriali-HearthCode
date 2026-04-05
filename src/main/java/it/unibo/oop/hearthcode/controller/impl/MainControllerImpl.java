@@ -16,6 +16,7 @@ import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameImpl;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.MainView;
 import it.unibo.oop.hearthcode.view.api.SceneId;
+import it.unibo.oop.hearthcode.view.impl.DatabaseScene;
 import it.unibo.oop.hearthcode.view.impl.EndMatchScene;
 import it.unibo.oop.hearthcode.view.impl.MainViewImpl;
 import it.unibo.oop.hearthcode.view.impl.MatchScene;
@@ -118,5 +119,14 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
             this.audioService.shutdown();
             this.mainView.close();
         }
+    }
+
+    @Override
+    public void showDatabase() {
+        final DatabaseScene database = new DatabaseScene();
+        new DatabaseController(database, this, this.audioService);
+        this.mainView.addScene(SceneId.DATABASE, database);
+        this.mainView.showScene(SceneId.DATABASE);
+        this.audioService.playMusic(SoundTrack.MENU);
     }
 }
