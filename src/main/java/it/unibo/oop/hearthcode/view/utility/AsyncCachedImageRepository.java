@@ -39,7 +39,7 @@ public final class AsyncCachedImageRepository implements ImageRepository {
         return this.rawCache.computeIfAbsent(path, key -> CompletableFuture.supplyAsync(() -> {
             final var url = ImageLoader.class.getResource(key);
             if (url == null) {
-                throw new IllegalArgumentException("Immagine non trovata: " + key);
+                throw new IllegalArgumentException("Image not found: " + key);
             }
             final ImageIcon icon = new ImageIcon(url);
             validateImageReady(icon, key);
