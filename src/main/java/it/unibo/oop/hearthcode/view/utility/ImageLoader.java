@@ -39,7 +39,7 @@ public final class ImageLoader {
     }
 
     /**
-     * Starts menu-related preload work if it has not already started.
+     * Provides access to the menu preload completion.
      * 
      * @return a future completed when the menu preload has finished
      */
@@ -48,7 +48,7 @@ public final class ImageLoader {
     }
 
     /**
-     * Starts match-related preload work if it has not already started.
+     * Provides access to the match preload completion.
      * 
      * @return a future completed when the match preload has finished
      */

@@ -21,6 +21,7 @@ import it.unibo.oop.hearthcode.view.impl.MainViewImpl;
 import it.unibo.oop.hearthcode.view.impl.MatchScene;
 import it.unibo.oop.hearthcode.view.impl.MenuScene;
 import it.unibo.oop.hearthcode.view.impl.SettingsScene;
+import it.unibo.oop.hearthcode.view.utility.ImageLoader;
 
 /**
  * Default implementation of {@link MainController}.
@@ -43,6 +44,8 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
      */
     @Override
     public void start() {
+        ImageLoader.preloadMenuAssets();
+        ImageLoader.preloadMatchAssets();
         final MenuScene menuScene = new MenuScene();
         final SettingsScene settingsScene = new SettingsScene();
 
