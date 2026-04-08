@@ -13,7 +13,7 @@ public record ImageLoadRequest(String path, Integer width, Integer height) {
      * Creates a request for a raw image.
      * 
      * @param path the resource path
-     * @return the request
+     * @return the raw image request
      */
     public static ImageLoadRequest raw(final String path) {
         return new ImageLoadRequest(path, null, null);
@@ -25,7 +25,7 @@ public record ImageLoadRequest(String path, Integer width, Integer height) {
      * @param path the resource path
      * @param width the target width
      * @param height the target height
-     * @return the request
+     * @return the scaled image request
      */
     public static ImageLoadRequest scaled(final String path, final int width, final int height) {
         return new ImageLoadRequest(path, width, height);

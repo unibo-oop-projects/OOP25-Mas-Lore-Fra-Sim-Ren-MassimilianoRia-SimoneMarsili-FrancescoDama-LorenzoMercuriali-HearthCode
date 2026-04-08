@@ -31,10 +31,16 @@ public final class AsyncCachedImageRepository implements ImageRepository {
      */
     @Override
     public CompletableFuture<ImageIcon> loadAsync(final ImageLoadRequest request) {
-        Objects.requireNonNull(request);
+        Objects.requireNonNull(request, "requests must not be null");
         return request.isScaled() ? this.loadScaledAsync(request) : this.loadRawAsync(request.path());
     }
 
+    /**
+     * Loads and caches a raw image asynchronously.
+     * 
+     * @param path the resource path
+     * @return a future completing with the raw image
+     */
     private CompletableFuture<ImageIcon> loadRawAsync(final String path) {
         return this.rawCache.computeIfAbsent(path, key -> CompletableFuture.supplyAsync(() -> {
             final var url = ImageLoader.class.getResource(key);
@@ -47,6 +53,12 @@ public final class AsyncCachedImageRepository implements ImageRepository {
         }, this.executor));
     }
 
+    /**
+     * Loads and caches a scaled image asynchronously.
+     * 
+     * @param request the scaled image request
+     * @return a future completing with the scaled image
+     */
     private CompletableFuture<ImageIcon> loadScaledAsync(final ImageLoadRequest request) {
         final String key = request.path() + "_" + request.width() + "x" + request.height();
         return this.scaledCache.computeIfAbsent(key, ignored -> this.loadRawAsync(request.path())
@@ -63,6 +75,12 @@ public final class AsyncCachedImageRepository implements ImageRepository {
         );
     }
 
+    /**
+     * Verifies that the given icon has valid dimensions after loading.
+     * 
+     * @param icon the icon to validate
+     * @param imagePath the original resource path
+     */
     private static void validateImageReady(final ImageIcon icon, final String imagePath) {
         if (icon.getIconWidth() <= 0 || icon.getIconHeight() <= 0) {
             throw new IllegalStateException("Unable to load image: " + imagePath);

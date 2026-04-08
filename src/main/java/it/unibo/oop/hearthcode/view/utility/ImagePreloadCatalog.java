@@ -20,11 +20,13 @@ public final class ImagePreloadCatalog {
     }
 
     /**
-     * @return the preload plan for the menu and shared navigation scenes
+     * Builds the preload plan for menu and shared navigation scenes.
+     * 
+     * @return the preload plan for the menu
      */
     public static List<ImageLoadRequest> menuAndNavigation() {
         return List.of(
-            ImageLoadRequest.raw("images/menu-background.png"),
+            ImageLoadRequest.raw("/images/menu-background.png"),
             button("/images/play-normal.png"),
             button("/images/play-hover.png"),
             button("/images/play-pressed.png"),
@@ -44,7 +46,9 @@ public final class ImagePreloadCatalog {
     }
 
     /**
-     * @return the preload plan for the match scene and the card textures
+     * Builds the preload plan for the match scene and card textures.
+     * 
+     * @return the preload plan for the match
      */
     public static List<ImageLoadRequest> match() {
         return Stream.concat(
@@ -61,37 +65,48 @@ public final class ImagePreloadCatalog {
         return ImageLoadRequest.scaled(path, ViewMetrics.menuButtonWidth(), ViewMetrics.menuButtonHeight());
     }
 
-private static Stream<ImageLoadRequest> creatureCardRequests() {
-    final var resource = ImagePreloadCatalog.class.getResourceAsStream(CREATURES_RESOURCE);
-    if (resource == null) {
-        throw new IllegalStateException(
-            "Missing resource for image preload: " + CREATURES_RESOURCE
-        );
+    /**
+     * Builds scaled preload requests for all creature card images listed in the creature catalog.
+     * 
+     * @return a stream of creature card preload requests
+     */
+    private static Stream<ImageLoadRequest> creatureCardRequests() {
+        final var resource = ImagePreloadCatalog.class.getResourceAsStream(CREATURES_RESOURCE);
+        if (resource == null) {
+            throw new IllegalStateException(
+                "Missing resource for image preload: " + CREATURES_RESOURCE
+            );
+        }
+        try (
+            resource;
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(resource, StandardCharsets.UTF_8)
+            )
+        ) {
+            return reader.lines()
+                .map(String::trim)
+                .filter(line -> !line.isEmpty())
+                .map(ImagePreloadCatalog::extractCreatureName)
+                .map(name -> ImageLoadRequest.scaled(
+                    CREATURE_IMAGE_PREFIX + name + CREATURE_IMAGE_SUFFIX,
+                    ViewMetrics.cardWidth(),
+                    ViewMetrics.cardHeight()
+                ))
+                .toList()
+                .stream();
+        } catch (final IOException exception) {
+            throw new IllegalStateException("Unable to read creature image catalog",
+                exception
+            );
+        }
     }
-    try (
-        resource;
-        BufferedReader reader = new BufferedReader(
-            new InputStreamReader(resource, StandardCharsets.UTF_8)
-        )
-    ) {
-        return reader.lines()
-            .map(String::trim)
-            .filter(line -> !line.isEmpty())
-            .map(ImagePreloadCatalog::extractCreatureName)
-            .map(name -> ImageLoadRequest.scaled(
-                CREATURE_IMAGE_PREFIX + name + CREATURE_IMAGE_SUFFIX,
-                ViewMetrics.cardWidth(),
-                ViewMetrics.cardHeight()
-            ))
-            .toList()
-            .stream();
-    } catch (final IOException exception) {
-        throw new IllegalStateException("Unable to read creature image catalog",
-            exception
-        );
-    }
-}
 
+    /**
+     * Extracts the creature name from a catalog line.
+     * 
+     * @param line the catalog line to parse
+     * @return the extracted creature name
+     */
     private static String extractCreatureName(final String line) {
         final int separatorIndex = line.indexOf(',');
         if (separatorIndex <= 0) {

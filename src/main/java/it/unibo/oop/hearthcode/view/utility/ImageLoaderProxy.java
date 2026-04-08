@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.swing.ImageIcon;
 
 /**
- * Proxy that exposes synchronous access while warming the cache in background.
+ * Proxy exposing synchronous access and background preloading over an {@link ImageRepository}.
  */
 public final class ImageLoaderProxy {
 
@@ -25,7 +25,7 @@ public final class ImageLoaderProxy {
      * Loads a raw image synchronously.
      * 
      * @param path the resource path
-     * @return the loaded image
+     * @return the loaded raw image
      */
     public ImageIcon load(final String path) {
         return join(this.loadAsync(path));
@@ -37,7 +37,7 @@ public final class ImageLoaderProxy {
      * @param path the resource path
      * @param width the target width
      * @param height the target height
-     * @return the loaded image
+     * @return the loaded scaled image
      */
     public ImageIcon load(final String path, final int width, final int height) {
         return join(this.loadAsync(path, width, height));
@@ -46,8 +46,8 @@ public final class ImageLoaderProxy {
     /**
      * Loads a raw image asynchronously.
      * 
-     * @param path the resource path 
-     * @return the future for the requested image
+     * @param path the resource path
+     * @return the future completing with the requested raw image
      */
     public CompletableFuture<ImageIcon> loadAsync(final String path) {
         return this.repository.loadAsync(ImageLoadRequest.raw(path));
@@ -59,7 +59,7 @@ public final class ImageLoaderProxy {
      * @param path the resource path
      * @param width the target width
      * @param height the target height
-     * @return the future for the requested image
+     * @return a future completing with the requested scaled image
      */
     public CompletableFuture<ImageIcon> loadAsync(final String path, final int width, final int height) {
         return this.repository.loadAsync(ImageLoadRequest.scaled(path, width, height));
@@ -79,6 +79,12 @@ public final class ImageLoaderProxy {
         );
     }
 
+    /**
+     * Joins the given image future.
+     * 
+     * @param future the future to join
+     * @return the loaded image
+     */
     private static ImageIcon join(final CompletableFuture<ImageIcon> future) {
         return future.join();
     }

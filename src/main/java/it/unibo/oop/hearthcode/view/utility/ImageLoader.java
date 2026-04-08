@@ -17,17 +17,17 @@ public final class ImageLoader {
     }
 
     /**
-     * Loads an image from a specific path without resizing it.
+     * Loads an image from the given resource path without resizing it.
      *
      * @param path the resource path
-     * @return the corresponding {@link ImageIcon}
+     * @return the corresponding raw {@link ImageIcon}
      */
     public static ImageIcon load(final String path) {
         return PROXY.load(path);
     }
 
     /**
-     * Loads an image from a specific path.
+     * Loads and scales an image from the given resource path.
      *
      * @param path the resource path
      * @param w the target width
@@ -39,7 +39,7 @@ public final class ImageLoader {
     }
 
     /**
-     * Provides access to the menu preload completion.
+     * Returns a future representing the completion of the menu preload.
      * 
      * @return a future completed when the menu preload has finished
      */
@@ -48,7 +48,7 @@ public final class ImageLoader {
     }
 
     /**
-     * Provides access to the match preload completion.
+     * Returns a future representing the completion of the match preload.
      * 
      * @return a future completed when the match preload has finished
      */

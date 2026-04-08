@@ -13,8 +13,8 @@ public interface ImageRepository {
     /**
      * Loads the requested image asynchronously.
      *
-     * @param request the image request
-     * @return the future containing the image
+     * @param request the image loading request
+     * @return a future completing with the requested image
      */
     CompletableFuture<ImageIcon> loadAsync(ImageLoadRequest request);
 
