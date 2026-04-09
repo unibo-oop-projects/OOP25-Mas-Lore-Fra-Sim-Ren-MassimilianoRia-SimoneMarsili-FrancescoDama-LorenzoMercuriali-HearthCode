@@ -1,9 +1,6 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
-import java.awt.Image;
-import java.net.URL;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -76,19 +73,7 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
         final String imagePath = playerId.equals(HUMAN_PLAYER)
             ? "/images/you-won.png"
             : "/images/you-lost.png";
-
-        final URL resource = getClass().getResource(imagePath);
-        if (resource == null) {
-            throw new IllegalStateException("Image not found: " + imagePath);
-        }
-
-        final ImageIcon originalIcon = new ImageIcon(resource);
-        final Image scaledImage = originalIcon.getImage().getScaledInstance(
-            RESULT_WIDTH,
-            RESULT_HEIGHT,
-            Image.SCALE_SMOOTH
-        );
-        return new ImageIcon(scaledImage);
+        return loadIcon(imagePath, RESULT_WIDTH, RESULT_HEIGHT);
     }
 
     /**

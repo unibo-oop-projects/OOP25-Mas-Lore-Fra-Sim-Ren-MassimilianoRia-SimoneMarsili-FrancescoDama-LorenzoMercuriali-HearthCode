@@ -28,6 +28,8 @@ public final class ImagePreloadCatalog {
     public static List<ImageLoadRequest> menuAndNavigation() {
         return List.of(
             ImageLoadRequest.raw("/images/menu-background.png"),
+            ImageLoadRequest.raw("/images/you-lost.png"),
+            ImageLoadRequest.raw("/images/you-won.png"),
             button("/images/play-normal.png"),
             button("/images/play-hover.png"),
             button("/images/play-pressed.png"),
