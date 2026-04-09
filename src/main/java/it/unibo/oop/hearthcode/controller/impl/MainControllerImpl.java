@@ -47,6 +47,7 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
     public void start() {
         ImageLoader.preloadMenuAssets();
         ImageLoader.preloadMatchAssets();
+        ImageLoader.preloadCreaturesIcon();
         final MenuScene menuScene = new MenuScene();
         final SettingsScene settingsScene = new SettingsScene();
 

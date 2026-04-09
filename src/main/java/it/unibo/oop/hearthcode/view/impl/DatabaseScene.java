@@ -4,9 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
-import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.view.api.DatabaseView;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
@@ -22,7 +20,7 @@ public class DatabaseScene extends AbstractBackgroundScene implements DatabaseVi
     public DatabaseScene() {
         super(BACKGROUND_PATH);
         this.setLayout(new BorderLayout());
-        final CardPanel cardPanel = new CardPanel();
+        final CardsPanel cardPanel = new CardsPanel();
         this.add(cardPanel.getComponent(), BorderLayout.CENTER);
             this.backButton = this.createImageButton(
             "/images/back-normal.png",
@@ -32,6 +30,7 @@ public class DatabaseScene extends AbstractBackgroundScene implements DatabaseVi
             BUTTON_HEIGHT
         );
         this.add(this.backButton, BorderLayout.SOUTH);
+        this.add(cardPanel, BorderLayout.CENTER);
     }
 
     @Override
@@ -42,12 +41,6 @@ public class DatabaseScene extends AbstractBackgroundScene implements DatabaseVi
     @Override
     public void onBack(Runnable action) {
         this.backButton.addActionListener(event -> action.run());
-    }
-
-    @Override
-    public JPanel createCardPanel(CreatureDefinition def) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createCardPanel'");
     }
     
 }

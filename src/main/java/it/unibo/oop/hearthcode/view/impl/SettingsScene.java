@@ -36,9 +36,9 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
             BUTTON_HEIGHT
         );
         this.databaseButton = this.createImageButton(
-            "/images/back-normal.png",
-            "/images/back-hover.png",
-            "/images/back-pressed.png",
+            "/images/deck-normal.png",
+            "/images/deck-hover.png",
+            "/images/deck-pressed.png",
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );

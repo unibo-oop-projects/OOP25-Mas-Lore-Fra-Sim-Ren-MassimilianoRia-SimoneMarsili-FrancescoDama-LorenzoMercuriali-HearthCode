@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -59,6 +60,11 @@ public final class ImagePreloadCatalog {
             )),
             creatureCardRequests()
         ).toList();
+    }
+
+    public static List<ImageLoadRequest> creaturesIconRequest() {
+        return creatureCardRequests()
+            .collect(Collectors.toList());
     }
 
     private static ImageLoadRequest button(final String path) {

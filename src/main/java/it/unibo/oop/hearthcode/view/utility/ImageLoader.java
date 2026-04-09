@@ -1,6 +1,12 @@
 package it.unibo.oop.hearthcode.view.utility;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 
@@ -12,6 +18,7 @@ public final class ImageLoader {
     private static final ImageLoaderProxy PROXY = new ImageLoaderProxy(new AsyncCachedImageRepository());
     private static final CompletableFuture<Void> MENU_PRELOAD = PROXY.preload(ImagePreloadCatalog.menuAndNavigation());
     private static final CompletableFuture<Void> MATCH_PRELOAD = PROXY.preload(ImagePreloadCatalog.match());
+    private static final CompletableFuture<Void> DECK_PRELOAD = PROXY.preload(ImagePreloadCatalog.creaturesIconRequest());
 
     private ImageLoader() {
     }
@@ -54,6 +61,10 @@ public final class ImageLoader {
      */
     public static CompletableFuture<Void> preloadMatchAssets() {
         return MATCH_PRELOAD.thenApply(v -> null);
+    }
+
+    public static CompletableFuture<Void> preloadCreaturesIcon() {
+        return DECK_PRELOAD.thenApply(v -> null);
     }
 
 }
