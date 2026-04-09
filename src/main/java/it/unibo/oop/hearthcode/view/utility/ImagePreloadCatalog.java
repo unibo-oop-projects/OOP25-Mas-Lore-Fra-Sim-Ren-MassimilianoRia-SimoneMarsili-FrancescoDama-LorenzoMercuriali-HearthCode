@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,12 +61,12 @@ public final class ImagePreloadCatalog {
                 ViewMetrics.cardWidth(),
                 ViewMetrics.cardHeight()
             )),
-            creatureCardRequests()
+            creatureCardRequests("")
         ).toList();
     }
 
     public static List<ImageLoadRequest> creaturesIconRequest() {
-        return creatureCardRequests()
+        return creatureCardRequests("deck/")
             .collect(Collectors.toList());
     }
 
@@ -78,7 +79,7 @@ public final class ImagePreloadCatalog {
      * 
      * @return a stream of creature card preload requests
      */
-    private static Stream<ImageLoadRequest> creatureCardRequests() {
+    private static Stream<ImageLoadRequest> creatureCardRequests(final String s) {
         final var resource = ImagePreloadCatalog.class.getResourceAsStream(CREATURES_RESOURCE);
         if (resource == null) {
             throw new IllegalStateException(
@@ -96,7 +97,7 @@ public final class ImagePreloadCatalog {
                 .filter(line -> !line.isEmpty())
                 .map(ImagePreloadCatalog::extractCreatureName)
                 .map(name -> ImageLoadRequest.scaled(
-                    CREATURE_IMAGE_PREFIX + name + CREATURE_IMAGE_SUFFIX,
+                    CREATURE_IMAGE_PREFIX + s + name + CREATURE_IMAGE_SUFFIX,
                     ViewMetrics.cardWidth(),
                     ViewMetrics.cardHeight()
                 ))

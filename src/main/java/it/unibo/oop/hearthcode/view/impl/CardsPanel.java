@@ -22,33 +22,27 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 public class CardsPanel extends AbstractBackgroundScene {
 
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
-    private static final String CREATURE_IMAGES_PATH = "src/main/resources/images/cards/creatures";
+    private static final String CREATURE_IMAGES_PATH = "src/main/resources/images/cards/creatures/deck";
     private static final int ROWS = 2;
     private static final int COLUMNS = 5;
-    List<CreatureDefinition> definitions;
     List<ImageIcon> images;
 
     
     public CardsPanel() {
         super(BACKGROUND_PATH);
-        this.definitions = new ArrayList<>(CreatureDatabaseFactory.createFromFile("creatures.txt").getAll());
         final Path folder = Paths.get(CREATURE_IMAGES_PATH);
         try {
             List<Path> iconsPaths = Files.list(folder)
                     .filter(Files::isRegularFile)
                     .filter(p -> {
-                        String nome = p.toString().toLowerCase();
-                        return nome.endsWith(".jpg") ||
-                               nome.endsWith(".jpeg") ||
-                               nome.endsWith(".png") ||
-                               nome.endsWith(".gif");
+                        String nome = p.toString();
+                        return nome.endsWith(".png");
                     })
                     .collect(Collectors.toList());
-            iconsPaths.stream().forEach(i -> this.images.add(ImageLoader.load(i.toString(), ViewMetrics.cardWidth(), ViewMetrics.cardHeight())));
+            iconsPaths.stream().forEach(i -> this.images.add(loadIcon(i.toString(), ViewMetrics.cardWidth(), ViewMetrics.cardHeight())));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Collections.sort(this.definitions, (a, b) -> a.name().compareTo(b.name()));
         this.setLayout(new GridLayout(ROWS, COLUMNS));
         this.initializeLayout();
         
@@ -60,7 +54,7 @@ public class CardsPanel extends AbstractBackgroundScene {
     }
 
     private void initializeLayout() {
-        IntStream.range(0, this.definitions.size())
-            .forEach(i -> this.add(this.images.get(i));
+        IntStream.range(0, this.images.size())
+            .forEach(i -> this.add(new IconPanel(this.images.get(i))));
     }
 }
