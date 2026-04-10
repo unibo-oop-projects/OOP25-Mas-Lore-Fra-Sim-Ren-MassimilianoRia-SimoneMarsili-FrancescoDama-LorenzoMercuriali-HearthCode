@@ -21,7 +21,6 @@ import it.unibo.oop.hearthcode.view.impl.EndMatchScene;
 import it.unibo.oop.hearthcode.view.impl.MainViewImpl;
 import it.unibo.oop.hearthcode.view.impl.MatchScene;
 import it.unibo.oop.hearthcode.view.impl.MenuScene;
-import it.unibo.oop.hearthcode.view.impl.SettingsScene;
 import it.unibo.oop.hearthcode.view.utility.ImageLoader;
 
 /**
@@ -49,14 +48,8 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
         ImageLoader.preloadMatchAssets();
         ImageLoader.preloadDatabaseAssets();
         final MenuScene menuScene = new MenuScene();
-        final SettingsScene settingsScene = new SettingsScene();
-
         new MenuController(menuScene, this, this.audioService);
-        new SettingsController(settingsScene, this, this.audioService);
-
         this.mainView.addScene(SceneId.MAIN_MENU, menuScene);
-        this.mainView.addScene(SceneId.SETTINGS, settingsScene);
-
         this.showMainMenu();
         this.mainView.show();
     }
@@ -67,15 +60,6 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
     @Override
     public void showMainMenu() {
         this.mainView.showScene(SceneId.MAIN_MENU);
-        this.audioService.playMusic(SoundTrack.MENU);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showSettings() {
-        this.mainView.showScene(SceneId.SETTINGS);
         this.audioService.playMusic(SoundTrack.MENU);
     }
 

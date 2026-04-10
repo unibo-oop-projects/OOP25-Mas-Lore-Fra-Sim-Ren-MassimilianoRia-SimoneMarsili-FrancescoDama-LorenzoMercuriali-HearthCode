@@ -7,8 +7,6 @@ public enum SceneId {
 
     MAIN_MENU,
 
-    SETTINGS,
-
     MATCH,
 
     END_MATCH,

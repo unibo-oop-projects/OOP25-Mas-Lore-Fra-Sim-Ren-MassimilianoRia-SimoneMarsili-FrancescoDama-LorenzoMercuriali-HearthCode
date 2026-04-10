@@ -26,10 +26,6 @@ public final class MenuController {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             coordinator.startMatch();
         });
-        scene.onSettings(() -> {
-            audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showSettings();
-        });
         scene.onDatabase(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             coordinator.showDatabase();

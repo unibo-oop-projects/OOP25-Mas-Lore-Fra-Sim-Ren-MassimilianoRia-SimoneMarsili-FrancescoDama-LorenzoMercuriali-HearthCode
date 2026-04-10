@@ -13,11 +13,6 @@ public interface SceneCoordinator {
     void showMainMenu();
 
     /**
-     * Shows the settings scene.
-     */
-    void showSettings();
-
-    /**
      * Shows the Database scene.
      */
     void showDatabase();

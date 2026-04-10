@@ -13,13 +13,6 @@ public interface MenuView extends Scene {
     void onPlay(Runnable action);
 
     /**
-     * Binds the settings action.
-     *
-     * @param action the action to execute
-     */
-    void onSettings(Runnable action);
-
-    /**
      * Binds the deck action.
      *
      * @param action the action to execute

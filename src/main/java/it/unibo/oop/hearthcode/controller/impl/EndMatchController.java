@@ -6,7 +6,7 @@ import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 import it.unibo.oop.hearthcode.view.api.EndMatchView;
 
 /**
- * Controller of the settings scene.
+ * Controller of the end match scene.
  */
 public final class EndMatchController {
 
