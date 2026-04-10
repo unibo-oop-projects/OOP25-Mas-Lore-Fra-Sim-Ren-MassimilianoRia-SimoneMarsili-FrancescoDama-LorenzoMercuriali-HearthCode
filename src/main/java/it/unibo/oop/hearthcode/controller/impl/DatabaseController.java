@@ -24,7 +24,7 @@ public final class DatabaseController {
     ) {
         scene.onBack(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showSettings();
+            coordinator.showMainMenu();
         });
     }
 

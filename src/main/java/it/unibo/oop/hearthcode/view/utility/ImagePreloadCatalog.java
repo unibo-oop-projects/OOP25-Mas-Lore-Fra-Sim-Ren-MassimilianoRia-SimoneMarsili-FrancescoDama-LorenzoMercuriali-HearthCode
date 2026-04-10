@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,8 +14,6 @@ import java.util.stream.Stream;
 public final class ImagePreloadCatalog {
 
     private static final String CREATURES_RESOURCE = "/creatures.txt";
-    private static final String CREATURE_IMAGE_PREFIX = "/images/cards/creatures/";
-    private static final String CREATURE_IMAGE_SUFFIX = ".png";
 
     private ImagePreloadCatalog() {
     }
@@ -65,6 +62,11 @@ public final class ImagePreloadCatalog {
         ).toList();
     }
 
+    /**
+     * Builds the preload plan for the deck preview scene.
+     *
+     * @return the preload plan for the deck preview
+     */
     public static List<ImageLoadRequest> creaturesIconRequest() {
         return creatureCardRequests("deck/")
             .collect(Collectors.toList());
@@ -76,10 +78,11 @@ public final class ImagePreloadCatalog {
 
     /**
      * Builds scaled preload requests for all creature card images listed in the creature catalog.
-     * 
+     *
+     * @param folderPrefix the folder suffix to prepend after the creature image root
      * @return a stream of creature card preload requests
      */
-    private static Stream<ImageLoadRequest> creatureCardRequests(final String s) {
+    private static Stream<ImageLoadRequest> creatureCardRequests(final String folderPrefix) {
         final var resource = ImagePreloadCatalog.class.getResourceAsStream(CREATURES_RESOURCE);
         if (resource == null) {
             throw new IllegalStateException(
@@ -97,7 +100,7 @@ public final class ImagePreloadCatalog {
                 .filter(line -> !line.isEmpty())
                 .map(ImagePreloadCatalog::extractCreatureName)
                 .map(name -> ImageLoadRequest.scaled(
-                    CREATURE_IMAGE_PREFIX + s + name + CREATURE_IMAGE_SUFFIX,
+                    buildCreatureResourcePath(folderPrefix, name),
                     ViewMetrics.cardWidth(),
                     ViewMetrics.cardHeight()
                 ))
@@ -122,6 +125,14 @@ public final class ImagePreloadCatalog {
             throw new IllegalArgumentException("Invalid creature line for preload: " + line);
         }
         return line.substring(0, separatorIndex);
+    }
+
+    private static String buildCreatureResourcePath(final String folderPrefix, final String creatureName) {
+        return switch (folderPrefix) {
+            case "" -> CreatureImagePaths.card(creatureName);
+            case "deck/" -> CreatureImagePaths.deck(creatureName);
+            default -> throw new IllegalArgumentException("Unsupported creature folder prefix: " + folderPrefix);
+        };
     }
 
 }

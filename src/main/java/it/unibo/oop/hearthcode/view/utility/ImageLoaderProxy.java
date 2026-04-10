@@ -89,3 +89,4 @@ public final class ImageLoaderProxy {
         return future.join();
     }
 }
+

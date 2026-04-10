@@ -134,3 +134,4 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
         this.audioService.playMusic(SoundTrack.MENU);
     }
 }
+

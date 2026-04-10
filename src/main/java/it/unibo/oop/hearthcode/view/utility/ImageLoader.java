@@ -57,6 +57,11 @@ public final class ImageLoader {
         return MATCH_PRELOAD.thenApply(v -> null);
     }
 
+    /**
+     * Returns a future representing the completion of the deck preview preload.
+     *
+     * @return a future completed when deck preview assets have been preloaded
+     */
     public static CompletableFuture<Void> preloadCreaturesIcon() {
         return DECK_PRELOAD.thenApply(v -> null);
     }

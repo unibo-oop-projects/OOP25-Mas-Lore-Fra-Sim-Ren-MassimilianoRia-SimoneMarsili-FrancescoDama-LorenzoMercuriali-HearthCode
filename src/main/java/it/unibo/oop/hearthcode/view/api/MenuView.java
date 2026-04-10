@@ -20,6 +20,13 @@ public interface MenuView extends Scene {
     void onSettings(Runnable action);
 
     /**
+     * Binds the deck action.
+     *
+     * @param action the action to execute
+     */
+    void onDatabase(Runnable action);
+
+    /**
      * Binds the quit action.
      *
      * @param action the action to execute

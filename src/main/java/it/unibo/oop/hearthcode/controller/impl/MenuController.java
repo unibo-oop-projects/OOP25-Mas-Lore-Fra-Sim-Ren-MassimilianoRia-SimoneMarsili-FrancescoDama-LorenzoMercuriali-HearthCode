@@ -30,6 +30,10 @@ public final class MenuController {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             coordinator.showSettings();
         });
+        scene.onDatabase(() -> {
+            audioService.playEffect(SoundEffect.BUTTON_CLICK);
+            coordinator.showDatabase();
+        });
         scene.onQuit(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             coordinator.requestExit();
@@ -37,3 +41,4 @@ public final class MenuController {
     }
 
 }
+

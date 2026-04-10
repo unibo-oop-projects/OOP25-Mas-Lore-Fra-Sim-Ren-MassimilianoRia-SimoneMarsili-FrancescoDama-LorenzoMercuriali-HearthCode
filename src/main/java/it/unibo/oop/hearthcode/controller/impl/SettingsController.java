@@ -26,10 +26,5 @@ public final class SettingsController {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             coordinator.showMainMenu();
         });
-
-        scene.onDatabase(() -> {
-            audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showDatabase();
-        });
     }
 }

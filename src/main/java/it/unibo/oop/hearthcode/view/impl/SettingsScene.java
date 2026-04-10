@@ -20,7 +20,6 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
     private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
     private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
     private final JButton backButton;
-    private final JButton databaseButton;
 
     /**
      * Builds the settings scene.
@@ -35,13 +34,6 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
-        this.databaseButton = this.createImageButton(
-            "/images/deck-normal.png",
-            "/images/deck-hover.png",
-            "/images/deck-pressed.png",
-            BUTTON_WIDTH,
-            BUTTON_HEIGHT
-        );
         this.initializeLayout();
     }
 
@@ -49,8 +41,6 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(this.databaseButton, gbc);
-        gbc.gridy = 1;
         this.add(this.backButton, gbc);
     }
 
@@ -69,10 +59,4 @@ public final class SettingsScene extends AbstractBackgroundScene implements Sett
     public JComponent getComponent() {
         return this;
     }
-
-    @Override
-    public void onDatabase(final Runnable action) {
-        this.databaseButton.addActionListener(event -> action.run());
-    }
-
 }

@@ -23,6 +23,7 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
     private static final int BUTTON_PADDING_Y = ViewMetrics.menuVerticalGap();
     private final JButton playButton;
     private final JButton settingsButton;
+    private final JButton databaseButton;
     private final JButton quitButton;
 
     /**
@@ -45,6 +46,13 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
+        this.databaseButton = this.createImageButton(
+            "/images/deck-normal.png",
+            "/images/deck-hover.png",
+            "/images/deck-pressed.png",
+            BUTTON_WIDTH,
+            BUTTON_HEIGHT
+        );
         this.quitButton = this.createImageButton(
             "/images/quit-normal.png",
             "/images/quit-hover.png",
@@ -64,6 +72,8 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
         gbc.gridy = 1;
         this.add(this.settingsButton, gbc);
         gbc.gridy = 2;
+        this.add(this.databaseButton, gbc);
+        gbc.gridy = 3;
         this.add(this.quitButton, gbc);
     }
 
@@ -85,6 +95,13 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
         this.settingsButton.addActionListener(event -> action.run());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onDatabase(final Runnable action) {
+        this.databaseButton.addActionListener(event -> action.run());
+    }
 
     /**
      * {@inheritDoc}
@@ -103,3 +120,4 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
     }
 
 }
+
