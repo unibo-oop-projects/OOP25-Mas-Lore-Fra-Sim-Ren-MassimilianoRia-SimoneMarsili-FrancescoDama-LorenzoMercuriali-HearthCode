@@ -34,6 +34,9 @@ public final class ImagePreloadCatalog {
             button("/images/settings-normal.png"),
             button("/images/settings-hover.png"),
             button("/images/settings-pressed.png"),
+            button("/images/deck-normal.png"),
+            button("/images/deck-hover.png"),
+            button("/images/deck-pressed.png"),
             button("/images/quit-normal.png"),
             button("/images/quit-hover.png"),
             button("/images/quit-pressed.png"),
@@ -67,7 +70,7 @@ public final class ImagePreloadCatalog {
      *
      * @return the preload plan for the deck preview
      */
-    public static List<ImageLoadRequest> creaturesIconRequest() {
+    public static List<ImageLoadRequest> database() {
         return creatureCardRequests("deck/")
             .collect(Collectors.toList());
     }

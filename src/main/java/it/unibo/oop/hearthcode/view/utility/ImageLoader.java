@@ -10,9 +10,9 @@ import javax.swing.ImageIcon;
 public final class ImageLoader {
 
     private static final ImageLoaderProxy PROXY = new ImageLoaderProxy(new AsyncCachedImageRepository());
-    private static final CompletableFuture<Void> MENU_PRELOAD = PROXY.preload(ImagePreloadCatalog.menuAndNavigation());
-    private static final CompletableFuture<Void> MATCH_PRELOAD = PROXY.preload(ImagePreloadCatalog.match());
-    private static final CompletableFuture<Void> DECK_PRELOAD = PROXY.preload(ImagePreloadCatalog.creaturesIconRequest());
+    private static CompletableFuture<Void> MENU_PRELOAD;
+    private static CompletableFuture<Void> MATCH_PRELOAD;
+    private static CompletableFuture<Void> DATABASE_PRELOAD;
 
     private ImageLoader() {
     }
@@ -45,7 +45,12 @@ public final class ImageLoader {
      * @return a future completed when the menu preload has finished
      */
     public static CompletableFuture<Void> preloadMenuAssets() {
-        return MENU_PRELOAD.thenApply(v -> null);
+        synchronized (ImageLoader.class) {
+            if (MENU_PRELOAD == null) {
+                MENU_PRELOAD = PROXY.preload(ImagePreloadCatalog.menuAndNavigation());
+            }
+            return MENU_PRELOAD.thenApply(v -> null);
+        }
     }
 
     /**
@@ -54,16 +59,26 @@ public final class ImageLoader {
      * @return a future completed when the match preload has finished
      */
     public static CompletableFuture<Void> preloadMatchAssets() {
-        return MATCH_PRELOAD.thenApply(v -> null);
+        synchronized (ImageLoader.class) {
+            if (MATCH_PRELOAD == null) {
+                MATCH_PRELOAD = PROXY.preload(ImagePreloadCatalog.match());
+            }
+            return MATCH_PRELOAD.thenApply(v -> null);
+        }
     }
 
     /**
-     * Returns a future representing the completion of the deck preview preload.
+     * Returns a future representing the completion of the database preload.
      *
-     * @return a future completed when deck preview assets have been preloaded
+     * @return a future completed when database assets have been preloaded
      */
-    public static CompletableFuture<Void> preloadCreaturesIcon() {
-        return DECK_PRELOAD.thenApply(v -> null);
+    public static CompletableFuture<Void> preloadDatabaseAssets() {
+        synchronized (ImageLoader.class) {
+            if (DATABASE_PRELOAD == null) {
+                DATABASE_PRELOAD = PROXY.preload(ImagePreloadCatalog.database());
+            }
+            return DATABASE_PRELOAD.thenApply(v -> null);
+        }
     }
 
 }

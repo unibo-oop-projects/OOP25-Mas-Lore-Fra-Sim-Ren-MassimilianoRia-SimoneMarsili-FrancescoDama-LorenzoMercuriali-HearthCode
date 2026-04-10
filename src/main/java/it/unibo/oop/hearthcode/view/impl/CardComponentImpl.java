@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.view.api.CardComponent;
+import it.unibo.oop.hearthcode.view.utility.CreatureImagePaths;
 import it.unibo.oop.hearthcode.view.utility.ImageLoader;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
@@ -58,7 +59,7 @@ public final class CardComponentImpl extends JButton implements CardComponent {
     ) {
         this.cardId = cardId;
         this.frontIcon = ImageLoader.load(
-            "/images/cards/creatures/" + def.name() + ".png",
+            CreatureImagePaths.card(def.name()),
             ViewMetrics.cardWidth(),
             ViewMetrics.cardHeight()
         );
