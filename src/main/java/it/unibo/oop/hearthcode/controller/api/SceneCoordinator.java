@@ -18,7 +18,7 @@ public interface SceneCoordinator {
     void showSettings();
 
     /**
-     * Shows the Database scene;
+     * Shows the Database scene.
      */
     void showDatabase();
 
