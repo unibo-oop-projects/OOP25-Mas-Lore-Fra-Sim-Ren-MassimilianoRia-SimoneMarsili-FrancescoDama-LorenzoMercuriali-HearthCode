@@ -10,9 +10,9 @@ import javax.swing.ImageIcon;
 public final class ImageLoader {
 
     private static final ImageLoaderProxy PROXY = new ImageLoaderProxy(new AsyncCachedImageRepository());
-    private static CompletableFuture<Void> MENU_PRELOAD;
-    private static CompletableFuture<Void> MATCH_PRELOAD;
-    private static CompletableFuture<Void> DATABASE_PRELOAD;
+    private static CompletableFuture<Void> menuPreload;
+    private static CompletableFuture<Void> matchPreload;
+    private static CompletableFuture<Void> databasePreload;
 
     private ImageLoader() {
     }
@@ -46,10 +46,10 @@ public final class ImageLoader {
      */
     public static CompletableFuture<Void> preloadMenuAssets() {
         synchronized (ImageLoader.class) {
-            if (MENU_PRELOAD == null) {
-                MENU_PRELOAD = PROXY.preload(ImagePreloadCatalog.menuAndNavigation());
+            if (menuPreload == null) {
+                menuPreload = PROXY.preload(ImagePreloadCatalog.menuAndNavigation());
             }
-            return MENU_PRELOAD.thenApply(v -> null);
+            return menuPreload.thenApply(v -> null);
         }
     }
 
@@ -60,10 +60,10 @@ public final class ImageLoader {
      */
     public static CompletableFuture<Void> preloadMatchAssets() {
         synchronized (ImageLoader.class) {
-            if (MATCH_PRELOAD == null) {
-                MATCH_PRELOAD = PROXY.preload(ImagePreloadCatalog.match());
+            if (matchPreload == null) {
+                matchPreload = PROXY.preload(ImagePreloadCatalog.match());
             }
-            return MATCH_PRELOAD.thenApply(v -> null);
+            return matchPreload.thenApply(v -> null);
         }
     }
 
@@ -74,10 +74,10 @@ public final class ImageLoader {
      */
     public static CompletableFuture<Void> preloadDatabaseAssets() {
         synchronized (ImageLoader.class) {
-            if (DATABASE_PRELOAD == null) {
-                DATABASE_PRELOAD = PROXY.preload(ImagePreloadCatalog.database());
+            if (databasePreload == null) {
+                databasePreload = PROXY.preload(ImagePreloadCatalog.database());
             }
-            return DATABASE_PRELOAD.thenApply(v -> null);
+            return databasePreload.thenApply(v -> null);
         }
     }
 
