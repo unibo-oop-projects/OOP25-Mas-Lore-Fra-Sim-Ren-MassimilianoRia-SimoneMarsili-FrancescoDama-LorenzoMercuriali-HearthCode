@@ -67,7 +67,6 @@ public final class MenuScene extends AbstractBackgroundScene implements MenuView
         this.add(this.quitButton, gbc);
     }
 
-
     /**
      * {@inheritDoc}
      */
