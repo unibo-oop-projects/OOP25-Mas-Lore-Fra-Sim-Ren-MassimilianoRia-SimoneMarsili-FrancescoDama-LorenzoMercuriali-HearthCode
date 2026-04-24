@@ -23,6 +23,7 @@ public final class ViewMetrics {
     private static final int MENU_BUTTON_WIDTH = (int) (SCREEN_WIDTH * 0.21);
     private static final int MENU_BUTTON_HEIGHT = (int) (MENU_BUTTON_WIDTH * 0.35);
     private static final int MENU_VERTICAL_GAP = (int) (SCREEN_HEIGHT * 0.015);
+    private static final int PLAYER_STATS_SECTION_GAP = (int) (SCREEN_HEIGHT * 0.025);
     private static final int END_BANNER_HEIGHT = (int) (SCREEN_WIDTH * 0.13);
 
     private ViewMetrics() {
@@ -124,6 +125,13 @@ public final class ViewMetrics {
      */
     public static int menuVerticalGap() {
         return MENU_VERTICAL_GAP;
+    }
+
+    /**
+     * @return the vertical gap between sections in the player stats panel
+     */
+    public static int playerStatsSectionGap() {
+        return PLAYER_STATS_SECTION_GAP;
     }
 
     /**

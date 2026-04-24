@@ -37,6 +37,10 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private static final float LABEL_FONT_SIZE = 15f;
     private static final float PANEL_TITLE_FONT_SIZE = 14f;
     private static final int MIN_PROGRESS_BAR_HEIGHT = 18;
+    private static final int MAX_HAND_CARDS = 7;
+    private static final int MAX_ARMY_CARDS = 5;
+    private static final int MAX_DECK_CARDS = 20;
+    private static final String COUNTER_SEPARATOR = "/";
     private static final Color HEALTH_COLOR = new Color(184, 74, 49);
     private static final Color MANA_COLOR = new Color(72, 135, 122);
     private static final Color PANEL_BACKGROUND = new Color(45, 60, 39, 210);
@@ -49,12 +53,18 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private final CardArea armyArea;
     private final JLabel healthLabel;
     private final JLabel manaLabel;
+    private final JLabel handCounterLabel;
+    private final JLabel armyCounterLabel;
+    private final JLabel deckCounterLabel;
     private final JProgressBar healthBar;
     private final JProgressBar manaBar;
     private int currentHealth;
     private int maxHealth;
     private int currentMana;
     private int maxMana;
+    private int currentHandCards;
+    private int currentArmyCards;
+    private int currentDeckCards;
 
     /**
      * Builds the UI area representing a player.
@@ -69,6 +79,9 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.armyArea = new CardAreaImpl(this.displayName + " Army");
         this.healthLabel = this.createCenteredLabel();
         this.manaLabel = this.createCenteredLabel();
+        this.handCounterLabel = this.createCenteredLabel();
+        this.armyCounterLabel = this.createCenteredLabel();
+        this.deckCounterLabel = this.createCenteredLabel();
         this.healthBar = this.createProgressBar(HEALTH_COLOR);
         this.manaBar = this.createProgressBar(MANA_COLOR);
         this.setOpaque(false);
@@ -82,6 +95,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.add(this.handArea.getComponent(), BorderLayout.CENTER);
         this.refreshHealth();
         this.refreshMana();
+        this.resetCardCounters();
     }
 
     private JLabel createCenteredLabel() {
@@ -139,6 +153,12 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         panel.add(this.manaLabel);
         panel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
         panel.add(this.manaBar);
+        panel.add(Box.createVerticalStrut(ViewMetrics.playerStatsSectionGap()));
+        panel.add(this.handCounterLabel);
+        panel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
+        panel.add(this.armyCounterLabel);
+        panel.add(Box.createVerticalStrut(ViewMetrics.verticalGap()));
+        panel.add(this.deckCounterLabel);
         panel.add(Box.createVerticalGlue());
         return panel;
     }
@@ -153,6 +173,12 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.manaLabel.setText("Mana: " + this.currentMana + " / " + this.maxMana);
         this.manaBar.setMaximum(Math.max(1, this.maxMana));
         this.manaBar.setValue(Math.max(0, Math.min(this.currentMana, this.manaBar.getMaximum())));
+    }
+
+    private void refreshCardCounters() {
+        this.handCounterLabel.setText("Hand: " + this.currentHandCards + COUNTER_SEPARATOR + MAX_HAND_CARDS);
+        this.armyCounterLabel.setText("Army: " + this.currentArmyCards + COUNTER_SEPARATOR + MAX_ARMY_CARDS);
+        this.deckCounterLabel.setText("Deck: " + this.currentDeckCards + COUNTER_SEPARATOR + MAX_DECK_CARDS);
     }
 
     /**
@@ -238,6 +264,55 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.currentMana = newCurrentMana;
         this.maxMana = newMaxMana;
         this.refreshMana();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void resetCardCounters() {
+        this.currentHandCards = 0;
+        this.currentArmyCards = 0;
+        this.currentDeckCards = MAX_DECK_CARDS;
+        this.refreshCardCounters();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void registerCardDrawn() {
+        this.currentHandCards = Math.min(MAX_HAND_CARDS, this.currentHandCards + 1);
+        this.currentDeckCards = Math.max(0, this.currentDeckCards - 1);
+        this.refreshCardCounters();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void registerCardBurned() {
+        this.currentDeckCards = Math.max(0, this.currentDeckCards - 1);
+        this.refreshCardCounters();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void registerCardPlaced() {
+        this.currentHandCards = Math.max(0, this.currentHandCards - 1);
+        this.currentArmyCards = Math.min(MAX_ARMY_CARDS, this.currentArmyCards + 1);
+        this.refreshCardCounters();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void registerCardDestroyed() {
+        this.currentArmyCards = Math.max(0, this.currentArmyCards - 1);
+        this.refreshCardCounters();
     }
 
     /**

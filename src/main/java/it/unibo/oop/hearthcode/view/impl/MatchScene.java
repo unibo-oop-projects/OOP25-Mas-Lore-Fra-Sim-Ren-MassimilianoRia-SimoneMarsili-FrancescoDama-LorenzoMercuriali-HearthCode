@@ -419,6 +419,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         playersHealth.forEach((playerId, health) -> {
             this.getPlayerArea(playerId).initHealth(health);
             this.getPlayerArea(playerId).setMana(0, 0);
+            this.getPlayerArea(playerId).resetCardCounters();
         });
         this.refreshInteractionState();
     }
@@ -448,6 +449,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         }
         this.registerCard(playerId, card, def.manaCost(), MatchCardZone.HAND);
         this.getPlayerArea(playerId).addHandCard(card);
+        this.getPlayerArea(playerId).registerCardDrawn();
         this.refreshInteractionState();
     }
 
@@ -458,6 +460,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     public void onCardPlaced(final PlayerId playerId, final CardId placedCard) {
         this.getPlayerArea(playerId).placeCard(placedCard);
         this.moveCardToArmy(playerId, placedCard);
+        this.getPlayerArea(playerId).registerCardPlaced();
         this.refreshInteractionState();
     }
 
@@ -478,6 +481,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.cardsById.remove(cardId);
         this.cardComponentsById.remove(cardId);
         this.getPlayerArea(playerId).removeArmyCard(cardId);
+        this.getPlayerArea(playerId).registerCardDestroyed();
         this.refreshInteractionState();
     }
 
@@ -515,6 +519,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onCardBurned(final PlayerId playerId) {
+        this.getPlayerArea(playerId).registerCardBurned();
         if (this.isHumanPlayer(playerId)) {
             this.showErrorPanel("Your hand is full. Drawn card is burned!");
         }

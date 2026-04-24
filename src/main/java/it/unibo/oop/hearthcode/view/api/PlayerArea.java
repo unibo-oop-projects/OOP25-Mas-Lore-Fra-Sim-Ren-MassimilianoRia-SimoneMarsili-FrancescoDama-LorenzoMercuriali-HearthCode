@@ -85,6 +85,31 @@ public interface PlayerArea {
     void setMana(int newCurrentMana, int newMaxMana);
 
     /**
+     * Resets the card counters shown for the player.
+     */
+    void resetCardCounters();
+
+    /**
+     * Updates the card counters after a card has been drawn.
+     */
+    void registerCardDrawn();
+
+    /**
+     * Updates the card counters after a drawn card has been burned.
+     */
+    void registerCardBurned();
+
+    /**
+     * Updates the card counters after a card has been placed.
+     */
+    void registerCardPlaced();
+
+    /**
+     * Updates the card counters after a card has been destroyed.
+     */
+    void registerCardDestroyed();
+
+    /**
      * Adds a card to the hand.
      *
      * @param card the card component to add
