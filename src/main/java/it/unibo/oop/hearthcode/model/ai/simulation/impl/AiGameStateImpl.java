@@ -29,30 +29,11 @@ public class AiGameStateImpl implements AiGameState {
     }
 
     /**
-     * Copy constructor.
-     *
-     * @param other the source state
-     */
-    public AiGameStateImpl(final AiGameStateImpl other) {
-        other.players.forEach((playerId, playerState) ->
-            this.players.put(playerId, new PlayerStateImpl(playerState))
-        );
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public PlayerState getPlayerState(final PlayerId playerId) {
         return this.getRequiredPlayer(playerId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public AiGameState copy() {
-        return new AiGameStateImpl(this);
     }
 
     /**

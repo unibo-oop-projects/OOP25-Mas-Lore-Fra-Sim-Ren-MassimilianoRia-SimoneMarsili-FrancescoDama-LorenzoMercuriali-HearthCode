@@ -20,15 +20,14 @@ public final class AiStateTransitionImpl implements AiStateTransition {
 
     @Override
     public AiGameState apply(final AiGameState gameState, final AiAction action) {
-        final AiGameState nextState = gameState.copy();
         if (action instanceof PlayCardAction playCardAction) {
-            this.applyPlayCard(nextState, playCardAction);
+            this.applyPlayCard(gameState, playCardAction);
         } else if (action instanceof AttackHeroAction attackHeroAction) {
-            this.applyAttackHero(nextState, attackHeroAction);
+            this.applyAttackHero(gameState, attackHeroAction);
         } else if (action instanceof AttackCardAction attackCardAction) {
-            this.applyAttackCard(nextState, attackCardAction);
+            this.applyAttackCard(gameState, attackCardAction);
         }
-        return nextState;
+        return gameState;
     }
 
     private void applyPlayCard(final AiGameState gameState, final PlayCardAction action) {
