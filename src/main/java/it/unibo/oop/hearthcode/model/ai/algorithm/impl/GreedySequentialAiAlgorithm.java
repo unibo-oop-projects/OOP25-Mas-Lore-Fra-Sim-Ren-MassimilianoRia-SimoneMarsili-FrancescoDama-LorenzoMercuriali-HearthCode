@@ -52,7 +52,7 @@ public final class GreedySequentialAiAlgorithm implements AiDecisionAlgorithm {
         Objects.requireNonNull(initialState);
         final List<AiAction> chosenActions = new ArrayList<>();
         AiGameState currentState = initialState.copy();
-    
+
         while (true) {
             final EvaluationResult currentEvaluation = this.stateEvaluator.evaluate(currentState);
             if (!currentEvaluation.isContinue()) {
