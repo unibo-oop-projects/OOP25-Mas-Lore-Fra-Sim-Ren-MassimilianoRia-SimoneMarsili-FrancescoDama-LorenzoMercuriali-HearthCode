@@ -1,7 +1,6 @@
 package it.unibo.oop.hearthcode.model.boardgame.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import java.util.stream.IntStream;
 
 import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.army.api.Army;
-import it.unibo.oop.hearthcode.model.army.impl.ArmyImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
 import it.unibo.oop.hearthcode.model.boardgame.api.ObservableGame;
@@ -19,37 +17,32 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CardType;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
-import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
-import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
-import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
 import it.unibo.oop.hearthcode.model.player.api.DrawCardResult;
 import it.unibo.oop.hearthcode.model.player.api.DrawCardResultType;
 import it.unibo.oop.hearthcode.model.player.api.Player;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
-import it.unibo.oop.hearthcode.model.player.impl.PlayerFactory;
 
 /**
- * An implementation of {@link BoardGame} interface.
+ * An implementation of the {@link BoardGame} interface.
  */
 public final class BoardGameImpl implements BoardGame, ObservableGame {
 
-    private static final String DEFAULT_CREATURES_FILE = "creatures.txt";
     private static final int STARTING_HAND_CARDS = 5;
-    private static final int DECK_SIZE = 20;
-    private static final int DEFAULT_HEALTH = 30;
     private final Map<Player, Army> armies;
     private final Map<PlayerId, Player> players;
-    private TurnManager turnManager;
+    private final TurnManager turnManager;
     private final List<GameObserver> observers;
 
     /**
-     * It constructs a new BoardGameImpl.
+     * Builds a board game using the provided match setup.
+     * 
+     * @param setup the match setup containing the initial players, armies, and starting player
      */
-    public BoardGameImpl() {
-        this.armies = new HashMap<>();
-        this.players = new HashMap<>();
+    protected BoardGameImpl(final GameSetup setup) {
+        this.armies = setup.armies();
+        this.players = setup.players();
+        this.turnManager = new TurnManager(setup.startingPlayerId());
         this.observers = new ArrayList<>();
-        initGame();
     }
 
     /**
@@ -72,32 +65,6 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
 
     private void notifyObservers(final Consumer<GameObserver> action) {
         this.observers.forEach(action);
-    }
-
-    private void initGame() {
-        final var generator = new IdGenerator();
-        final var database = CreatureDatabaseFactory.createFromFile(DEFAULT_CREATURES_FILE);
-        final var creatureFactory = new CreatureImplFactory(generator);
-        final var deckFactory = new DeckFactory(database, creatureFactory);
-
-        final Player humanPlayer = PlayerFactory.createPlayer(
-            deckFactory.createWeighted(DECK_SIZE, def -> Math.max(1, def.manaCost())),
-            DEFAULT_HEALTH,
-            PlayerId.HUMAN
-        );
-
-        this.turnManager = new TurnManager(humanPlayer.getId());
-
-        final Player aiPlayer = PlayerFactory.createPlayer(
-            deckFactory.createWeighted(DECK_SIZE, def -> Math.max(1, def.manaCost())),
-            DEFAULT_HEALTH,
-            PlayerId.AI
-        );
-
-        this.players.put(humanPlayer.getId(), humanPlayer);
-        this.players.put(aiPlayer.getId(), aiPlayer);
-        this.armies.put(humanPlayer, new ArmyImpl());
-        this.armies.put(aiPlayer, new ArmyImpl());
     }
 
     private PlayerId getDefendingPlayer() {

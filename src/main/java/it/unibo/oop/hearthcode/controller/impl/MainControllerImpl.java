@@ -12,7 +12,7 @@ import it.unibo.oop.hearthcode.model.ai.service.impl.AiTurnServiceImpl;
 import it.unibo.oop.hearthcode.model.ai.simulation.impl.AiGameStateFactoryImpl;
 import it.unibo.oop.hearthcode.model.ai.transition.impl.AiStateTransitionImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
-import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameImpl;
+import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameFactory;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.MainView;
 import it.unibo.oop.hearthcode.view.api.SceneId;
@@ -81,7 +81,7 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
     @Override
     public void startMatch() {
         final MatchScene matchScene = new MatchScene();
-        final BoardGame boardGame = new BoardGameImpl();
+        final BoardGame boardGame = BoardGameFactory.createDefaultGame();
         new MatchController(
             matchScene,
             boardGame,
