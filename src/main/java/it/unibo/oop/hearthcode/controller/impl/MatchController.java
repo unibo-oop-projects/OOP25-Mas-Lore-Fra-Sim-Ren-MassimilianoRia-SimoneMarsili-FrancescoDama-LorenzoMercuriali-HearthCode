@@ -71,6 +71,9 @@ public final class MatchController {
         scene.onEndTurn(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
             this.boardGame.switchTurn();
+            if (this.evaluateEndMatch(coordinator)) {
+                return;
+            }
 
             for (final var action : aiTurnService.decideTurn(this.boardGame)) {
                 aiActionExecutor.execute(this.boardGame, action);
@@ -80,6 +83,7 @@ public final class MatchController {
             }
 
             this.boardGame.switchTurn();
+            this.evaluateEndMatch(coordinator);
         });
 
         scene.onExitGame(() -> {
