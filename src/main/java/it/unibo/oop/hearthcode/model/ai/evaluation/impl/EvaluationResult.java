@@ -13,7 +13,7 @@ public record EvaluationResult(EvaluationResultType type, int score) {
      *
      * @return a winning evaluation result
      */
-    public static EvaluationResult win() {
+    public static EvaluationResult victory() {
         return new EvaluationResult(EvaluationResultType.VICTORY, 0);
     }
 
@@ -22,7 +22,7 @@ public record EvaluationResult(EvaluationResultType type, int score) {
      *
      * @return a losing evaluation result
      */
-    public static EvaluationResult lose() {
+    public static EvaluationResult defeat() {
         return new EvaluationResult(EvaluationResultType.DEFEAT, 0);
     }
 
@@ -41,7 +41,7 @@ public record EvaluationResult(EvaluationResultType type, int score) {
      *
      * @return true if this is a winning evaluation
      */
-    public boolean isWin() {
+    public boolean isVictory() {
         return this.type == EvaluationResultType.VICTORY;
     }
 
@@ -50,7 +50,7 @@ public record EvaluationResult(EvaluationResultType type, int score) {
      *
      * @return true if this is a losing evaluation
      */
-    public boolean isLose() {
+    public boolean isDefeat() {
         return this.type == EvaluationResultType.DEFEAT;
     }
 

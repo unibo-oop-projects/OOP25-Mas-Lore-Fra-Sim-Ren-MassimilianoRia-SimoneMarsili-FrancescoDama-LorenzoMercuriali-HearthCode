@@ -1,5 +1,6 @@
 package it.unibo.oop.hearthcode.model.ai.evaluation.api;
 
+import it.unibo.oop.hearthcode.model.ai.evaluation.impl.EvaluationResult;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 
 /**
@@ -9,11 +10,11 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 public interface AiStateEvaluator {
 
     /**
-     * Computes a score for the given simulated game state.
+     * Computes an evaluation result for the given simulated game state.
      *
      * @param gameState the simulated game state
-     * @return the score
+     * @return the result of the evaluation
      */
-    int evaluate(AiGameState gameState);
+    EvaluationResult evaluate(AiGameState gameState);
 
 }
