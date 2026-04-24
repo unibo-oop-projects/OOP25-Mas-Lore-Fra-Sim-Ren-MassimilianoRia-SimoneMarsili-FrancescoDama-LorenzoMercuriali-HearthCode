@@ -6,14 +6,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
-import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameImpl;
+import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameFactory;
 
 final class TestBoardGame {
     private BoardGame board;
 
     @BeforeEach
     void initTest() {
-        this.board = new BoardGameImpl();
+        this.board = BoardGameFactory.createDefaultGame();
     }
 
     @Test
