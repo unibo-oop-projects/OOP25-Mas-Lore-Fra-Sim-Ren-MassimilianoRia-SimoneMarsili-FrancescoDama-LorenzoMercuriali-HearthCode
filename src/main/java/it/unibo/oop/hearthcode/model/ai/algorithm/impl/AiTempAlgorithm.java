@@ -12,7 +12,7 @@ import it.unibo.oop.hearthcode.model.ai.transition.api.AiStateTransition;
 /**
  * Stupid (and temp) AI decision algorithm that always selects the first available action.
  */
-public class AiStupidAlgorithm implements AiDecisionAlgorithm {
+public class AiTempAlgorithm implements AiDecisionAlgorithm {
 
     private final AiActionGenerator actionGenerator;
     private final AiStateTransition stateTransition;
@@ -23,7 +23,7 @@ public class AiStupidAlgorithm implements AiDecisionAlgorithm {
      * @param actionGenerator the component that generates legal actions
      * @param stateTransition the component that applies actions to a simulated state
      */
-    public AiStupidAlgorithm(
+    public AiTempAlgorithm(
         final AiActionGenerator actionGenerator,
         final AiStateTransition stateTransition
     ) {
