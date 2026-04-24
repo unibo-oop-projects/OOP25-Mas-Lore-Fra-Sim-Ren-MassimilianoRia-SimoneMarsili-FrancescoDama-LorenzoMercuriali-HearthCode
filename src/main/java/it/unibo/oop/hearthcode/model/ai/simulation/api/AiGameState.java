@@ -11,6 +11,11 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 public interface AiGameState {
 
     /**
+     * @return a deep copy of this game state
+     */
+    AiGameState copy();
+
+    /**
      * @param playerId the identifier of the player
      * @return the player state associated with the given identifier
      */

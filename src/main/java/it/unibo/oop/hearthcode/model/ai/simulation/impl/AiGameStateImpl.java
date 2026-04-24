@@ -23,7 +23,7 @@ public class AiGameStateImpl implements AiGameState {
      * @param humanPlayerState the state of the human player
      * @param aiPlayerState the state of the AI player
      */
-    protected AiGameStateImpl(final PlayerState humanPlayerState, final PlayerState aiPlayerState) {
+    public AiGameStateImpl(final PlayerState humanPlayerState, final PlayerState aiPlayerState) {
         this.players.put(humanPlayerState.getPlayerId(), toImpl(humanPlayerState));
         this.players.put(aiPlayerState.getPlayerId(), toImpl(aiPlayerState));
     }
@@ -34,6 +34,17 @@ public class AiGameStateImpl implements AiGameState {
     @Override
     public PlayerState getPlayerState(final PlayerId playerId) {
         return this.getRequiredPlayer(playerId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AiGameState copy() {
+        return new AiGameStateImpl(
+            this.getRequiredPlayer(PlayerId.HUMAN),
+            this.getRequiredPlayer(PlayerId.AI)
+        );
     }
 
     /**
