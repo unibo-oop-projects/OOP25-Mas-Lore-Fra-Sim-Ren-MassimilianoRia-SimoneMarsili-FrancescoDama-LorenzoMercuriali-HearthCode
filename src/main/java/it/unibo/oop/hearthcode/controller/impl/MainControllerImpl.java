@@ -9,6 +9,7 @@ import it.unibo.oop.hearthcode.controller.api.MainController;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 import it.unibo.oop.hearthcode.model.ai.action.impl.AiActionGeneratorImpl;
 import it.unibo.oop.hearthcode.model.ai.algorithm.api.AiDecisionAlgorithm;
+import it.unibo.oop.hearthcode.model.ai.algorithm.impl.DepthLimitedLookaheadAiAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.algorithm.impl.GreedySequentialAiAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.evaluation.impl.HeuristicAiStateEvaluator;
 import it.unibo.oop.hearthcode.model.ai.executor.impl.AiActionExecutorImpl;
@@ -42,10 +43,11 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
             new AiStateTransitionImpl(),
             new HeuristicAiStateEvaluator()
         ),
-        Difficulty.HARD, new GreedySequentialAiAlgorithm(
+        Difficulty.HARD, new DepthLimitedLookaheadAiAlgorithm(
             new AiActionGeneratorImpl(),
             new AiStateTransitionImpl(),
-            new HeuristicAiStateEvaluator()
+            new HeuristicAiStateEvaluator(),
+            3
         )
     );
 
