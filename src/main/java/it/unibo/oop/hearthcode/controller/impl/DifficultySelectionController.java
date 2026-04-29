@@ -1,7 +1,5 @@
 package it.unibo.oop.hearthcode.controller.impl;
 
-import org.apache.commons.lang3.builder.Diff;
-
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
