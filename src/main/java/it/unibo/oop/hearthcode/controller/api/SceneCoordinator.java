@@ -1,5 +1,6 @@
 package it.unibo.oop.hearthcode.controller.api;
 
+import it.unibo.oop.hearthcode.model.boardgame.impl.Difficulty;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**
@@ -25,9 +26,15 @@ public interface SceneCoordinator {
     void showEndMatch(PlayerId playerId);
 
     /**
-     * Create a new match and shows the match scene.
+     * Starts a new match with the specified difficulty and shows the match scene.
+     * @param difficulty the selected match difficulty
      */
-    void startMatch();
+    void startMatch(Difficulty difficulty);
+
+    /**
+     * Shows the difficulty selection scene.
+     */
+    void showDifficultySelection();
 
     /**
      * Requests the application shutdown.

@@ -1,11 +1,15 @@
 package it.unibo.oop.hearthcode.controller.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.impl.AudioServiceImpl;
 import it.unibo.oop.hearthcode.audio.model.SoundTrack;
 import it.unibo.oop.hearthcode.controller.api.MainController;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 import it.unibo.oop.hearthcode.model.ai.action.impl.AiActionGeneratorImpl;
+import it.unibo.oop.hearthcode.model.ai.algorithm.api.AiDecisionAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.algorithm.impl.GreedySequentialAiAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.evaluation.impl.HeuristicAiStateEvaluator;
 import it.unibo.oop.hearthcode.model.ai.executor.impl.AiActionExecutorImpl;
@@ -14,10 +18,12 @@ import it.unibo.oop.hearthcode.model.ai.simulation.impl.AiGameStateFactoryImpl;
 import it.unibo.oop.hearthcode.model.ai.transition.impl.AiStateTransitionImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameFactory;
+import it.unibo.oop.hearthcode.model.boardgame.impl.Difficulty;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.MainView;
 import it.unibo.oop.hearthcode.view.api.SceneId;
 import it.unibo.oop.hearthcode.view.impl.DatabaseScene;
+import it.unibo.oop.hearthcode.view.impl.DifficultySelectionScene;
 import it.unibo.oop.hearthcode.view.impl.EndMatchScene;
 import it.unibo.oop.hearthcode.view.impl.MainViewImpl;
 import it.unibo.oop.hearthcode.view.impl.MatchScene;
@@ -31,6 +37,18 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
 
     private final MainView mainView;
     private final AudioService audioService;
+    private final Map<Difficulty, AiDecisionAlgorithm> aiAlgorithms = Map.of(
+        Difficulty.NORMAL, new GreedySequentialAiAlgorithm(
+            new AiActionGeneratorImpl(),
+            new AiStateTransitionImpl(),
+            new HeuristicAiStateEvaluator()
+        ),
+        Difficulty.HARD, new GreedySequentialAiAlgorithm(
+            new AiActionGeneratorImpl(),
+            new AiStateTransitionImpl(),
+            new HeuristicAiStateEvaluator()
+        )
+    );
 
     /**
      * Builds the application controller.
@@ -80,7 +98,7 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
      * {@inheritDoc}
      */
     @Override
-    public void startMatch() {
+    public void startMatch(final Difficulty difficulty) {
         final MatchScene matchScene = new MatchScene();
         final BoardGame boardGame = BoardGameFactory.createDefaultGame();
         new MatchController(
@@ -90,17 +108,25 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
             this.audioService,
             new AiTurnServiceImpl(
                 new AiGameStateFactoryImpl(),
-                new GreedySequentialAiAlgorithm(
-                    new AiActionGeneratorImpl(),
-                    new AiStateTransitionImpl(),
-                    new HeuristicAiStateEvaluator()
-                )
+                this.aiAlgorithms.get(difficulty)
             ),
             new AiActionExecutorImpl()
         );
         this.mainView.addScene(SceneId.MATCH, matchScene);
         this.mainView.showScene(SceneId.MATCH);
         this.audioService.playMusic(SoundTrack.MATCH);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void showDifficultySelection() {
+        final DifficultySelectionScene difficultySelectionScene = new DifficultySelectionScene();
+        new DifficultySelectionController(difficultySelectionScene, this, this.audioService);
+        this.mainView.addScene(SceneId.DIFFICULTY_SELECTION, difficultySelectionScene);
+        this.mainView.showScene(SceneId.DIFFICULTY_SELECTION);
+        this.audioService.playMusic(SoundTrack.MENU);
     }
 
     /**

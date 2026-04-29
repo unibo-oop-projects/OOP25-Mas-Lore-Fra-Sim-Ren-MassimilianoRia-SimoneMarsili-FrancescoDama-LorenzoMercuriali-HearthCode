@@ -11,6 +11,8 @@ public enum SceneId {
 
     END_MATCH,
 
-    DATABASE
+    DATABASE,
+
+    DIFFICULTY_SELECTION
 
 }

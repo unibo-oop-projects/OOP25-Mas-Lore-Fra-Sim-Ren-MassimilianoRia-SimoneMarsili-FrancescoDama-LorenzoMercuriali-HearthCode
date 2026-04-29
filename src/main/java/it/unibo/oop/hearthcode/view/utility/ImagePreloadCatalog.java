@@ -42,7 +42,13 @@ public final class ImagePreloadCatalog {
             button("/images/back-pressed.png"),
             button("/images/menu-normal.png"),
             button("/images/menu-hover.png"),
-            button("/images/menu-pressed.png")
+            button("/images/menu-pressed.png"),
+            button("/images/normal-normal.png"),
+            button("/images/normal-hover.png"),
+            button("/images/normal-pressed.png"),
+            button("/images/hard-normal.png"),
+            button("/images/hard-hover.png"),
+            button("/images/hard-pressed.png")
         );
     }
 

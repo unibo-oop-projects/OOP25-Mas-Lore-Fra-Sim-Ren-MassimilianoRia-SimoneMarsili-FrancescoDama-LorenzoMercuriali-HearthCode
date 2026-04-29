@@ -25,4 +25,5 @@ public interface MenuView extends Scene {
      * @param action the action to execute
      */
     void onQuit(Runnable action);
+
 }

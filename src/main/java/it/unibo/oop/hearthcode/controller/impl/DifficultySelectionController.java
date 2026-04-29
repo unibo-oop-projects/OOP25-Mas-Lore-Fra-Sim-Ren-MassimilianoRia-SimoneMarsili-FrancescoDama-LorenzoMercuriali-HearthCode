@@ -1,40 +1,42 @@
 package it.unibo.oop.hearthcode.controller.impl;
 
+import org.apache.commons.lang3.builder.Diff;
+
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
-import it.unibo.oop.hearthcode.view.api.MenuView;
+import it.unibo.oop.hearthcode.model.boardgame.impl.Difficulty;
+import it.unibo.oop.hearthcode.view.impl.DifficultySelectionScene;
 
 /**
- * Controller of the menu scene.
+ * Controller of the difficulty selection scene.
  */
-public final class MenuController {
+public class DifficultySelectionController {
 
     /**
      * Builds the controller and binds the scene actions.
-     *
+     * 
      * @param scene the controlled scene
-     * @param coordinator the application scene coordinator
+     * @param coordinator the application scene coordinator.
      * @param audioService the audio service
      */
-    public MenuController(
-        final MenuView scene,
+    public DifficultySelectionController(
+        final DifficultySelectionScene scene,
         final SceneCoordinator coordinator,
         final AudioService audioService
     ) {
-        scene.onPlay(() -> {
+        scene.onNormal(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showDifficultySelection();
+            coordinator.startMatch(Difficulty.NORMAL);
         });
-        scene.onDatabase(() -> {
+        scene.onHard(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.showDatabase();
+            coordinator.startMatch(Difficulty.HARD);
         });
-        scene.onQuit(() -> {
+        scene.onBack(() -> {
             audioService.playEffect(SoundEffect.BUTTON_CLICK);
-            coordinator.requestExit();
+            coordinator.showMainMenu();
         });
     }
 
 }
-
