@@ -13,7 +13,7 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 /**
  * Implementation of {@link DifficultySelectionView}.
  */
-public class DifficultySelectionScene extends AbstractBackgroundScene implements DifficultySelectionView {
+public final class DifficultySelectionScene extends AbstractBackgroundScene implements DifficultySelectionView {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,6 +25,9 @@ public class DifficultySelectionScene extends AbstractBackgroundScene implements
     private final JButton hardButton;
     private final JButton backButton;
 
+    /**
+     * Builds the scene and initializes the layout.
+     */
     public DifficultySelectionScene() {
         super(BACKGROUND_PATH);
         this.setLayout(new GridBagLayout());
@@ -83,5 +86,5 @@ public class DifficultySelectionScene extends AbstractBackgroundScene implements
     public JComponent getComponent() {
         return this;
     }
-    
+
 }

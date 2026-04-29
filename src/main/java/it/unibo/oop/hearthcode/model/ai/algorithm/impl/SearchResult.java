@@ -17,4 +17,13 @@ public record SearchResult(
     List<AiAction> actions,
     AiGameState resultingState,
     EvaluationResult evaluation
-) { }
+) {
+
+    /**
+     * Builds a search result with an immutable action sequence.
+     */
+    public SearchResult {
+        actions = List.copyOf(actions);
+    }
+
+}

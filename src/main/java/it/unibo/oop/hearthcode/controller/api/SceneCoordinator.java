@@ -27,6 +27,7 @@ public interface SceneCoordinator {
 
     /**
      * Starts a new match with the specified difficulty and shows the match scene.
+     * 
      * @param difficulty the selected match difficulty
      */
     void startMatch(Difficulty difficulty);
