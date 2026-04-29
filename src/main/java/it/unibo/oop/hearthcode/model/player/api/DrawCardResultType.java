@@ -1,7 +1,7 @@
 package it.unibo.oop.hearthcode.model.player.api;
 
 /**
- * A simple enum used to distinguish varoius drawing scenarios.
+ * A simple enum used to distinguish various drawing scenarios.
  */
 public enum DrawCardResultType {
 

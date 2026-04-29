@@ -56,9 +56,9 @@ public interface PlayerState {
     void damagePlayer(int damage);
 
     /**
-     * Simulates a reduction of the player's avalaible mana.
+     * Simulates a reduction of the player's available mana.
      * 
-     * @param mana tha amount of mana to decrease
+     * @param mana the amount of mana to decrease
      */
     void consumeMana(int mana);
 

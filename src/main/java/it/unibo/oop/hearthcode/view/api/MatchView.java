@@ -52,7 +52,7 @@ public interface MatchView extends Scene {
     /**
      * A warning panel to confirm the exit.
      * 
-     * @return wether the player wants to exit or not
+     * @return whether the player wants to exit or not
      */
     boolean confirmExitGame();
 
