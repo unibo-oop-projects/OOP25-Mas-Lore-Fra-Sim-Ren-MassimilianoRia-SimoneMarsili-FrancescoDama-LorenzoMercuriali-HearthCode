@@ -1,7 +1,7 @@
 package it.unibo.oop.hearthcode.model.player.impl;
 
 /**
- * Manager of player's actual and Max mana by turn.
+ * Manages a player's current and maximum mana for each turn.
  */
 public class ManaManager {
 
@@ -19,21 +19,21 @@ public class ManaManager {
     }
 
     /**
-     * @return Player's actual Mana.
+     * @return the player's current mana
      */
     int actualMana() {
         return this.actualMana;
     }
 
     /**
-     * @return Player's maxMana
+     * @return the player's maximum mana for the current turn
      */
     int maxMana() {
         return this.maxMana;
     }
 
     /**
-     * this method increments Mana Limit and set actual Mana to maxMana.
+     * Increments the mana limit and refreshes current mana.
      */
     void updateMana() {
         if (this.maxMana < MAXIMUM_MANA) {
@@ -43,7 +43,7 @@ public class ManaManager {
     }
 
     /**
-     * it decreases the actual mana of the player.
+     * Decreases the player's current mana.
      * 
      * @param amount the mana to be subtracted
      */

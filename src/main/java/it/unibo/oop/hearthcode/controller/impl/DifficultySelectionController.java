@@ -4,12 +4,12 @@ import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 import it.unibo.oop.hearthcode.model.boardgame.impl.Difficulty;
-import it.unibo.oop.hearthcode.view.impl.DifficultySelectionScene;
+import it.unibo.oop.hearthcode.view.api.DifficultySelectionView;
 
 /**
  * Controller of the difficulty selection scene.
  */
-public class DifficultySelectionController {
+public final class DifficultySelectionController {
 
     /**
      * Builds the controller and binds the scene actions.
@@ -19,7 +19,7 @@ public class DifficultySelectionController {
      * @param audioService the audio service
      */
     public DifficultySelectionController(
-        final DifficultySelectionScene scene,
+        final DifficultySelectionView scene,
         final SceneCoordinator coordinator,
         final AudioService audioService
     ) {

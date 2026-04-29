@@ -19,8 +19,8 @@ public class CardStateImpl implements CardState {
      *
      * @param cardId the card identifier
      * @param manaCost the mana cost of the card
-     * @param health the current health of the card
      * @param attackValue the attack value of the card
+     * @param health the current health of the card
      * @param usable whether the card can currently be used
      */
     public CardStateImpl(

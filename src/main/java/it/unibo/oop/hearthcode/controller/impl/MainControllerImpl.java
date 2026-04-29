@@ -35,6 +35,8 @@ import it.unibo.oop.hearthcode.view.utility.ImageLoader;
  */
 public final class MainControllerImpl implements MainController, SceneCoordinator {
 
+    private static final int AI_LOOKAHEAD_DEPTH = 3;
+
     private final MainView mainView;
     private final AudioService audioService;
     private final Map<Difficulty, AiDecisionAlgorithm> aiAlgorithms = Map.of(
@@ -47,7 +49,7 @@ public final class MainControllerImpl implements MainController, SceneCoordinato
             new AiActionGeneratorImpl(),
             new AiStateTransitionImpl(),
             new HeuristicAiStateEvaluator(),
-            3
+            AI_LOOKAHEAD_DEPTH
         )
     );
 
