@@ -26,8 +26,8 @@ public final class ImagePreloadCatalog {
     public static List<ImageLoadRequest> menuAndNavigation() {
         return List.of(
             ImageLoadRequest.raw("/images/menu-background.png"),
-            ImageLoadRequest.raw("/images/you-lost.png"),
-            ImageLoadRequest.raw("/images/you-won.png"),
+            endBanner("/images/you-lost.png"),
+            endBanner("/images/you-won.png"),
             button("/images/play-normal.png"),
             button("/images/play-hover.png"),
             button("/images/play-pressed.png"),
@@ -80,6 +80,10 @@ public final class ImagePreloadCatalog {
 
     private static ImageLoadRequest button(final String path) {
         return ImageLoadRequest.scaled(path, ViewMetrics.menuButtonWidth(), ViewMetrics.menuButtonHeight());
+    }
+
+    private static ImageLoadRequest endBanner(final String path) {
+        return ImageLoadRequest.scaled(path, ViewMetrics.screenWidth(), ViewMetrics.endBannerHeight());
     }
 
     /**
