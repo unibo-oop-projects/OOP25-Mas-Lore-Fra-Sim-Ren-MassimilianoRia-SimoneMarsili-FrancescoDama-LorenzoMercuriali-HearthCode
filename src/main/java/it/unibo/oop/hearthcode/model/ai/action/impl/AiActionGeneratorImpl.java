@@ -36,7 +36,7 @@ public final class AiActionGeneratorImpl implements AiActionGenerator {
                 .map(card -> new PlayCardAction(card.getCardId()));
     }
 
-    private Stream<AiAction> attackActions(final PlayerState aiPlayer, final PlayerState humanPlayer){
+    private Stream<AiAction> attackActions(final PlayerState aiPlayer, final PlayerState humanPlayer) {
         final List<CardState> humanArmy = humanPlayer.getPlayerArmy();
         return aiPlayer.getPlayerArmy().stream()
             .filter(CardState::isUsable)
