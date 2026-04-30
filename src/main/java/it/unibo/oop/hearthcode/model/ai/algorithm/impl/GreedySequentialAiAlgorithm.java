@@ -1,10 +1,10 @@
 package it.unibo.oop.hearthcode.model.ai.algorithm.impl;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import it.unibo.oop.hearthcode.model.ai.action.api.AiAction;
 import it.unibo.oop.hearthcode.model.ai.action.api.AiActionGenerator;
@@ -50,24 +50,23 @@ public final class GreedySequentialAiAlgorithm implements AiDecisionAlgorithm {
     @Override
     public List<AiAction> decide(final AiGameState initialState) {
         Objects.requireNonNull(initialState);
-        final List<AiAction> chosenActions = new ArrayList<>();
-        AiGameState currentState = initialState.copy();
+        return this.decideFrom(initialState.copy(), List.of());
+    }
 
-        while (true) {
-            final EvaluationResult currentEvaluation = this.stateEvaluator.evaluate(currentState);
-            if (!currentEvaluation.isContinue()) {
-                return List.copyOf(chosenActions);
-            }
+    private List<AiAction> decideFrom(final AiGameState currentState, final List<AiAction> chosenActions) {
+        final EvaluationResult currentEvaluation = this.stateEvaluator.evaluate(currentState);
+        return currentEvaluation.isContinue()
+            ? this.bestImprovingAction(currentState, currentEvaluation)
+                .map(bestAction -> this.decideFrom(
+                    bestAction.resultingState(),
+                    this.append(chosenActions, bestAction.action())
+                ))
+                .orElse(chosenActions)
+            : chosenActions;
+    }
 
-            final Optional<ScoredAction> bestAction = this.bestImprovingAction(currentState, currentEvaluation);
-            if (bestAction.isEmpty()) {
-                return List.copyOf(chosenActions);
-            }
-
-            final AiAction selectedAction = bestAction.get().action();
-            chosenActions.add(selectedAction);
-            currentState = bestAction.get().resultingState();
-        }
+    private List<AiAction> append(final List<AiAction> actions, final AiAction action) {
+        return Stream.concat(actions.stream(), Stream.of(action)).toList();
     }
 
     private Optional<ScoredAction> bestImprovingAction(
