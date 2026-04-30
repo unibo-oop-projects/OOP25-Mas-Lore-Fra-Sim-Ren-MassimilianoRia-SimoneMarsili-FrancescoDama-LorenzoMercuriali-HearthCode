@@ -1,8 +1,9 @@
 package it.unibo.oop.hearthcode.model.ai.algorithm.impl;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import it.unibo.oop.hearthcode.model.ai.action.api.AiAction;
 import it.unibo.oop.hearthcode.model.ai.action.api.AiActionGenerator;
@@ -66,34 +67,29 @@ public final class DepthLimitedLookaheadAiAlgorithm implements AiDecisionAlgorit
             return new SearchResult(List.of(), currentState, currentEvaluation);
         }
 
-        final List<AiAction> legalActions = this.actionGenerator.generateLegalActions(currentState);
-        if (legalActions.isEmpty()) {
-            return new SearchResult(List.of(), currentState, currentEvaluation);
-        }
+        return this.actionGenerator.generateLegalActions(currentState).stream()
+            .map(action -> this.searchAfter(currentState, remainingDepth, action))
+            .max(Comparator.comparing(SearchResult::evaluation, this::compareEvaluations))
+            .orElseGet(() -> new SearchResult(List.of(), currentState, currentEvaluation));
+    }
 
-        SearchResult bestResult = null;
-        for (final AiAction action : legalActions) {
-            final AiGameState resultingState = this.stateTransition.apply(currentState, action);
-            final SearchResult candidate = this.prepend(
-                action,
-                this.search(resultingState, remainingDepth - 1)
-            );
-            if (bestResult == null || this.isBetter(candidate.evaluation(), bestResult.evaluation())) {
-                bestResult = candidate;
-            }
-        }
-        return bestResult;
+    private SearchResult searchAfter(
+        final AiGameState currentState,
+        final int remainingDepth,
+        final AiAction action
+    ) {
+        return this.prepend(
+            action,
+            this.search(this.stateTransition.apply(currentState, action), remainingDepth - 1)
+        );
     }
 
     private SearchResult prepend(final AiAction action, final SearchResult result) {
-        final List<AiAction> actions = new ArrayList<>();
-        actions.add(action);
-        actions.addAll(result.actions());
-        return new SearchResult(actions, result.resultingState(), result.evaluation());
-    }
-
-    private boolean isBetter(final EvaluationResult candidate, final EvaluationResult baseline) {
-        return this.compareEvaluations(candidate, baseline) > 0;
+        return new SearchResult(
+            Stream.concat(Stream.of(action), result.actions().stream()).toList(),
+            result.resultingState(),
+            result.evaluation()
+        );
     }
 
     private int compareEvaluations(final EvaluationResult first, final EvaluationResult second) {
