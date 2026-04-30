@@ -98,7 +98,9 @@ public class PlayerStateImpl implements PlayerState {
      */
     @Override
     public Optional<List<CardState>> getPlayerHand() {
-        return this.playerHand.map(List::copyOf).map(List.class::cast);
+        return this.playerHand.map(hand -> hand.stream()
+            .map(CardState.class::cast)
+            .toList());
     }
 
     /**
