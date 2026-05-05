@@ -11,11 +11,11 @@ public final class PlayerFactory {
     private PlayerFactory() { }
 
     /**
-     * static method to create a player with a customized eck and health.
+     * Static method to create a player with a customized deck and health.
      * 
      * @param deck the deck to be assigned
      * @param health the health to be assigned
-     * @param id the PlayerId to be assigned
+     * @param identifier the PlayerId to be assigned
      * @return a new player with those parameters
      */
     public static PlayerImpl createPlayer(final Deck deck, final int health, final PlayerId identifier) {
