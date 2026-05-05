@@ -18,7 +18,7 @@ public final class PlayerFactory {
      * @param id the PlayerId to be assigned
      * @return a new player with those parameters
      */
-    public static PlayerImpl createPlayer(final Deck deck, final int health, final PlayerId id) {
-        return new PlayerImpl(deck, health, id);
+    public static PlayerImpl createPlayer(final Deck deck, final int health, final PlayerId identifier) {
+        return new PlayerImpl(deck, health, identifier);
     }
 }
