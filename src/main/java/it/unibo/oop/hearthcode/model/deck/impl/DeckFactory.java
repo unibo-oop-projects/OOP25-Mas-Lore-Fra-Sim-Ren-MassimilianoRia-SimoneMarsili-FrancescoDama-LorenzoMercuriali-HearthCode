@@ -54,7 +54,7 @@ public class DeckFactory {
             allDef.forEach(d -> cards.add(this.factory.createFromDefinition(d)));
         }
 
-        IntStream.range(0, size - this.database.size())
+        IntStream.range(0, size - cards.size())
             .forEach(n -> cards.add(
                 this.factory.createFromDefinition(
                     pickRandomWeighted(allDef, strategy))
