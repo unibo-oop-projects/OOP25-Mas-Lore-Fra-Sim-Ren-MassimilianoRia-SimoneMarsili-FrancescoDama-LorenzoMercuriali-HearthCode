@@ -7,6 +7,7 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
+import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabase;
 import it.unibo.oop.hearthcode.view.api.DatabaseView;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
@@ -28,7 +29,7 @@ public final class DatabaseScene extends AbstractBackgroundScene implements Data
     /**
      * Builds the database scene.
      */
-    public DatabaseScene() {
+    public DatabaseScene(final CreatureDatabase definitions) {
         super(BACKGROUND_PATH);
         this.setLayout(new GridBagLayout());
         this.backButton = this.createImageButton(
@@ -38,15 +39,15 @@ public final class DatabaseScene extends AbstractBackgroundScene implements Data
             BUTTON_WIDTH,
             BUTTON_HEIGHT
         );
-        this.initializeLayout();
+        this.initializeLayout(definitions);
     }
 
-    private void initializeLayout() {
+    private void initializeLayout(final CreatureDatabase definitions) {
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(TOP_MARGIN, 0, CARDS_BOTTOM_MARGIN, 0);
-        this.add(new CardsPanel(), gbc);
+        this.add(new CardsPanel(definitions), gbc);
         gbc.gridy = 1;
         gbc.insets = new Insets(0, 0, BUTTON_BOTTOM_MARGIN, 0);
         this.add(this.backButton, gbc);
