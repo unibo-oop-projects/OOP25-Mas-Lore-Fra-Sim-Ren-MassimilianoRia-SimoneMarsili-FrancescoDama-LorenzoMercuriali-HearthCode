@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 public final class ImagePreloadCatalog {
 
     private static final String CREATURES_RESOURCE = "/creatures.txt";
+    private static final List<String> CREATURE_NAMES = loadCreatureNames();
 
     private ImagePreloadCatalog() {
     }
@@ -64,7 +65,7 @@ public final class ImagePreloadCatalog {
                 ViewMetrics.cardWidth(),
                 ViewMetrics.cardHeight()
             )),
-            creatureCardRequests("")
+            creatureCardRequests(CreatureImagePaths::card)
         ).toList();
     }
 
@@ -74,8 +75,7 @@ public final class ImagePreloadCatalog {
      * @return the preload plan for the deck preview
      */
     public static List<ImageLoadRequest> database() {
-        return creatureCardRequests("deck/")
-            .collect(Collectors.toList());
+        return creatureCardRequests(CreatureImagePaths::deck).toList();
     }
 
     private static ImageLoadRequest button(final String path) {
@@ -89,10 +89,20 @@ public final class ImagePreloadCatalog {
     /**
      * Builds scaled preload requests for all creature card images listed in the creature catalog.
      *
-     * @param folderPrefix the folder suffix to prepend after the creature image root
+     * @param pathResolver resolves each creature name to its image path
      * @return a stream of creature card preload requests
      */
-    private static Stream<ImageLoadRequest> creatureCardRequests(final String folderPrefix) {
+    private static Stream<ImageLoadRequest> creatureCardRequests(final Function<String, String> pathResolver) {
+        return CREATURE_NAMES.stream()
+            .map(pathResolver)
+            .map(path -> ImageLoadRequest.scaled(
+                path,
+                ViewMetrics.cardWidth(),
+                ViewMetrics.cardHeight()
+            ));
+    }
+
+    private static List<String> loadCreatureNames() {
         final var resource = ImagePreloadCatalog.class.getResourceAsStream(CREATURES_RESOURCE);
         if (resource == null) {
             throw new IllegalStateException(
@@ -109,13 +119,7 @@ public final class ImagePreloadCatalog {
                 .map(String::trim)
                 .filter(line -> !line.isEmpty())
                 .map(ImagePreloadCatalog::extractCreatureName)
-                .map(name -> ImageLoadRequest.scaled(
-                    buildCreatureResourcePath(folderPrefix, name),
-                    ViewMetrics.cardWidth(),
-                    ViewMetrics.cardHeight()
-                ))
-                .toList()
-                .stream();
+                .toList();
         } catch (final IOException exception) {
             throw new IllegalStateException("Unable to read creature image catalog",
                 exception
@@ -135,14 +139,6 @@ public final class ImagePreloadCatalog {
             throw new IllegalArgumentException("Invalid creature line for preload: " + line);
         }
         return line.substring(0, separatorIndex);
-    }
-
-    private static String buildCreatureResourcePath(final String folderPrefix, final String creatureName) {
-        return switch (folderPrefix) {
-            case "" -> CreatureImagePaths.card(creatureName);
-            case "deck/" -> CreatureImagePaths.deck(creatureName);
-            default -> throw new IllegalArgumentException("Unsupported creature folder prefix: " + folderPrefix);
-        };
     }
 
 }

@@ -2,8 +2,11 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.util.EnumMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -22,6 +25,7 @@ public final class MainViewImpl implements MainView {
     private final CardLayout cardLayout;
     private final JPanel cardsPanel;
     private final JPanel rootPanel;
+    private final Map<SceneId, JComponent> sceneComponents = new EnumMap<>(SceneId.class);
 
     /**
      * Creates the main view.
@@ -63,7 +67,16 @@ public final class MainViewImpl implements MainView {
      */
     @Override
     public void addScene(final SceneId id, final Scene scene) {
-        SwingUtilities.invokeLater(() -> this.cardsPanel.add(scene.getComponent(), id.name()));
+        SwingUtilities.invokeLater(() -> {
+            final JComponent component = scene.getComponent();
+            final JComponent previousScene = this.sceneComponents.put(id, component);
+            if (previousScene != null) {
+                this.cardsPanel.remove(previousScene);
+            }
+            this.cardsPanel.add(component, id.name());
+            this.cardsPanel.revalidate();
+            this.cardsPanel.repaint();
+        });
     }
 
     /**

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -83,30 +85,39 @@ final class CardComponent extends JButton {
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
-        final ImageIcon icon = this.faceUp ? this.frontIcon : this.backIcon;
-        g.drawImage(icon.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
-        if (this.resting || this.selected) {
-            g.setColor(this.selected ? SELECTED_OVERLAY_COLOR : DORMANT_OVERLAY_COLOR);
-            g.fillRoundRect(
-                OVERLAY_MARGIN,
-                OVERLAY_MARGIN,
-                this.getWidth() - OVERLAY_SIZE_OFFSET,
-                this.getHeight() - OVERLAY_SIZE_OFFSET,
-                CARD_CORNER_RADIUS,
-                CARD_CORNER_RADIUS
-            );
+        final Graphics2D graphics = (Graphics2D) g.create();
+        try {
+            setQualityRenderingHints(graphics);
+            final ImageIcon icon = this.faceUp ? this.frontIcon : this.backIcon;
+            graphics.drawImage(icon.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
+            if (this.resting || this.selected) {
+                graphics.setColor(this.selected ? SELECTED_OVERLAY_COLOR : DORMANT_OVERLAY_COLOR);
+                graphics.fillRoundRect(
+                    OVERLAY_MARGIN,
+                    OVERLAY_MARGIN,
+                    this.getWidth() - OVERLAY_SIZE_OFFSET,
+                    this.getHeight() - OVERLAY_SIZE_OFFSET,
+                    CARD_CORNER_RADIUS,
+                    CARD_CORNER_RADIUS
+                );
+            }
+            if (this.faceUp) {
+                this.paintHealth(graphics);
+            }
+        } finally {
+            graphics.dispose();
         }
-        if (!this.faceUp) {
-            return;
-        }
+    }
+
+    private void paintHealth(final Graphics graphics) {
         final String text = this.currentHealth + " / " + this.maxHealth;
-        final FontMetrics metrics = g.getFontMetrics();
+        final FontMetrics metrics = graphics.getFontMetrics();
         final int centerX = (int) Math.round(this.getWidth() * HEALTH_TEXT_CENTER_X_RATIO);
         final int centerY = (int) Math.round(this.getHeight() * HEALTH_TEXT_CENTER_Y_RATIO);
         final int x = centerX - metrics.stringWidth(text) / 2;
         final int y = centerY + (metrics.getAscent() - metrics.getDescent()) / 2;
-        g.setColor(TEXT_COLOR);
-        g.drawString(text, x, y);
+        graphics.setColor(TEXT_COLOR);
+        graphics.drawString(text, x, y);
     }
 
     /**
@@ -150,6 +161,12 @@ final class CardComponent extends JButton {
     void setRestingVisual(final boolean isCardResting) {
         this.resting = isCardResting;
         this.repaint();
+    }
+
+    private static void setQualityRenderingHints(final Graphics2D graphics) {
+        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
 
 }

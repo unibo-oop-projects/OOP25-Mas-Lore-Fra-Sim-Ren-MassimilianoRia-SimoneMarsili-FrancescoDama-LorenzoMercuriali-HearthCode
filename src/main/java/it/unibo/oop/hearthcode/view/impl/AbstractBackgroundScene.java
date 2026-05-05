@@ -3,7 +3,6 @@ package it.unibo.oop.hearthcode.view.impl;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -79,9 +78,8 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
         super.paintComponent(g);
         final int panelWidth = this.getWidth();
         final int panelHeight = this.getHeight();
-        final Graphics2D g2d = (Graphics2D) g.create();
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(0, 0, panelWidth, panelHeight);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, panelWidth, panelHeight);
         final double scale = Math.min(
             (double) panelWidth / this.background.getWidth(null),
             (double) panelHeight / this.background.getHeight(null)
@@ -90,8 +88,7 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
         final int height = (int) Math.ceil(this.background.getHeight(null) * scale);
         final int x = (panelWidth - width) / 2;
         final int y = (panelHeight - height) / 2;
-        g2d.drawImage(this.background, x, y, width, height, null);
-        g2d.dispose();
+        g.drawImage(this.background, x, y, width, height, null);
     }
 
 }

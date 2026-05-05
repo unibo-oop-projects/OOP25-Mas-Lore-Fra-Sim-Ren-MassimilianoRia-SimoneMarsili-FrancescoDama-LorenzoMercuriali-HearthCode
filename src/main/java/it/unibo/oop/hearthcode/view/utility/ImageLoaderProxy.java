@@ -28,7 +28,7 @@ public final class ImageLoaderProxy {
      * @return the loaded raw image
      */
     public ImageIcon load(final String path) {
-        return join(this.loadAsync(path));
+        return this.loadAsync(path).join();
     }
 
     /**
@@ -40,7 +40,7 @@ public final class ImageLoaderProxy {
      * @return the loaded scaled image
      */
     public ImageIcon load(final String path, final int width, final int height) {
-        return join(this.loadAsync(path, width, height));
+        return this.loadAsync(path, width, height).join();
     }
 
     /**
@@ -79,14 +79,4 @@ public final class ImageLoaderProxy {
         );
     }
 
-    /**
-     * Joins the given image future.
-     * 
-     * @param future the future to join
-     * @return the loaded image
-     */
-    private static ImageIcon join(final CompletableFuture<ImageIcon> future) {
-        return future.join();
-    }
 }
-
