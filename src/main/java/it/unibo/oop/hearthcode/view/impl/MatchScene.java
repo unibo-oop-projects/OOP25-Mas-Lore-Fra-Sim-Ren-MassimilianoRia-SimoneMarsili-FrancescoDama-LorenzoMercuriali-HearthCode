@@ -1,7 +1,6 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,10 +19,7 @@ import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
-import it.unibo.oop.hearthcode.view.api.CardComponent;
-import it.unibo.oop.hearthcode.view.api.MatchCardSlot;
 import it.unibo.oop.hearthcode.view.api.MatchView;
-import it.unibo.oop.hearthcode.view.api.PlayerArea;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
@@ -37,22 +32,13 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     private static final int MAX_ARMY_SIZE = 5;
     private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
     private static final PlayerId AI_PLAYER = PlayerId.AI;
-    private static final Color PRIMARY_BUTTON = new Color(82, 113, 68);
-    private static final Color PRIMARY_BUTTON_HOVER = new Color(103, 136, 83);
-    private static final Color DANGER_BUTTON = new Color(136, 78, 52);
-    private static final Color DANGER_BUTTON_HOVER = new Color(160, 97, 66);
-    private transient MatchSceneUiFactoryImpl uiFactory = new MatchSceneUiFactoryImpl();
     private final PlayerArea humanPlayerArea;
     private final PlayerArea aiPlayerArea;
+    private final MatchActionPanel actionPanel;
     private transient Map<CardId, MatchCardSlot> cardsById = new LinkedHashMap<>();
     private transient Map<CardId, CardComponent> cardComponentsById = new LinkedHashMap<>();
-    private final JButton attackHeroButton;
-    private final JButton attackCreatureButton;
-    private final JButton endTurnButton;
-    private final JButton placeCardButton;
-    private final JButton exitButton;
     private PlayerId currentTurnPlayer = HUMAN_PLAYER;
-    private transient MatchSelectionStateImpl selection = new MatchSelectionStateImpl();
+    private transient MatchSelectionState selection = new MatchSelectionState();
     private transient int humanCurrentMana;
 
     /**
@@ -67,45 +53,20 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
             ViewMetrics.outerPadding()
         ));
         this.setOpaque(false);
-        this.humanPlayerArea = new PlayerAreaImpl(HUMAN_PLAYER);
-        this.aiPlayerArea = new PlayerAreaImpl(AI_PLAYER);
-        this.attackHeroButton = this.uiFactory.createActionButton(
-            "ATTACK HERO",
-            PRIMARY_BUTTON,
-            PRIMARY_BUTTON_HOVER
-        );
-        this.attackCreatureButton = this.uiFactory.createActionButton(
-            "ATTACK CREATURE",
-            PRIMARY_BUTTON,
-            PRIMARY_BUTTON_HOVER
-        );
-        this.placeCardButton = this.uiFactory.createActionButton(
-            "PLACE CARD",
-            PRIMARY_BUTTON,
-            PRIMARY_BUTTON_HOVER
-        );
-        this.endTurnButton = this.uiFactory.createActionButton(
-            "END TURN",
-            PRIMARY_BUTTON,
-            PRIMARY_BUTTON_HOVER
-        );
-        this.exitButton = this.uiFactory.createActionButton("EXIT", DANGER_BUTTON, DANGER_BUTTON_HOVER);
-        this.add(this.aiPlayerArea.getComponent(), BorderLayout.NORTH);
+        this.humanPlayerArea = new PlayerArea(HUMAN_PLAYER);
+        this.aiPlayerArea = new PlayerArea(AI_PLAYER);
+        this.actionPanel = new MatchActionPanel();
+        this.add(this.aiPlayerArea, BorderLayout.NORTH);
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
-        this.add(this.humanPlayerArea.getComponent(), BorderLayout.SOUTH);
+        this.add(this.humanPlayerArea, BorderLayout.SOUTH);
         this.refreshInteractionState();
-    }
-
-    private JPanel createPanel() {
-        return this.uiFactory.createPanel();
     }
 
     private void readObject(final ObjectInputStream input) throws IOException, ClassNotFoundException {
         input.defaultReadObject();
-        this.uiFactory = new MatchSceneUiFactoryImpl();
         this.cardsById = new LinkedHashMap<>();
         this.cardComponentsById = new LinkedHashMap<>();
-        this.selection = new MatchSelectionStateImpl();
+        this.selection = new MatchSelectionState();
     }
 
     private PlayerArea getPlayerArea(final PlayerId playerId) {
@@ -113,10 +74,10 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
     }
 
     private JComponent createCenterPanel() {
-        final JPanel panel = this.createPanel();
+        final JPanel panel = createTransparentPanel();
         panel.setLayout(new BorderLayout(ViewMetrics.horizontalGap() * 2, ViewMetrics.verticalGap() * 2));
-        panel.add(this.createActionPanel(), BorderLayout.WEST);
-        final JPanel armiesPanel = this.createPanel();
+        panel.add(this.actionPanel, BorderLayout.WEST);
+        final JPanel armiesPanel = createTransparentPanel();
         armiesPanel.setLayout(new GridLayout(2, 1, 0, ViewMetrics.verticalGap() * 2));
         armiesPanel.add(this.aiPlayerArea.getArmyAreaComponent());
         armiesPanel.add(this.humanPlayerArea.getArmyAreaComponent());
@@ -124,18 +85,10 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         return panel;
     }
 
-    private JComponent createActionPanel() {
-        return this.uiFactory.createActionPanel(
-            this.attackHeroButton,
-            this.attackCreatureButton,
-            this.placeCardButton,
-            this.endTurnButton,
-            this.exitButton
-        );
-    }
-
-    private void updateHealth(final PlayerId playerId, final int newHealth) {
-        this.getPlayerArea(playerId).setCurrentHealth(newHealth);
+    private static JPanel createTransparentPanel() {
+        final JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        return panel;
     }
 
     private void updateMana(final PlayerId playerId, final int currentMana, final int maxMana) {
@@ -179,7 +132,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         final int manaCost,
         final MatchCardZone zone
     ) {
-        this.cardsById.put(card.getCardId(), new MatchCardSlotImpl(owner, manaCost, zone));
+        this.cardsById.put(card.getCardId(), new MatchCardSlot(owner, manaCost, zone));
         this.cardComponentsById.put(card.getCardId(), card);
     }
 
@@ -196,13 +149,9 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.selection.clear();
     }
 
-    private void removeSelectionIfPresent(final CardId cardId) {
-        this.selection.remove(cardId);
-    }
-
     private void handleCardSelection(final CardId cardId) {
         final MatchCardSlot slot = this.getCardSlot(cardId);
-        if (!this.getCardComponent(cardId).getComponent().isEnabled()) {
+        if (!this.getCardComponent(cardId).isEnabled()) {
             return;
         }
         if (slot.getZone() == MatchCardZone.HAND) {
@@ -311,15 +260,16 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         }
         card.setSelectedVisual(this.isSelected(cardId));
         card.setRestingVisual(slot.isDormantForVisuals());
-        card.getComponent().setEnabled(enabled);
+        card.setEnabled(enabled);
     }
 
     private void refreshActionButtons() {
-        this.attackHeroButton.setEnabled(this.canAttackHero());
-        this.attackCreatureButton.setEnabled(this.canAttackCreature());
-        this.placeCardButton.setEnabled(this.canPlaceSelectedCard());
-        this.endTurnButton.setEnabled(this.isHumanTurn());
-        this.exitButton.setEnabled(true);
+        this.actionPanel.setActionsEnabled(
+            this.canAttackHero(),
+            this.canAttackCreature(),
+            this.canPlaceSelectedCard(),
+            this.isHumanTurn()
+        );
     }
 
     private void refreshInteractionState() {
@@ -351,7 +301,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onAttackHero(final Runnable action) {
-        this.attackHeroButton.addActionListener(event -> action.run());
+        this.actionPanel.onAttackHero(action);
     }
 
     /**
@@ -359,7 +309,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onAttackCreature(final Runnable action) {
-        this.attackCreatureButton.addActionListener(event -> action.run());
+        this.actionPanel.onAttackCreature(action);
     }
 
     /**
@@ -367,7 +317,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onPlaceCard(final Runnable action) {
-        this.placeCardButton.addActionListener(event -> action.run());
+        this.actionPanel.onPlaceCard(action);
     }
 
     /**
@@ -375,7 +325,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onEndTurn(final Runnable action) {
-        this.endTurnButton.addActionListener(event -> action.run());
+        this.actionPanel.onEndTurn(action);
     }
 
     /**
@@ -383,7 +333,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onExitGame(final Runnable action) {
-        this.exitButton.addActionListener(event -> action.run());
+        this.actionPanel.onExitGame(action);
     }
 
     /**
@@ -442,8 +392,8 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onCreatureDrawn(final PlayerId playerId, final CardId drawnCard, final CreatureDefinition def) {
-        final CardComponent card = new CardComponentImpl(drawnCard, def);
-        card.getComponent().addActionListener(event -> this.handleCardSelection(card.getCardId()));
+        final CardComponent card = new CardComponent(drawnCard, def);
+        card.addActionListener(event -> this.handleCardSelection(card.getCardId()));
         if (this.isHumanPlayer(playerId)) {
             card.setFaceUp(true);
         }
@@ -477,7 +427,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onCardDestroyed(final PlayerId playerId, final CardId cardId) {
-        this.removeSelectionIfPresent(cardId);
+        this.selection.remove(cardId);
         this.cardsById.remove(cardId);
         this.cardComponentsById.remove(cardId);
         this.getPlayerArea(playerId).removeArmyCard(cardId);
@@ -490,7 +440,7 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
      */
     @Override
     public void onPlayerHealthChanged(final PlayerId playerId, final int newHealth) {
-        this.updateHealth(playerId, newHealth);
+        this.getPlayerArea(playerId).setCurrentHealth(newHealth);
     }
 
     /**

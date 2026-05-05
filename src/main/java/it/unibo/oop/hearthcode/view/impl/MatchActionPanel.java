@@ -7,7 +7,6 @@ import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
@@ -15,15 +14,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import it.unibo.oop.hearthcode.view.api.MatchSceneUiFactory;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
- * Default implementation of {@link MatchSceneUiFactory}.
+ * Panel containing the actions available during a match.
  */
-public final class MatchSceneUiFactoryImpl implements MatchSceneUiFactory {
+final class MatchActionPanel extends JPanel {
 
-    private static final int BUTTONS_NUMBER = 5;
+    private static final long serialVersionUID = 1L;
+
+    private static final int BUTTONS_COUNT = 5;
     private static final float ACTION_BUTTON_FONT_SIZE = 14f;
     private static final float PANEL_TITLE_FONT_SIZE = 14f;
     private static final int BUTTON_VERTICAL_PADDING = 8;
@@ -35,12 +35,70 @@ public final class MatchSceneUiFactoryImpl implements MatchSceneUiFactory {
     private static final Color ACTION_PANEL_TITLE = new Color(241, 225, 178);
     private static final Color PRIMARY_BUTTON_DISABLED = new Color(73, 78, 61);
     private static final Color BUTTON_TEXT = new Color(247, 239, 214);
+    private static final Color PRIMARY_BUTTON = new Color(82, 113, 68);
+    private static final Color PRIMARY_BUTTON_HOVER = new Color(103, 136, 83);
+    private static final Color DANGER_BUTTON = new Color(136, 78, 52);
+    private static final Color DANGER_BUTTON_HOVER = new Color(160, 97, 66);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JButton createActionButton(
+    private final JButton attackHeroButton;
+    private final JButton attackCreatureButton;
+    private final JButton placeCardButton;
+    private final JButton endTurnButton;
+    private final JButton exitButton;
+
+    MatchActionPanel() {
+        this.attackHeroButton = createActionButton("ATTACK HERO", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
+        this.attackCreatureButton = createActionButton("ATTACK CREATURE", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
+        this.placeCardButton = createActionButton("PLACE CARD", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
+        this.endTurnButton = createActionButton("END TURN", PRIMARY_BUTTON, PRIMARY_BUTTON_HOVER);
+        this.exitButton = createActionButton("EXIT", DANGER_BUTTON, DANGER_BUTTON_HOVER);
+
+        this.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
+        this.setLayout(new GridLayout(BUTTONS_COUNT, 1, 0, ViewMetrics.verticalGap() * 2));
+        this.setBackground(ACTION_PANEL_BACKGROUND);
+        this.setOpaque(true);
+        this.setBorder(createPanelBorder("Actions"));
+        this.add(this.attackHeroButton);
+        this.add(this.attackCreatureButton);
+        this.add(this.placeCardButton);
+        this.add(this.endTurnButton);
+        this.add(this.exitButton);
+    }
+
+    void onAttackHero(final Runnable action) {
+        this.attackHeroButton.addActionListener(event -> action.run());
+    }
+
+    void onAttackCreature(final Runnable action) {
+        this.attackCreatureButton.addActionListener(event -> action.run());
+    }
+
+    void onPlaceCard(final Runnable action) {
+        this.placeCardButton.addActionListener(event -> action.run());
+    }
+
+    void onEndTurn(final Runnable action) {
+        this.endTurnButton.addActionListener(event -> action.run());
+    }
+
+    void onExitGame(final Runnable action) {
+        this.exitButton.addActionListener(event -> action.run());
+    }
+
+    void setActionsEnabled(
+        final boolean attackHeroEnabled,
+        final boolean attackCreatureEnabled,
+        final boolean placeCardEnabled,
+        final boolean endTurnEnabled
+    ) {
+        this.attackHeroButton.setEnabled(attackHeroEnabled);
+        this.attackCreatureButton.setEnabled(attackCreatureEnabled);
+        this.placeCardButton.setEnabled(placeCardEnabled);
+        this.endTurnButton.setEnabled(endTurnEnabled);
+        this.exitButton.setEnabled(true);
+    }
+
+    private static JButton createActionButton(
         final String text,
         final Color background,
         final Color hoverBackground
@@ -71,40 +129,7 @@ public final class MatchSceneUiFactoryImpl implements MatchSceneUiFactory {
         return button;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JPanel createPanel() {
-        final JPanel panel = new JPanel();
-        panel.setOpaque(false);
-        return panel;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JComponent createActionPanel(
-        final JButton attackHeroButton,
-        final JButton attackCreatureButton,
-        final JButton placeCardButton,
-        final JButton endTurnButton,
-        final JButton exitButton
-    ) {
-        final JPanel actionPanel = this.createTitledPanel("Actions");
-        actionPanel.setPreferredSize(new Dimension(ViewMetrics.sidePanelWidth(), 0));
-        actionPanel.setLayout(new GridLayout(BUTTONS_NUMBER, 1, 0, ViewMetrics.verticalGap() * 2));
-        actionPanel.add(attackHeroButton);
-        actionPanel.add(attackCreatureButton);
-        actionPanel.add(placeCardButton);
-        actionPanel.add(endTurnButton);
-        actionPanel.add(exitButton);
-        return actionPanel;
-    }
-
-    private JPanel createTitledPanel(final String title) {
-        final JPanel panel = this.createPanel();
+    private static CompoundBorder createPanelBorder(final String title) {
         final TitledBorder titledBorder = BorderFactory.createTitledBorder(
             new CompoundBorder(
                 new LineBorder(ACTION_PANEL_BORDER, 1, true),
@@ -119,7 +144,7 @@ public final class MatchSceneUiFactoryImpl implements MatchSceneUiFactory {
         );
         titledBorder.setTitleColor(ACTION_PANEL_TITLE);
         titledBorder.setTitleFont(titledBorder.getTitleFont().deriveFont(Font.BOLD, PANEL_TITLE_FONT_SIZE));
-        panel.setBorder(new CompoundBorder(
+        return new CompoundBorder(
             titledBorder,
             BorderFactory.createEmptyBorder(
                 PANEL_OUTER_PADDING,
@@ -127,13 +152,10 @@ public final class MatchSceneUiFactoryImpl implements MatchSceneUiFactory {
                 PANEL_OUTER_PADDING,
                 PANEL_OUTER_PADDING
             )
-        ));
-        panel.setBackground(ACTION_PANEL_BACKGROUND);
-        panel.setOpaque(true);
-        return panel;
+        );
     }
 
-    private void updateButtonBackground(
+    private static void updateButtonBackground(
         final JButton button,
         final Color background,
         final Color hoverBackground

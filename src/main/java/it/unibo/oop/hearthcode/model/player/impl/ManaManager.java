@@ -21,21 +21,21 @@ public class ManaManager {
     /**
      * @return the player's current mana
      */
-    int actualMana() {
+    public int actualMana() {
         return this.actualMana;
     }
 
     /**
      * @return the player's maximum mana for the current turn
      */
-    int maxMana() {
+    public int maxMana() {
         return this.maxMana;
     }
 
     /**
      * Increments the mana limit and refreshes current mana.
      */
-    void updateMana() {
+    public void updateMana() {
         if (this.maxMana < MAXIMUM_MANA) {
             this.maxMana++;
         }
@@ -47,7 +47,7 @@ public class ManaManager {
      * 
      * @param amount the mana to be subtracted
      */
-    void decreaseActualMana(final int amount) {
+    public void decreaseActualMana(final int amount) {
         if (this.actualMana - amount < 0) {
             throw new IllegalStateException("You don't have enough Mana!");
         } else {

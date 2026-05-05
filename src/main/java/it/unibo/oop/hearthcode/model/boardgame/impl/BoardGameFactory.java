@@ -39,7 +39,7 @@ public final class BoardGameFactory {
      *
      * @return the default immutable match setup
      */
-    static GameSetup createDefaultSetup() {
+    public static GameSetup createDefaultSetup() {
         final var generator = new IdGenerator();
         final var database = CreatureDatabaseFactory.createFromFile(DEFAULT_CREATURES_FILE);
         final var creatureFactory = new CreatureImplFactory(generator);

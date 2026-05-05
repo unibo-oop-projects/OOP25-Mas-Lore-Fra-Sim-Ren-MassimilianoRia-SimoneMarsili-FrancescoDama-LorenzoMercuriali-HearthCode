@@ -83,7 +83,7 @@ public final class ImagePreloadCatalog {
     }
 
     private static ImageLoadRequest endBanner(final String path) {
-        return ImageLoadRequest.scaled(path, ViewMetrics.screenWidth(), ViewMetrics.endBannerHeight());
+        return ImageLoadRequest.scaled(path, ViewMetrics.viewportWidth(), ViewMetrics.endBannerHeight());
     }
 
     /**

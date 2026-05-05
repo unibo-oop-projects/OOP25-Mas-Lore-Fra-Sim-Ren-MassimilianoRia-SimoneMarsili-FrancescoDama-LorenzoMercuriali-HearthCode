@@ -23,7 +23,7 @@ public final class EndMatchScene extends AbstractBackgroundScene implements EndM
     private static final String BACKGROUND_PATH = "/images/menu-background.png";
     private static final int BUTTON_WIDTH = ViewMetrics.menuButtonWidth();
     private static final int BUTTON_HEIGHT = ViewMetrics.menuButtonHeight();
-    private static final int RESULT_WIDTH = ViewMetrics.screenWidth();
+    private static final int RESULT_WIDTH = ViewMetrics.viewportWidth();
     private static final int RESULT_HEIGHT = ViewMetrics.endBannerHeight();
     private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
 

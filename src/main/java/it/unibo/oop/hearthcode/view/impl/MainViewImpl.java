@@ -1,6 +1,7 @@
 package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -20,6 +21,7 @@ public final class MainViewImpl implements MainView {
     private final JFrame frame;
     private final CardLayout cardLayout;
     private final JPanel cardsPanel;
+    private final JPanel rootPanel;
 
     /**
      * Creates the main view.
@@ -28,6 +30,9 @@ public final class MainViewImpl implements MainView {
         this.frame = new JFrame("HearthCode");
         this.cardLayout = new CardLayout();
         this.cardsPanel = new JPanel(this.cardLayout);
+        this.cardsPanel.setBackground(Color.BLACK);
+        this.rootPanel = new BlackBounds();
+        this.rootPanel.add(this.cardsPanel);
     }
 
     /**
@@ -39,7 +44,7 @@ public final class MainViewImpl implements MainView {
             this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             this.frame.setUndecorated(true);
             this.frame.setResizable(false);
-            this.frame.setContentPane(this.cardsPanel);
+            this.frame.setContentPane(this.rootPanel);
             this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             this.frame.setVisible(true);
         });

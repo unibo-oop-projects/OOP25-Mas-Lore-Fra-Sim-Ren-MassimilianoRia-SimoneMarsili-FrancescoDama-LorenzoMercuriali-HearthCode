@@ -2,12 +2,11 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
-import it.unibo.oop.hearthcode.view.api.MatchCardSlot;
 
 /**
- * Default implementation of {@link MatchCardSlot}.
+ * Tracks the match metadata associated with a rendered card.
  */
-public final class MatchCardSlotImpl implements MatchCardSlot {
+final class MatchCardSlot {
 
     private final PlayerId owner;
     private final int manaCost;
@@ -22,7 +21,7 @@ public final class MatchCardSlotImpl implements MatchCardSlot {
      * @param manaCost the mana cost of the card
      * @param zone the initial zone of the card
      */
-    public MatchCardSlotImpl(
+    MatchCardSlot(
         final PlayerId owner,
         final int manaCost,
         final MatchCardZone zone
@@ -32,70 +31,38 @@ public final class MatchCardSlotImpl implements MatchCardSlot {
         this.zone = zone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PlayerId getOwner() {
+    PlayerId getOwner() {
         return this.owner;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getManaCost() {
+    int getManaCost() {
         return this.manaCost;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public MatchCardZone getZone() {
+    MatchCardZone getZone() {
         return this.zone;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void moveToArmy() {
+    void moveToArmy() {
         this.zone = MatchCardZone.ARMY;
         this.sleeping = true;
         this.exhausted = false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void wakeUp() {
+    void wakeUp() {
         this.sleeping = false;
         this.exhausted = false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void exhaust() {
+    void exhaust() {
         this.exhausted = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isDormantForInteraction() {
+    boolean isDormantForInteraction() {
         return this.sleeping || this.exhausted;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isDormantForVisuals() {
+    boolean isDormantForVisuals() {
         if (this.owner.type() == PlayerType.HUMAN_PLAYER) {
             return this.isDormantForInteraction();
         }

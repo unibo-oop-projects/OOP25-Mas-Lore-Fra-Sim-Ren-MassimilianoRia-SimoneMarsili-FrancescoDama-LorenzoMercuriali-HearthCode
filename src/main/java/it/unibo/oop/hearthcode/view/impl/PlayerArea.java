@@ -22,15 +22,12 @@ import javax.swing.border.TitledBorder;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerType;
-import it.unibo.oop.hearthcode.view.api.CardArea;
-import it.unibo.oop.hearthcode.view.api.CardComponent;
-import it.unibo.oop.hearthcode.view.api.PlayerArea;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
- * Implementation of {@link PlayerArea}.
+ * UI area representing a player and the related match information.
  */
-public final class PlayerAreaImpl extends JPanel implements PlayerArea {
+final class PlayerArea extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +44,6 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
     private static final Color PANEL_BORDER = new Color(176, 145, 79);
     private static final Color TEXT_COLOR = new Color(244, 232, 194);
     private static final Color BAR_BACKGROUND = new Color(82, 73, 50, 220);
-    private final PlayerId playerId;
     private final String displayName;
     private final CardArea handArea;
     private final CardArea armyArea;
@@ -71,12 +67,11 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
      *
      * @param playerId the identifier of the represented player
      */
-    public PlayerAreaImpl(final PlayerId playerId) {
+    PlayerArea(final PlayerId playerId) {
         super(new BorderLayout(ViewMetrics.horizontalGap(), ViewMetrics.verticalGap()));
-        this.playerId = playerId;
         this.displayName = playerId.type() == PlayerType.HUMAN_PLAYER ? "Player" : "Enemy";
-        this.handArea = new CardAreaImpl(this.displayName + " Hand");
-        this.armyArea = new CardAreaImpl(this.displayName + " Army");
+        this.handArea = new CardArea(this.displayName + " Hand");
+        this.armyArea = new CardArea(this.displayName + " Army");
         this.healthLabel = this.createCenteredLabel();
         this.manaLabel = this.createCenteredLabel();
         this.handCounterLabel = this.createCenteredLabel();
@@ -92,7 +87,7 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
             ViewMetrics.outerPadding() * 2
         ));
         this.add(this.createStatsPanel(), BorderLayout.WEST);
-        this.add(this.handArea.getComponent(), BorderLayout.CENTER);
+        this.add(this.handArea, BorderLayout.CENTER);
         this.refreshHealth();
         this.refreshMana();
         this.resetCardCounters();
@@ -181,95 +176,39 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.deckCounterLabel.setText("Deck: " + this.currentDeckCards + COUNTER_SEPARATOR + MAX_DECK_CARDS);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JComponent getComponent() {
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PlayerId getPlayerId() {
-        return this.playerId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public CardComponent getArmyCard(final CardId cardId) {
         return this.armyArea.getCard(cardId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<CardComponent> getArmyCards() {
         return this.armyArea.getCards();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CardComponent> getHandCards() {
-        return this.handArea.getCards();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public JComponent getArmyAreaComponent() {
-        return this.armyArea.getComponent();
+        return this.armyArea;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void removeArmyCard(final CardId cardId) {
         this.armyArea.removeCard(cardId);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void initHealth(final int health) {
         this.maxHealth = health;
         this.currentHealth = health;
         this.refreshHealth();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void setCurrentHealth(final int currentHealth) {
         this.currentHealth = currentHealth;
         this.refreshHealth();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void setMana(final int newCurrentMana, final int newMaxMana) {
         this.currentMana = newCurrentMana;
         this.maxMana = newMaxMana;
         this.refreshMana();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void resetCardCounters() {
         this.currentHandCards = 0;
         this.currentArmyCards = 0;
@@ -277,56 +216,32 @@ public final class PlayerAreaImpl extends JPanel implements PlayerArea {
         this.refreshCardCounters();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void registerCardDrawn() {
         this.currentHandCards = Math.min(MAX_HAND_CARDS, this.currentHandCards + 1);
         this.currentDeckCards = Math.max(0, this.currentDeckCards - 1);
         this.refreshCardCounters();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void registerCardBurned() {
         this.currentDeckCards = Math.max(0, this.currentDeckCards - 1);
         this.refreshCardCounters();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void registerCardPlaced() {
         this.currentHandCards = Math.max(0, this.currentHandCards - 1);
         this.currentArmyCards = Math.min(MAX_ARMY_CARDS, this.currentArmyCards + 1);
         this.refreshCardCounters();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void registerCardDestroyed() {
         this.currentArmyCards = Math.max(0, this.currentArmyCards - 1);
         this.refreshCardCounters();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void addHandCard(final CardComponent card) {
         this.handArea.addCard(card);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void placeCard(final CardId cardId) {
         final CardComponent card = this.handArea.getCard(cardId);
         this.handArea.removeCard(cardId);

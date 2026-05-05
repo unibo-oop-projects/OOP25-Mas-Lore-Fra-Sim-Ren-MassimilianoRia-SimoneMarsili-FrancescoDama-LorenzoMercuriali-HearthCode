@@ -248,7 +248,7 @@ public final class BoardGameImpl implements BoardGame, ObservableGame {
     /**
      * A inner class that manages the change turn.
      */
-    class TurnManager {
+    public class TurnManager {
 
         private PlayerId currentPlayer;
         private int decreasingHealthTax = 1;

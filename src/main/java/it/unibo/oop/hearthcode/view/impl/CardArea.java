@@ -1,30 +1,28 @@
 package it.unibo.oop.hearthcode.view.impl;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.Color;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
-import it.unibo.oop.hearthcode.view.api.CardArea;
-import it.unibo.oop.hearthcode.view.api.CardComponent;
 import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 
 /**
- * Simple implementation of {@link CardArea}.
+ * Simple area containing card buttons.
  */
-public final class CardAreaImpl extends JPanel implements CardArea {
+final class CardArea extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,6 +30,7 @@ public final class CardAreaImpl extends JPanel implements CardArea {
     private static final Color AREA_BACKGROUND = new Color(50, 68, 43, 185);
     private static final Color AREA_BORDER = new Color(163, 132, 70);
     private static final Color AREA_TITLE = new Color(243, 228, 183);
+
     private final Map<CardId, CardComponent> cards = new LinkedHashMap<>();
 
     /**
@@ -39,13 +38,13 @@ public final class CardAreaImpl extends JPanel implements CardArea {
      *
      * @param title the title of the panel
      */
-    public CardAreaImpl(final String title) {
+    CardArea(final String title) {
         super(new FlowLayout(
             FlowLayout.LEFT,
             ViewMetrics.horizontalGap() * 2,
             ViewMetrics.verticalGap() * 2
         ));
-        this.setOpaque(true);
+        this.setOpaque(false);
         this.setBackground(AREA_BACKGROUND);
         final TitledBorder titledBorder = BorderFactory.createTitledBorder(
             new CompoundBorder(
@@ -64,17 +63,19 @@ public final class CardAreaImpl extends JPanel implements CardArea {
      * {@inheritDoc}
      */
     @Override
-    public void addCard(final CardComponent card) {
+    protected void paintComponent(final Graphics g) {
+        super.paintComponent(g);
+        g.setColor(this.getBackground());
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+    }
+
+    void addCard(final CardComponent card) {
         this.cards.put(card.getCardId(), card);
-        this.add(card.getComponent());
+        this.add(card);
         this.refreshArea();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CardComponent getCard(final CardId cardId) {
+    CardComponent getCard(final CardId cardId) {
         final CardComponent card = this.cards.get(cardId);
         if (card == null) {
             throw new IllegalArgumentException("Card not found in area: " + cardId);
@@ -82,32 +83,16 @@ public final class CardAreaImpl extends JPanel implements CardArea {
         return card;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CardComponent> getCards() {
+    List<CardComponent> getCards() {
         return List.copyOf(this.cards.values());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JComponent getComponent() {
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void removeCard(final CardId cardId) {
+    void removeCard(final CardId cardId) {
         final CardComponent card = this.cards.remove(cardId);
         if (card == null) {
             throw new IllegalArgumentException("Card not found in area: " + cardId);
         }
-        this.remove(card.getComponent());
+        this.remove(card);
         this.refreshArea();
     }
 
