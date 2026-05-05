@@ -24,6 +24,8 @@ public final class CardsPanel extends JPanel {
 
     /**
      * Builds the deck cards panel.
+     * 
+     * @param definitions the creatures to use
      */
     public CardsPanel(final CreatureDatabase definitions) {
         this.setOpaque(false);

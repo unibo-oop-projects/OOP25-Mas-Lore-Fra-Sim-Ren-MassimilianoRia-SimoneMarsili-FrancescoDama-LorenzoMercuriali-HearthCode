@@ -28,6 +28,8 @@ public final class DatabaseScene extends AbstractBackgroundScene implements Data
 
     /**
      * Builds the database scene.
+     * 
+     * @param definitions the creatures to use
      */
     public DatabaseScene(final CreatureDatabase definitions) {
         super(BACKGROUND_PATH);
