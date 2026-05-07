@@ -12,3 +12,9 @@ bin/
 .project
 .settings/
 .classpath
+
+# Ignore LaTeX temporary files
+docs/**
+!docs/**/
+!docs/**/*.tex
+!docs/**/*.pdf

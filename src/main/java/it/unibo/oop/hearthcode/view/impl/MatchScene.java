@@ -2,8 +2,6 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,13 +58,6 @@ public final class MatchScene extends JPanel implements MatchView, GameObserver 
         this.add(this.createCenterPanel(), BorderLayout.CENTER);
         this.add(this.humanPlayerArea, BorderLayout.SOUTH);
         this.refreshInteractionState();
-    }
-
-    private void readObject(final ObjectInputStream input) throws IOException, ClassNotFoundException {
-        input.defaultReadObject();
-        this.cardsById = new LinkedHashMap<>();
-        this.cardComponentsById = new LinkedHashMap<>();
-        this.selection = new MatchSelectionState();
     }
 
     private PlayerArea getPlayerArea(final PlayerId playerId) {
