@@ -10,7 +10,7 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 /**
  * It represents the main board of the match.
  */
-public interface BoardGame {
+public interface BoardGame extends ObservableGame {
 
     /**
      * @param playerId the identifier of the player

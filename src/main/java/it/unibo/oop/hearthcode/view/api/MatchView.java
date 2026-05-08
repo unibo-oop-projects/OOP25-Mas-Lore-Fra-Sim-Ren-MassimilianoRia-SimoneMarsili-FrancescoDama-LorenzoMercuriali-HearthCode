@@ -2,12 +2,13 @@ package it.unibo.oop.hearthcode.view.api;
 
 import java.util.List;
 
+import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 
 /**
  * View contract for the match scene.
  */
-public interface MatchView extends Scene {
+public interface MatchView extends Scene, GameObserver {
 
     /**
      * @return the list of clicked cards.

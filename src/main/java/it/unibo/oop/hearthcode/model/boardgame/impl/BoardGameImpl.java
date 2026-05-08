@@ -12,7 +12,6 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
-import it.unibo.oop.hearthcode.model.boardgame.api.ObservableGame;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CardType;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
@@ -25,7 +24,7 @@ import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 /**
  * An implementation of the {@link BoardGame} interface.
  */
-public final class BoardGameImpl implements BoardGame, ObservableGame {
+public final class BoardGameImpl implements BoardGame {
 
     private static final int STARTING_HAND_CARDS = 5;
     private final Map<Player, Army> armies;

@@ -14,7 +14,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
@@ -25,7 +24,7 @@ import it.unibo.oop.hearthcode.view.utility.ViewMetrics;
 /**
  * Implementation of {@link MatchView}.
  */
-public final class MatchScene extends JPanel implements MatchView, GameObserver {
+public final class MatchScene extends JPanel implements MatchView {
 
     private static final long serialVersionUID = 1L;
 

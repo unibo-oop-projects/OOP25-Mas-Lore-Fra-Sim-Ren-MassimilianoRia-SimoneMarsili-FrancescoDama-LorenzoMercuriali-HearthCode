@@ -9,8 +9,6 @@ import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
 import it.unibo.oop.hearthcode.model.ai.executor.api.AiActionExecutor;
 import it.unibo.oop.hearthcode.model.ai.service.api.AiTurnService;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
-import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
-import it.unibo.oop.hearthcode.model.boardgame.api.ObservableGame;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.view.api.MatchView;
 
@@ -41,12 +39,8 @@ public final class MatchController {
         final AiTurnService aiTurnService,
         final AiActionExecutor aiActionExecutor
     ) {
-
-        if (boardGame instanceof ObservableGame observable && scene instanceof GameObserver observer) {
-            observable.addObserver(observer);
-        }
-
         this.boardGame = boardGame;
+        this.boardGame.addObserver(scene);
         this.boardGame.startGame();
 
         scene.onAttackHero(() -> this.runSingleCardAction(
