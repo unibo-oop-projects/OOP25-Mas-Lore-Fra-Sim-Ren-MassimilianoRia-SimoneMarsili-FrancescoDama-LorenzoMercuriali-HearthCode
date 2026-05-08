@@ -5,7 +5,7 @@ import it.unibo.oop.hearthcode.model.ai.action.impl.AttackCardAction;
 import it.unibo.oop.hearthcode.model.ai.action.impl.AttackHeroAction;
 import it.unibo.oop.hearthcode.model.ai.action.impl.PlayCardAction;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
-import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.transition.api.AiStateTransition;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;

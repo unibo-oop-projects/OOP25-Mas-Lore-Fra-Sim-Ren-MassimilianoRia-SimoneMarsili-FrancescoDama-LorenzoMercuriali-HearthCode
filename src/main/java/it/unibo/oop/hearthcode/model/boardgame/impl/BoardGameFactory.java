@@ -7,6 +7,7 @@ import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.army.impl.ArmyImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;
+import it.unibo.oop.hearthcode.model.creature.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.deck.impl.DeckFactory;
 import it.unibo.oop.hearthcode.model.player.api.Player;

@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.ai.evaluation.impl;
+package it.unibo.oop.hearthcode.model.ai.evaluation.api;
 
 /**
  * Represents the type of result produced by an AI state evaluation.

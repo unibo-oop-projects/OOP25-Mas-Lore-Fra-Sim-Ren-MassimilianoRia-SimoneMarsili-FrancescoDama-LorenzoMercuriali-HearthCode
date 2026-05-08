@@ -3,7 +3,7 @@ package it.unibo.oop.hearthcode.controller.impl;
 import it.unibo.oop.hearthcode.audio.api.AudioService;
 import it.unibo.oop.hearthcode.audio.model.SoundEffect;
 import it.unibo.oop.hearthcode.controller.api.SceneCoordinator;
-import it.unibo.oop.hearthcode.model.boardgame.impl.Difficulty;
+import it.unibo.oop.hearthcode.model.boardgame.api.Difficulty;
 import it.unibo.oop.hearthcode.view.api.DifficultySelectionView;
 
 /**

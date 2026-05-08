@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import it.unibo.oop.hearthcode.model.boardgame.impl.IdGenerator;
+import it.unibo.oop.hearthcode.model.creature.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.impl.CreatureImplFactory;

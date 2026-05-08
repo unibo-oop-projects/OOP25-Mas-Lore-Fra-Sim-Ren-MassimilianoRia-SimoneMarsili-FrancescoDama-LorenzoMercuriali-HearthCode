@@ -2,7 +2,7 @@ package it.unibo.oop.hearthcode.model.player.api;
 
 import java.util.List;
 
-import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 

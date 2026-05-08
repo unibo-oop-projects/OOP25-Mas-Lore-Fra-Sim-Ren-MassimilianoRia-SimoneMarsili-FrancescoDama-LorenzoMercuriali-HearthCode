@@ -1,4 +1,4 @@
-package it.unibo.oop.hearthcode.model.boardgame.impl;
+package it.unibo.oop.hearthcode.model.boardgame.api;
 
 /**
  * Available match difficulties.

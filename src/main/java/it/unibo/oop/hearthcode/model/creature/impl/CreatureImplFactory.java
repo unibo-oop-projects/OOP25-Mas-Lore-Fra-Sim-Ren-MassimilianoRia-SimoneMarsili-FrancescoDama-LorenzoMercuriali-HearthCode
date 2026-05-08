@@ -1,6 +1,5 @@
 package it.unibo.oop.hearthcode.model.creature.impl;
 
-import it.unibo.oop.hearthcode.model.boardgame.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CardType;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;

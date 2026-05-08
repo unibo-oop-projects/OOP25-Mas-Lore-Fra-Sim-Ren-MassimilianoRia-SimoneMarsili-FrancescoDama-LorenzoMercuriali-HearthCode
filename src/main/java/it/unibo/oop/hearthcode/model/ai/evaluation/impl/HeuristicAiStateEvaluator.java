@@ -3,8 +3,9 @@ package it.unibo.oop.hearthcode.model.ai.evaluation.impl;
 import java.util.List;
 
 import it.unibo.oop.hearthcode.model.ai.evaluation.api.AiStateEvaluator;
+import it.unibo.oop.hearthcode.model.ai.evaluation.api.EvaluationResult;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
-import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.PlayerState;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 

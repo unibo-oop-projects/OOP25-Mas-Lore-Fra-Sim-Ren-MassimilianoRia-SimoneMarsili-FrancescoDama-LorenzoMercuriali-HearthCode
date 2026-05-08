@@ -9,7 +9,7 @@ import it.unibo.oop.hearthcode.model.ai.action.api.AiAction;
 import it.unibo.oop.hearthcode.model.ai.action.api.AiActionGenerator;
 import it.unibo.oop.hearthcode.model.ai.algorithm.api.AiDecisionAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.evaluation.api.AiStateEvaluator;
-import it.unibo.oop.hearthcode.model.ai.evaluation.impl.EvaluationResult;
+import it.unibo.oop.hearthcode.model.ai.evaluation.api.EvaluationResult;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 import it.unibo.oop.hearthcode.model.ai.transition.api.AiStateTransition;
 

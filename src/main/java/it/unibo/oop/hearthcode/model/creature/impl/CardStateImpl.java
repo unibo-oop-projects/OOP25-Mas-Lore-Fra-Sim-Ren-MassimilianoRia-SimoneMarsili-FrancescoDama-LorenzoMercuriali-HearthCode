@@ -1,7 +1,7 @@
-package it.unibo.oop.hearthcode.model.ai.simulation.impl;
+package it.unibo.oop.hearthcode.model.creature.impl;
 
-import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
 
 /**
  * Implementation of {@link CardState}.

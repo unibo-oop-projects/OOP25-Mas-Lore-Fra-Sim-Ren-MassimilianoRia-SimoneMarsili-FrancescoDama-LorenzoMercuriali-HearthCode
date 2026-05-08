@@ -15,7 +15,7 @@ import it.unibo.oop.hearthcode.model.ai.algorithm.api.AiDecisionAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.algorithm.impl.DepthLimitedLookaheadAiAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.algorithm.impl.GreedySequentialAiAlgorithm;
 import it.unibo.oop.hearthcode.model.ai.evaluation.impl.HeuristicAiStateEvaluator;
-import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
 import it.unibo.oop.hearthcode.model.ai.transition.impl.AiStateTransitionImpl;
 
 final class TestAiDecisionAlgorithm {

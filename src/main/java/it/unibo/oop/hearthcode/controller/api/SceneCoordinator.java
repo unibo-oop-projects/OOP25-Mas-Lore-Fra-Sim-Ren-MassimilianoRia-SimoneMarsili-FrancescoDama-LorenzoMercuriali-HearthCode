@@ -1,6 +1,6 @@
 package it.unibo.oop.hearthcode.controller.api;
 
-import it.unibo.oop.hearthcode.model.boardgame.impl.Difficulty;
+import it.unibo.oop.hearthcode.model.boardgame.api.Difficulty;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**

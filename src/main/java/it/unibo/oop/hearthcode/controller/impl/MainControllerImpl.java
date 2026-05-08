@@ -18,7 +18,7 @@ import it.unibo.oop.hearthcode.model.ai.simulation.impl.AiGameStateFactoryImpl;
 import it.unibo.oop.hearthcode.model.ai.transition.impl.AiStateTransitionImpl;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.impl.BoardGameFactory;
-import it.unibo.oop.hearthcode.model.boardgame.impl.Difficulty;
+import it.unibo.oop.hearthcode.model.boardgame.api.Difficulty;
 import it.unibo.oop.hearthcode.model.database.impl.CreatureDatabaseFactory;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 import it.unibo.oop.hearthcode.view.api.MainView;

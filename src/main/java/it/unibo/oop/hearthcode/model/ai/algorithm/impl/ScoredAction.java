@@ -1,7 +1,7 @@
 package it.unibo.oop.hearthcode.model.ai.algorithm.impl;
 
 import it.unibo.oop.hearthcode.model.ai.action.api.AiAction;
-import it.unibo.oop.hearthcode.model.ai.evaluation.impl.EvaluationResult;
+import it.unibo.oop.hearthcode.model.ai.evaluation.api.EvaluationResult;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
 
 /**

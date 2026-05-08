@@ -16,7 +16,7 @@ import it.unibo.oop.hearthcode.model.ai.action.impl.AiActionGeneratorImpl;
 import it.unibo.oop.hearthcode.model.ai.action.impl.AttackCardAction;
 import it.unibo.oop.hearthcode.model.ai.action.impl.AttackHeroAction;
 import it.unibo.oop.hearthcode.model.ai.action.impl.PlayCardAction;
-import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
 
 final class TestAiActionGenerator {
 

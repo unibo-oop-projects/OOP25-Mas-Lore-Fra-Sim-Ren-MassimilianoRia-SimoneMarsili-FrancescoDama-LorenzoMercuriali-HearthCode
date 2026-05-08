@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**

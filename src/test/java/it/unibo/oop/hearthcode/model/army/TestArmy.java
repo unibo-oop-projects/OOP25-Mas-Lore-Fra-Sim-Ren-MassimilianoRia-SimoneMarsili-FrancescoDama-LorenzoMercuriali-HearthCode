@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.army.impl.ArmyImpl;
-import it.unibo.oop.hearthcode.model.boardgame.impl.IdGenerator;
+import it.unibo.oop.hearthcode.model.creature.impl.IdGenerator;
 import it.unibo.oop.hearthcode.model.creature.api.Card;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;

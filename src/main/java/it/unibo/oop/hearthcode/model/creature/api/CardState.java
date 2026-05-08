@@ -1,9 +1,7 @@
-package it.unibo.oop.hearthcode.model.ai.simulation.api;
-
-import it.unibo.oop.hearthcode.model.creature.api.CardId;
+package it.unibo.oop.hearthcode.model.creature.api;
 
 /**
- * Representation of a card state used by the AI.
+ * Representation of a card state.
  */
 public interface CardState {
 

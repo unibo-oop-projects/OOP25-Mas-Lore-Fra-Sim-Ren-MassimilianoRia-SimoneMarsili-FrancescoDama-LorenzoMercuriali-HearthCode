@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
-import it.unibo.oop.hearthcode.model.ai.simulation.api.PlayerState;
 import it.unibo.oop.hearthcode.model.ai.simulation.api.AiGameState;
+import it.unibo.oop.hearthcode.model.ai.simulation.api.PlayerState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
+import it.unibo.oop.hearthcode.model.creature.api.CardState;
+import it.unibo.oop.hearthcode.model.creature.impl.CardStateImpl;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
 
 /**
