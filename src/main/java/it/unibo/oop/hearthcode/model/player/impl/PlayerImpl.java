@@ -76,6 +76,22 @@ public class PlayerImpl implements Player {
      * {@inheritDoc}
      */
     @Override
+    public int getHandCardsLimit() {
+        return this.hand.getMaximumSize();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getDeckCardsCount() {
+        return this.deck.getRemaining();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void decreaseHealth(final int amount) {
         this.health -= amount;
     }

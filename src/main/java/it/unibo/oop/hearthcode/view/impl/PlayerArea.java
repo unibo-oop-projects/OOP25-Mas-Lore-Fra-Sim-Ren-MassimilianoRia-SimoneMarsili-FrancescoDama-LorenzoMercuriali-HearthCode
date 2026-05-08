@@ -34,9 +34,6 @@ final class PlayerArea extends JPanel {
     private static final float LABEL_FONT_SIZE = 15f;
     private static final float PANEL_TITLE_FONT_SIZE = 14f;
     private static final int MIN_PROGRESS_BAR_HEIGHT = 18;
-    private static final int MAX_HAND_CARDS = 7;
-    private static final int MAX_ARMY_CARDS = 5;
-    private static final int MAX_DECK_CARDS = 20;
     private static final String COUNTER_SEPARATOR = "/";
     private static final Color HEALTH_COLOR = new Color(184, 74, 49);
     private static final Color MANA_COLOR = new Color(72, 135, 122);
@@ -61,6 +58,9 @@ final class PlayerArea extends JPanel {
     private int currentHandCards;
     private int currentArmyCards;
     private int currentDeckCards;
+    private int maxHandCards;
+    private int maxArmyCards;
+    private int maxDeckCards;
 
     /**
      * Builds the UI area representing a player.
@@ -90,7 +90,7 @@ final class PlayerArea extends JPanel {
         this.add(this.handArea, BorderLayout.CENTER);
         this.refreshHealth();
         this.refreshMana();
-        this.resetCardCounters();
+        this.refreshCardCounters();
     }
 
     private JLabel createCenteredLabel() {
@@ -171,9 +171,9 @@ final class PlayerArea extends JPanel {
     }
 
     private void refreshCardCounters() {
-        this.handCounterLabel.setText("Hand: " + this.currentHandCards + COUNTER_SEPARATOR + MAX_HAND_CARDS);
-        this.armyCounterLabel.setText("Army: " + this.currentArmyCards + COUNTER_SEPARATOR + MAX_ARMY_CARDS);
-        this.deckCounterLabel.setText("Deck: " + this.currentDeckCards + COUNTER_SEPARATOR + MAX_DECK_CARDS);
+        this.handCounterLabel.setText("Hand: " + this.currentHandCards + COUNTER_SEPARATOR + this.maxHandCards);
+        this.armyCounterLabel.setText("Army: " + this.currentArmyCards + COUNTER_SEPARATOR + this.maxArmyCards);
+        this.deckCounterLabel.setText("Deck: " + this.currentDeckCards + COUNTER_SEPARATOR + this.maxDeckCards);
     }
 
     public CardComponent getArmyCard(final CardId cardId) {
@@ -209,15 +209,22 @@ final class PlayerArea extends JPanel {
         this.refreshMana();
     }
 
-    public void resetCardCounters() {
+    public void resetCardCounters(
+        final int handCardsLimit,
+        final int armyCardsLimit,
+        final int deckCardsLimit
+    ) {
         this.currentHandCards = 0;
         this.currentArmyCards = 0;
-        this.currentDeckCards = MAX_DECK_CARDS;
+        this.currentDeckCards = deckCardsLimit;
+        this.maxHandCards = handCardsLimit;
+        this.maxArmyCards = armyCardsLimit;
+        this.maxDeckCards = deckCardsLimit;
         this.refreshCardCounters();
     }
 
     public void registerCardDrawn() {
-        this.currentHandCards = Math.min(MAX_HAND_CARDS, this.currentHandCards + 1);
+        this.currentHandCards = Math.min(this.maxHandCards, this.currentHandCards + 1);
         this.currentDeckCards = Math.max(0, this.currentDeckCards - 1);
         this.refreshCardCounters();
     }
@@ -229,7 +236,7 @@ final class PlayerArea extends JPanel {
 
     public void registerCardPlaced() {
         this.currentHandCards = Math.max(0, this.currentHandCards - 1);
-        this.currentArmyCards = Math.min(MAX_ARMY_CARDS, this.currentArmyCards + 1);
+        this.currentArmyCards = Math.min(this.maxArmyCards, this.currentArmyCards + 1);
         this.refreshCardCounters();
     }
 

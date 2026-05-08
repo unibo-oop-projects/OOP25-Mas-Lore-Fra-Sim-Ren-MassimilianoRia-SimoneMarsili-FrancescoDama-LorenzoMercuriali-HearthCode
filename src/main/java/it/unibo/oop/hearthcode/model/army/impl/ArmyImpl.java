@@ -45,6 +45,14 @@ public class ArmyImpl implements Army {
      * {@inheritDoc}
      */
     @Override
+    public int getMaximumSize() {
+        return ARMY_MAX_SIZE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Optional<Creature> getPlacedCard(final CardId cardId) {
         final List<Creature> allCreatures = Stream.concat(this.awakenCreatures.keySet().stream(), this.sleepingCreatures.stream())
             .toList();

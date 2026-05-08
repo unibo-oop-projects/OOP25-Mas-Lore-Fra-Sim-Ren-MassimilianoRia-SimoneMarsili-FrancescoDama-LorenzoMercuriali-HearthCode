@@ -14,9 +14,10 @@ public interface GameObserver {
     /**
      * Notifies that the match started.
      * 
-     * @param playersHealth a map mapping players with their health
+     * @param startingPlayer the player whose turn starts the match
+     * @param playersInitialState a map matching players with their initial state
      */
-    void onGameStarted(Map<PlayerId, Integer> playersHealth);
+    void onGameStarted(PlayerId startingPlayer, Map<PlayerId, PlayerInitialState> playersInitialState);
 
     /**
      * Notifies that a turn is ended and a new one starts.

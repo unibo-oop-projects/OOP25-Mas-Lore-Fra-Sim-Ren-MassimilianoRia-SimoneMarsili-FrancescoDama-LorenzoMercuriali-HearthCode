@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import it.unibo.oop.hearthcode.model.boardgame.api.PlayerInitialState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CreatureDefinition;
 import it.unibo.oop.hearthcode.model.player.api.PlayerId;
@@ -28,7 +29,6 @@ public final class MatchScene extends JPanel implements MatchView {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int MAX_ARMY_SIZE = 5;
     private static final PlayerId HUMAN_PLAYER = PlayerId.HUMAN;
     private static final PlayerId AI_PLAYER = PlayerId.AI;
     private final PlayerArea humanPlayerArea;
@@ -36,9 +36,10 @@ public final class MatchScene extends JPanel implements MatchView {
     private final MatchActionPanel actionPanel;
     private transient Map<CardId, MatchCardSlot> cardsById = new LinkedHashMap<>();
     private transient Map<CardId, CardComponent> cardComponentsById = new LinkedHashMap<>();
-    private PlayerId currentTurnPlayer = HUMAN_PLAYER;
+    private PlayerId currentTurnPlayer;
     private transient MatchSelectionState selection = new MatchSelectionState();
     private transient int humanCurrentMana;
+    private int humanArmySizeLimit;
 
     /**
      * Initializes the match scene.
@@ -102,7 +103,7 @@ public final class MatchScene extends JPanel implements MatchView {
     }
 
     private boolean isHumanTurn() {
-        return this.currentTurnPlayer.equals(HUMAN_PLAYER);
+        return HUMAN_PLAYER.equals(this.currentTurnPlayer);
     }
 
     private boolean isSelected(final CardId cardId) {
@@ -183,7 +184,7 @@ public final class MatchScene extends JPanel implements MatchView {
             && slot.getZone() == MatchCardZone.HAND
             && this.isHumanPlayer(slot.getOwner())
             && slot.getManaCost() <= this.humanCurrentMana
-            && this.humanPlayerArea.getArmyCards().size() < MAX_ARMY_SIZE;
+            && this.humanPlayerArea.getArmyCards().size() < this.humanArmySizeLimit;
     }
 
     private boolean canSelectHumanArmyCard(final MatchCardSlot slot) {
@@ -362,13 +363,23 @@ public final class MatchScene extends JPanel implements MatchView {
      * {@inheritDoc}
      */
     @Override
-    public void onGameStarted(final Map<PlayerId, Integer> playersHealth) {
-        this.currentTurnPlayer = HUMAN_PLAYER;
+    public void onGameStarted(
+        final PlayerId startingPlayer,
+        final Map<PlayerId, PlayerInitialState> playersInitialState
+    ) {
+        this.currentTurnPlayer = startingPlayer;
         this.clearSelection();
-        playersHealth.forEach((playerId, health) -> {
-            this.getPlayerArea(playerId).initHealth(health);
+        playersInitialState.forEach((playerId, initialState) -> {
+            this.getPlayerArea(playerId).initHealth(initialState.health());
             this.getPlayerArea(playerId).setMana(0, 0);
-            this.getPlayerArea(playerId).resetCardCounters();
+            this.getPlayerArea(playerId).resetCardCounters(
+                initialState.handCardsLimit(),
+                initialState.armyCardsLimit(),
+                initialState.deckCardsLimit()
+            );
+            if (this.isHumanPlayer(playerId)) {
+                this.humanArmySizeLimit = initialState.armyCardsLimit();
+            }
         });
         this.refreshInteractionState();
     }

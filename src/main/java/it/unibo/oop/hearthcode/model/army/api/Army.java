@@ -18,6 +18,11 @@ public interface Army {
     boolean isArmyFull();
 
     /**
+     * @return the maximum number of creatures that can be placed in the army
+     */
+    int getMaximumSize();
+
+    /**
      * @param cardId the identifier of the specific card
      * @return an Optional containing the requested creature if present, empty otherwise
      */
@@ -59,4 +64,5 @@ public interface Army {
      * Wakes up all the creatures in the army.
      */
     void awakeCreatures();
+
 }

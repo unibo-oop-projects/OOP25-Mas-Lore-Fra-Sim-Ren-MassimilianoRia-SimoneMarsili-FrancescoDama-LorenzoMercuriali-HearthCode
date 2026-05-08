@@ -37,6 +37,16 @@ public interface Player {
     List<CardState> getHandCardsCopies();
 
     /**
+     * @return the maximum number of cards the player can hold in hand
+     */
+    int getHandCardsLimit();
+
+    /**
+     * @return the number of cards currently available in the deck
+     */
+    int getDeckCardsCount();
+
+    /**
      * Decreases the player's current health.
      * 
      * @param amount the amount of health to be subtracted
@@ -62,4 +72,5 @@ public interface Player {
      * @return the outcome of the draw
      */
     DrawCardResult drawCard();
+
 }

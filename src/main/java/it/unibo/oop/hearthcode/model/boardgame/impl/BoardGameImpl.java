@@ -12,6 +12,7 @@ import it.unibo.oop.hearthcode.model.ai.simulation.api.CardState;
 import it.unibo.oop.hearthcode.model.army.api.Army;
 import it.unibo.oop.hearthcode.model.boardgame.api.BoardGame;
 import it.unibo.oop.hearthcode.model.boardgame.api.GameObserver;
+import it.unibo.oop.hearthcode.model.boardgame.api.PlayerInitialState;
 import it.unibo.oop.hearthcode.model.creature.api.CardId;
 import it.unibo.oop.hearthcode.model.creature.api.CardType;
 import it.unibo.oop.hearthcode.model.creature.api.Creature;
@@ -82,15 +83,31 @@ public final class BoardGameImpl implements BoardGame {
         );
     }
 
+    private Map<PlayerId, PlayerInitialState> createInitialStateMap() {
+        return this.players.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> this.createInitialState(entry.getValue())
+            ));
+    }
+
+    private PlayerInitialState createInitialState(final Player player) {
+        return new PlayerInitialState(
+            player.getHealth(),
+            player.getHandCardsLimit(),
+            this.armies.get(player).getMaximumSize(),
+            player.getDeckCardsCount()
+        );
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void startGame() {
         try {
-            final Map<PlayerId, Integer> healthMap = players.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getHealth()));
-            notifyObservers(o -> o.onGameStarted(healthMap));
+            final Map<PlayerId, PlayerInitialState> initialStateMap = this.createInitialStateMap();
+            notifyObservers(o -> o.onGameStarted(this.turnManager.getCurrentPlayer(), initialStateMap));
             this.players.values().forEach(
                 p -> IntStream.range(0, STARTING_HAND_CARDS)
                     .forEach(n -> {
