@@ -27,29 +27,29 @@ public final class ImagePreloadCatalog {
     public static List<ImageLoadRequest> menuAndNavigation() {
         return List.of(
             ImageLoadRequest.raw("/images/menu-background.png"),
-            endBanner("/images/you-lost.png"),
-            endBanner("/images/you-won.png"),
-            button("/images/play-normal.png"),
-            button("/images/play-hover.png"),
-            button("/images/play-pressed.png"),
-            button("/images/deck-normal.png"),
-            button("/images/deck-hover.png"),
-            button("/images/deck-pressed.png"),
-            button("/images/quit-normal.png"),
-            button("/images/quit-hover.png"),
-            button("/images/quit-pressed.png"),
-            button("/images/back-normal.png"),
-            button("/images/back-hover.png"),
-            button("/images/back-pressed.png"),
-            button("/images/menu-normal.png"),
-            button("/images/menu-hover.png"),
-            button("/images/menu-pressed.png"),
-            button("/images/normal-normal.png"),
-            button("/images/normal-hover.png"),
-            button("/images/normal-pressed.png"),
-            button("/images/hard-normal.png"),
-            button("/images/hard-hover.png"),
-            button("/images/hard-pressed.png")
+            ImageLoadRequest.raw("/images/you-lost.png"),
+            ImageLoadRequest.raw("/images/you-won.png"),
+            ImageLoadRequest.raw("/images/play-normal.png"),
+            ImageLoadRequest.raw("/images/play-hover.png"),
+            ImageLoadRequest.raw("/images/play-pressed.png"),
+            ImageLoadRequest.raw("/images/deck-normal.png"),
+            ImageLoadRequest.raw("/images/deck-hover.png"),
+            ImageLoadRequest.raw("/images/deck-pressed.png"),
+            ImageLoadRequest.raw("/images/quit-normal.png"),
+            ImageLoadRequest.raw("/images/quit-hover.png"),
+            ImageLoadRequest.raw("/images/quit-pressed.png"),
+            ImageLoadRequest.raw("/images/back-normal.png"),
+            ImageLoadRequest.raw("/images/back-hover.png"),
+            ImageLoadRequest.raw("/images/back-pressed.png"),
+            ImageLoadRequest.raw("/images/menu-normal.png"),
+            ImageLoadRequest.raw("/images/menu-hover.png"),
+            ImageLoadRequest.raw("/images/menu-pressed.png"),
+            ImageLoadRequest.raw("/images/normal-normal.png"),
+            ImageLoadRequest.raw("/images/normal-hover.png"),
+            ImageLoadRequest.raw("/images/normal-pressed.png"),
+            ImageLoadRequest.raw("/images/hard-normal.png"),
+            ImageLoadRequest.raw("/images/hard-hover.png"),
+            ImageLoadRequest.raw("/images/hard-pressed.png")
         );
     }
 
@@ -60,11 +60,7 @@ public final class ImagePreloadCatalog {
      */
     public static List<ImageLoadRequest> match() {
         return Stream.concat(
-            Stream.of(ImageLoadRequest.scaled(
-                "/images/cards/utility/card_cover.png",
-                ViewMetrics.cardWidth(),
-                ViewMetrics.cardHeight()
-            )),
+            Stream.of(ImageLoadRequest.raw("/images/cards/utility/card_cover.png")),
             creatureCardRequests(CreatureImagePaths::card)
         ).toList();
     }
@@ -78,16 +74,8 @@ public final class ImagePreloadCatalog {
         return creatureCardRequests(CreatureImagePaths::deck).toList();
     }
 
-    private static ImageLoadRequest button(final String path) {
-        return ImageLoadRequest.scaled(path, ViewMetrics.menuButtonWidth(), ViewMetrics.menuButtonHeight());
-    }
-
-    private static ImageLoadRequest endBanner(final String path) {
-        return ImageLoadRequest.scaled(path, ViewMetrics.viewportWidth(), ViewMetrics.endBannerHeight());
-    }
-
     /**
-     * Builds scaled preload requests for all creature card images listed in the creature catalog.
+     * Builds preload requests for all creature card images listed in the creature catalog.
      *
      * @param pathResolver resolves each creature name to its image path
      * @return a stream of creature card preload requests
@@ -95,11 +83,7 @@ public final class ImagePreloadCatalog {
     private static Stream<ImageLoadRequest> creatureCardRequests(final Function<String, String> pathResolver) {
         return CREATURE_NAMES.stream()
             .map(pathResolver)
-            .map(path -> ImageLoadRequest.scaled(
-                path,
-                ViewMetrics.cardWidth(),
-                ViewMetrics.cardHeight()
-            ));
+            .map(ImageLoadRequest::raw);
     }
 
     private static List<String> loadCreatureNames() {

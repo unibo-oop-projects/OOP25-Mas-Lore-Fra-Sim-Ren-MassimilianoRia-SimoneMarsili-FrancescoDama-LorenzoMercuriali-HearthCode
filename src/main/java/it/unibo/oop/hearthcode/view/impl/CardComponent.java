@@ -89,7 +89,7 @@ final class CardComponent extends JButton {
         try {
             setQualityRenderingHints(graphics);
             final ImageIcon icon = this.faceUp ? this.frontIcon : this.backIcon;
-            graphics.drawImage(icon.getImage(), 0, 0, this.getWidth(), this.getHeight(), this);
+            icon.paintIcon(this, graphics, 0, 0);
             if (this.resting || this.selected) {
                 graphics.setColor(this.selected ? SELECTED_OVERLAY_COLOR : DORMANT_OVERLAY_COLOR);
                 graphics.fillRoundRect(

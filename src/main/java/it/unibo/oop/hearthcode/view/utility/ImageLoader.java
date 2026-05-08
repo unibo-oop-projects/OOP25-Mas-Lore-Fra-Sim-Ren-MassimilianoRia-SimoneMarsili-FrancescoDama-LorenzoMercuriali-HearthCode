@@ -28,12 +28,12 @@ public final class ImageLoader {
     }
 
     /**
-     * Loads and scales an image from the given resource path.
+     * Loads an image from the given resource path as an icon with a logical size.
      *
      * @param path the resource path
-     * @param w the target width
-     * @param h the target height
-     * @return the corresponding scaled {@link ImageIcon}
+     * @param w the logical icon width
+     * @param h the logical icon height
+     * @return the corresponding size-aware {@link ImageIcon}
      */
     public static ImageIcon load(final String path, final int w, final int h) {
         return PROXY.load(path, w, h);

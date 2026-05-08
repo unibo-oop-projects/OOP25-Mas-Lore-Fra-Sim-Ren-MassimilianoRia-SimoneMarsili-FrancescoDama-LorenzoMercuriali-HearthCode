@@ -59,12 +59,12 @@ public abstract class AbstractBackgroundScene extends JPanel implements Scene {
     }
 
     /**
-     * Loads and scales an icon from resources.
+     * Loads an icon from resources with the requested logical size.
      *
      * @param path the image path
-     * @param width the target width
-     * @param height the target height
-     * @return the scaled icon
+     * @param width the logical icon width
+     * @param height the logical icon height
+     * @return the size-aware icon
      */
     protected static ImageIcon loadIcon(final String path, final int width, final int height) {
         return ImageLoader.load(path, width, height);
