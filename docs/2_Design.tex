@@ -1,1 +1,122 @@
 \chapter{Design}
+
+\section{Architettura}
+
+L'architettura dell'applicazione segue un'impostazione riconducibile al pattern
+\textit{Model--View--Controller} (MVC). Il \textit{Model} e' rappresentato
+dall'interfaccia \texttt{BoardGame} e dalla sua implementazione
+\texttt{BoardGameImpl}, che costituiscono il punto d'ingresso della logica di
+partita. Il modello incapsula lo stato del gioco, le operazioni principali
+della partita e la gestione del turno, delegata internamente al
+\texttt{TurnManager}. Inoltre espone metodi di controllo e interrogazione dello
+stato senza dipendere dalla View o dalle modalita' con cui l'utente interagisce
+con l'applicazione.
+
+Il Controller principale e' la classe \texttt{MainControllerImpl}. Essa
+implementa le interfacce \texttt{MainController} e
+\texttt{SceneCoordinator}, coordina il flusso applicativo generale, crea le
+schermate, registra le scene nella vista principale e gestisce la navigazione
+tra menu, selezione della difficolta', database delle carte, partita ed esito
+finale.
+
+Per evitare un'eccessiva concentrazione di responsabilita', il controller
+principale e' affiancato da controller specializzati per le singole schermate:
+
+\begin{itemize}
+    \item \texttt{MenuController}
+    \item \texttt{DifficultySelectionController}
+    \item \texttt{DatabaseController}
+    \item \texttt{MatchController}
+    \item \texttt{EndMatchController}
+\end{itemize}
+
+Tra questi, \texttt{MatchController} riceve le azioni della schermata di
+partita, interagisce con \texttt{BoardGame} e integra i servizi dedicati al
+turno dell'intelligenza artificiale.
+
+La View e' rappresentata dall'interfaccia \texttt{MainView}, implementata da
+\texttt{MainViewImpl}. Essa funge da finestra principale dell'applicazione,
+mantiene le scene registrate e visualizza una sola \texttt{Scene} alla volta
+tramite un \texttt{CardLayout}. Le schermate concrete sono:
+
+\begin{itemize}
+    \item \texttt{MenuScene}
+    \item \texttt{DifficultySelectionScene}
+    \item \texttt{DatabaseScene}
+    \item \texttt{MatchScene}
+    \item \texttt{EndMatchScene}
+\end{itemize}
+
+Ciascuna espone un'interfaccia specifica per registrare le azioni utente. I
+controller collegano tali azioni alla logica applicativa tramite callback,
+mantenendo separata la gestione degli eventi grafici dalla logica di dominio.
+
+Durante la partita, il flusso principale degli input segue quindi la catena
+View--Controller--Model: la scena intercetta l'interazione dell'utente, il
+controller associato la interpreta e invoca le operazioni del modello. Gli
+aggiornamenti dello stato di partita vengono invece propagati dal modello alla
+schermata tramite il contratto \texttt{GameObserver}, implementato da
+\texttt{MatchView}. La navigazione tra schermate avviene attraverso
+\texttt{SceneCoordinator}, che usa \texttt{MainView} per rendere effettivo il
+cambio di scena.
+
+Questa organizzazione garantisce un buon disaccoppiamento tra modello, vista e
+controller. In particolare, la sostituzione della View non richiede modifiche al
+modello e richiede soltanto che la nuova interfaccia grafica rispetti i
+contratti esposti da \texttt{MainView}, \texttt{Scene} e dalle interfacce di
+vista specifiche. La logica di dominio e il coordinamento applicativo restano
+quindi indipendenti dalla tecnologia usata per rappresentare l'interfaccia
+utente.
+
+\section{Design Dettagliato}
+
+\subsection{Massimiliano Ria}
+
+\subsubsection{Adattamento dell'interfaccia a diverse risoluzioni}
+
+\textbf{Problema:} Dopo aver ottenuto un'interfaccia grafica funzionante e
+un'architettura coerente, è emersa la necessità di mantenerne l'aspetto
+uniforme su risoluzioni e rapporti d'aspetto diversi.
+
+\textbf{\\Soluzione:} È stata introdotta la classe \texttt{ViewMetrics}, usata
+come punto di accesso unico alle principali dimensioni grafiche
+dell'applicazione. Nella sua versione iniziale, tali misure venivano calcolate a
+partire dalla dimensione fisica dello schermo. La classe
+determina una sola volta le grandezze necessarie e le espone tramite metodi
+statici dedicati, come ad esempio \texttt{cardWidth()} e \texttt{cardHeight()}.
+In questo modo si riduce la duplicazione del codice e ogni scena può richiedere
+solo la metrica di cui ha bisogno.
+
+I test successivi hanno però evidenziato un limite: scalare ogni componente in
+base all'intero schermo non garantiva automaticamente una buona visualizzazione.
+Su schermi con risoluzioni elevate o con un rapporto d'aspetto diverso da quello
+previsto, alcuni elementi risultavano troppo grandi o disposti in modo poco
+bilanciato. Inoltre lo sfondo del menu, realizzato nativamente con risoluzione
+3840x2160 e rapporto 16:9, rischiava di essere adattato a superfici non coerenti
+con la sua proporzione originale, producendo tagli dell'immagine o distorsioni
+impreviste.
+
+Per risolvere il problema è stato introdotto il concetto di \textit{viewport}:
+l'applicazione continua ad aprirsi a schermo intero, ma la zona effettiva in cui
+vengono disegnate le scene corrisponde alla più grande area 16:9 contenibile
+nello schermo dell'utente. Il calcolo è centralizzato nel metodo
+\texttt{ViewMetrics.viewportSize(Dimension)}, che confronta il rapporto tra la
+larghezza e l'altezza disponibili con il rapporto obiettivo 16:9. Se lo schermo
+è più largo del necessario, viene mantenuta l'altezza e ridotta la larghezza; se
+invece è troppo alto, viene mantenuta la larghezza e ridotta l'altezza.
+
+La classe \texttt{BlackBounds} applica concretamente questa scelta: viene usata
+da \texttt{MainViewImpl} come pannello radice della finestra e contiene il
+pannello delle scene gestito dal \texttt{CardLayout}. Nell'override del metodo
+\texttt{doLayout()}, richiamato automaticamente da Swing quando la finestra
+viene mostrata per la prima volta o quando cambia dimensione,
+\texttt{BlackBounds} calcola la viewport a partire dalla dimensione corrente
+della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
+risultante. Tutto lo spazio esterno rimane nero,
+generando bande laterali oppure superiori e inferiori in base alla situazione.
+
+\subsubsection{Multi-Risoluzione per schermi Hi-DPI}
+
+\subsubsection{Stato Simulabile per l'IA}
+
+\subsubsection{Politica Decisionale Sostituibile per l'IA}

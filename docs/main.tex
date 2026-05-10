@@ -3,9 +3,26 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[italian]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{titlesec}
+
+\titleformat{\chapter}[hang]
+    {\normalfont\huge\bfseries}
+    {\thechapter.}
+    {0.75em}
+    {}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+    linktoc=all,
+    pdftitle={HearthCode},
+    pdfauthor={Massimiliano Ria, Simone Marsili, Lorenzo Mercuriali, Franscesco Dama}
+}
 
 \begin{document}
 
+\pagenumbering{gobble}
 \begin{titlepage}
     \centering
     {\Large Relazione per Programmazione a Oggetti\par}
@@ -24,8 +41,12 @@
     \end{flushright}
 \end{titlepage}
 
+\clearpage
+\pagenumbering{Roman}
 \tableofcontents
 
+\clearpage
+\pagenumbering{arabic}
 \input{1_Analisi}
 \input{2_Design}
 \input{3_Sviluppo}
