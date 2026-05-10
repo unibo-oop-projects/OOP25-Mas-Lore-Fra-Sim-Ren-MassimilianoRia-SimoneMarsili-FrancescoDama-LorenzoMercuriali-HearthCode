@@ -146,7 +146,7 @@ e \texttt{PlayerStateImpl}. Questa classe mantiene l'identificativo del
 giocatore, la sua salute, il mana attuale, l'eventuale mano e l'armata in campo, mentre
 \texttt{CardStateImpl} rappresenta gli stati delle carte copiate.
 
-Infine l'interfaccia \texttt{AiStateTransition} completa l'implementazioe, rappresentando
+Infine l'interfaccia \texttt{AiStateTransition} completa l'implementazione, rappresentando
 il concetto di transizione da uno stato simulato a un altro.
 La classe \texttt{AiStateTransitionImpl} infatti crea una copia dello stato
 ricevuto e poi la modifica in base all'azione da applicare:
@@ -158,3 +158,51 @@ Gli algoritmi decisionali possono così avere un riferimento a questa classe e u
 per esplorare scenari successivi senza dipendere dalle regole concrete di modifica dello stato.
 
 \subsubsection{Politica Decisionale Sostituibile per l'IA}
+
+\textbf{Problema:} A un certo punto dell'implementazione dell'IA, è sorta la necessità
+di integrarla con il ciclo reale del turno. L'algoritmo poteva
+scegliere una sequenza di mosse su uno stato astratto, ma tali decisioni dovevano
+poi essere applicate alla partita effettivamente giocata dall'utente. Inoltre la
+selezione della difficolta' richiedeva di poter sostituire la politica
+decisionale senza modificare il controller della partita o le regole del modello.
+
+\textbf{\\Soluzione:} La soluzione adottata separa la scelta delle mosse dalla
+loro esecuzione reale. Il punto di raccordo principale e' rappresentato
+dall'interfaccia \texttt{AiTurnService} e dalla classe \texttt{AiTurnServiceImpl}.
+Il servizio riceve il \texttt{BoardGame} corrente, usa
+\texttt{AiGameStateFactory} per costruire lo snapshot simulabile e delega la
+decisione a un oggetto di tipo \texttt{AiDecisionAlgorithm}. Il controller della
+partita non deve quindi conoscere il funzionamento interno dell'IA: richiede
+soltanto il piano del turno e ottiene una lista ordinata di \texttt{AiAction}.
+
+La sostituibilita' della politica decisionale e' ottenuta applicando il pattern
+\textit{Strategy}. L'interfaccia \texttt{AiDecisionAlgorithm} definisce il
+contratto comune degli algoritmi, mentre le implementazioni
+\texttt{GreedySequentialAiAlgorithm} e
+\texttt{DepthLimitedLookaheadAiAlgorithm} rappresentano due strategie
+alternative. La prima sceglie iterativamente la migliore azione che produce un
+miglioramento immediato dello stato, la seconda esplora sequenze di azioni fino
+a una profondita' limitata e seleziona quella con la valutazione euristica
+migliore. Entrambe usano gli stessi componenti di supporto:
+\texttt{AiActionGeneratorImpl} per generare le azioni legali,
+\texttt{AiStateTransitionImpl} per applicarle allo stato simulato e
+\texttt{HeuristicAiStateEvaluator} per assegnare un punteggio agli scenari.
+
+La scelta concreta della strategia avviene in \texttt{MainControllerImpl}, dove
+una mappa associa \texttt{Difficulty.NORMAL} a
+\texttt{GreedySequentialAiAlgorithm} e \texttt{Difficulty.HARD} a
+\texttt{DepthLimitedLookaheadAiAlgorithm}. Quando l'utente avvia una partita,
+il controller costruisce \texttt{AiTurnServiceImpl} passando l'algoritmo
+corrispondente alla difficolta' selezionata. In questo modo l'aggiunta di una
+nuova difficolta' o di un nuovo algoritmo richiede soltanto una nuova
+implementazione della strategia e la sua registrazione nel punto di creazione.
+
+L'applicazione delle azioni decise dall'IA e' invece responsabilita' di
+\texttt{AiActionExecutor}, implementata da \texttt{AiActionExecutorImpl}. Questa
+classe traduce le azioni astratte prodotte dagli algoritmi nelle operazioni
+effettive di \texttt{BoardGame}: posizionare una carta, attaccare l'eroe
+avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
+\texttt{place}, \texttt{attackHero} e \texttt{attackCard}. Il
+\texttt{MatchController} rimane cosi' il coordinatore del turno, ma non
+contiene logica decisionale ne' dettagli di conversione tra azioni simulate e
+azioni reali.
