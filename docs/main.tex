@@ -17,7 +17,7 @@
 \hypersetup{
     linktoc=all,
     pdftitle={HearthCode},
-    pdfauthor={Massimiliano Ria, Simone Marsili, Lorenzo Mercuriali, Franscesco Dama}
+    pdfauthor={Massimiliano Ria, Simone Marsili, Franscesco Dama, Lorenzo Mercuriali}
 }
 
 \begin{document}
@@ -36,8 +36,8 @@
     \begin{flushright}
         Massimiliano Ria\\
         Simone Marsili\\
-        Lorenzo Mercuriali\\
-        Franscesco Dama
+        Franscesco Dama\\
+        Lorenzo Mercuriali
     \end{flushright}
 \end{titlepage}
 
@@ -51,6 +51,13 @@
 \input{2_Design}
 \input{3_Sviluppo}
 \input{4_CommentiFinali}
+
+\appendix
+\titleformat{\chapter}[display]
+    {\normalfont\huge\bfseries}
+    {\appendixname~\thechapter}
+    {20pt}
+    {\Huge}
 \input{5_GuidaUtente}
 \input{6_EsercitazioniDiLaboratorio}
 

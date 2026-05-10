@@ -1,1 +1,25 @@
 \chapter{Sviluppo}
+
+\section{Testing automatizzato}
+
+Il testing automatizzato e' stato realizzato con JUnit ed eseguito tramite il
+task Gradle \texttt{test}, configurato con \texttt{useJUnitPlatform()}. I test
+sono concentrati sulla parte di modello dell'applicazione.In particolare
+sono stati testati i componenti che gestiscono giocatore, mano,
+mazzo, armata, creature e caricamento delle definizioni delle carte. Sono
+inoltre presenti test per il \texttt{BoardGame} e per le componenti
+dell'intelligenza artificiale, come generazione delle azioni legali,
+transizioni di stato simulato, valutazione euristica e scelta delle mosse.
+In questo modo le principali regole della partita e il comportamento automatico
+dell'avversario possono essere controllati in modo ripetibile a ogni esecuzione
+della suite.
+
+\section{Note di sviluppo}
+
+\subsection{Massimiliano Ria}
+
+\subsection{Simone Marsili}
+
+\subsection{Francesco Dama}
+
+\subsection{Lorenzo Mercuriali}
