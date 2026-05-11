@@ -1,0 +1,41 @@
+@startuml ViewportAdattamento
+
+interface MainView {
+    + show(): void
+    + addScene(id: SceneId, scene: Scene): void
+    + showScene(id: SceneId): void
+}
+
+class MainViewImpl {
+    + show(): void
+    + addScene(id: SceneId, scene: Scene): void
+    + showScene(id: SceneId): void
+}
+
+interface Scene {
+    + getComponent(): JComponent
+}
+
+class BlackBounds {
+    + doLayout(): void
+}
+
+class ViewMetrics {
+    + viewportSize(bounds: Dimension): Dimension
+    + cardWidth(): int
+    + cardHeight(): int
+    + menuButtonWidth(): int
+    + menuButtonHeight(): int
+}
+
+enum SceneId
+
+MainView <|.. MainViewImpl
+MainViewImpl *-- BlackBounds
+MainViewImpl o-- "0..*" Scene
+MainViewImpl ..> SceneId
+
+BlackBounds ..> ViewMetrics
+Scene ..> ViewMetrics
+
+@enduml

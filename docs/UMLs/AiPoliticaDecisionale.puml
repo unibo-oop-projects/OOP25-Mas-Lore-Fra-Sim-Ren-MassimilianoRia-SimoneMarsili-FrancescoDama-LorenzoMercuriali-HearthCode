@@ -1,0 +1,7 @@
+@startuml AiPoliticaDecisionale
+
+class MainControllerImpl {
+    + startMatch(difficulty: Difficulty): void
+}
+
+@enduml

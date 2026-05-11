@@ -368,6 +368,10 @@ della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
 risultante. Tutto lo spazio esterno rimane nero,
 generando bande laterali oppure superiori e inferiori in base alla situazione.
 
+\begin{center}
+    \includegraphics[width=\textwidth]{UMLs/ViewportAdattamento.pdf}
+\end{center}
+
 \subsubsection{Multi-Risoluzione per schermi Hi-DPI}
 
 \textbf{Problema:} Nelle ultime fasi di sviluppo è emerso un bug legato alla
@@ -492,6 +496,10 @@ quelle sconfitte.
 Gli algoritmi decisionali possono così avere un riferimento a questa classe e utilizzarla
 per esplorare scenari successivi senza dipendere dalle regole concrete di modifica dello stato.
 
+\begin{center}
+    \includegraphics[width=\textwidth]{UMLs/AiStatoSimulabile.pdf}
+\end{center}
+
 \subsubsection{Politica Decisionale Sostituibile per l'IA}
 
 \textbf{Problema:} A un certo punto dell'implementazione dell'IA, è sorta la necessità
@@ -541,3 +549,7 @@ avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
 \texttt{MatchController} rimane cosi' il coordinatore del turno, ma non
 contiene logica decisionale ne' dettagli di conversione tra azioni simulate e
 azioni reali.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
+\end{center}
