@@ -70,6 +70,259 @@ utente.
 
 \section{Design Dettagliato}
 
+\subsection{Simone Marsili}
+
+\subsubsection{Gestione delle carte di gioco}
+
+\textbf{Problema:} Le carte nel gioco possono essere di varie tipologie, come
+\texttt{Creatures} e \texttt{Spells} (requisito opzionale del progetto), e il
+sistema deve essere estendibile a nuove aggiunte e tipi di carte. Inoltre le
+carte devono contenere un apposito identificatore, il quale permette le
+operazioni sul modello durante la partita e impedisce la duplicazione di dati
+tra istanze. Tuttavia è necessario separare l'identità runtime delle carte
+dalla loro definizione statica. Si è cercato inoltre un modo per separare
+efficacemente dichiarazioni e implementazioni delle creature.
+
+\textbf{\\Soluzione:} L'interfaccia \texttt{Creature} rappresenta una tipologia
+di carte schierabili, e l'implementazione \texttt{CreatureImpl} si compone di
+un \texttt{CardId}, il quale informa sulla tipologia di carta e sulla sua
+numerazione univoca nel game, e di una \texttt{CreatureDefinition}, che
+rappresenta invece l'aspetto statico della carta (le sue statistiche base).
+L'implementazione delle creature è stata realizzata tramite una
+\textit{Simple Factory}, che rende il codice facilmente estendibile e
+manutenibile. La factory utilizza un \texttt{IdGenerator}, che non istanzia
+autonomamente, ma che riceve tramite costruttore, riducendo l'accoppiamento e
+migliorando testabilità ed estendibilità.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{UMLs/Card.pdf}
+\end{center}
+
+\subsubsection{Gestione del database di carte}
+
+\textbf{Problema:} Il gioco prevede la presenza di un database contenente tutte
+le carte che possono comparire in un match. Il sistema necessita di una
+rappresentazione centralizzata e facilmente estendibile delle carte, caricata
+da una fonte esterna (file), mantenendo separata la logica di parsing dalla
+logica di dominio. Inoltre, il database deve gestire esclusivamente dati
+statici delle carte, risultando indipendente dall'identità runtime delle
+istanze generate durante la partita.
+
+\textbf{\\Soluzione:} Il database gestisce esclusivamente definizioni statiche
+delle carte (\texttt{CreatureDefinition}), risultando completamente
+disaccoppiato dal concetto di identità runtime, che viene invece introdotto
+solo in fase di creazione delle istanze.
+
+Inoltre la creazione di un'istanza del database avviene tramite apposita
+Factory statica, che utilizza componenti distinti per la lettura del file e per
+il parsing del contenuto, mantenendo separate le responsabilità di accesso ai
+dati e interpretazione degli stessi.
+
+Le interfacce \texttt{Parser\textless{}T\textgreater{}} e
+\texttt{FullReader\textless{}T\textgreater{}} rappresentano due strategie
+intercambiabili (pattern \textit{Strategy}) rispettivamente per
+l'interpretazione dei dati e per la lettura delle sorgenti, permettendo di
+estendere facilmente il sistema a nuovi formati o fonti dati.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{UMLs/Database.pdf}
+\end{center}
+
+\subsubsection{Gestione del deck}
+
+\textbf{Problema:} Il gioco richiede la creazione di un mazzo da cui il
+giocatore possa pescare progressivamente le carte durante la partita. Tuttavia,
+il mazzo non deve essere costruito manualmente né contenere direttamente le
+definizioni statiche presenti nel database: ogni carta inserita nel deck deve
+essere una nuova istanza runtime, dotata del proprio identificatore.
+
+Un ulteriore problema riguarda la composizione del mazzo. Non tutte le carte
+dovrebbero avere necessariamente la stessa probabilità di comparire: ad esempio,
+carte più forti possono essere rese meno frequenti rispetto a carte più deboli,
+così da ottenere un deck più bilanciato. Il sistema deve quindi permettere di
+modificare il criterio di selezione delle carte senza intervenire sulla logica
+interna del mazzo o sulla factory che lo costruisce.
+
+\textbf{\\Soluzione:} La gestione del mazzo è stata separata dalla sua
+costruzione. L'interfaccia \texttt{Deck} espone soltanto le operazioni
+necessarie durante la partita, cioè la pesca di una carta tramite
+\texttt{draw()} e la consultazione del numero di carte rimanenti tramite
+\texttt{getRemaining()}. L'implementazione \texttt{DeckImpl} incapsula quindi
+la lista delle carte effettivamente presenti nel mazzo e si occupa solo della
+loro gestione runtime.
+
+La creazione del mazzo è invece affidata a \texttt{DeckFactory}. Questa classe
+riceve tramite costruttore un \texttt{CreatureDatabase}, da cui ottiene le
+definizioni statiche delle creature, e una \texttt{CreatureImplFactory}, usata
+per trasformare ogni \texttt{CreatureDefinition} selezionata in una vera
+istanza runtime di \texttt{Card}. In questo modo il database resta separato
+dall'identità delle carte usate nella partita, che viene introdotta solo al
+momento della generazione del deck.
+
+La classe \texttt{DeckFactory} realizza sostanzialmente una
+\textit{Simple Factory}, poiché centralizza la logica di creazione del mazzo e
+nasconde al resto del modello i dettagli necessari alla sua costruzione
+(recupero definizioni dal database, creazione istanze runtime, selezione
+pesata, mescolamento finale\ldots{}).
+
+Il metodo \texttt{createWeighted(size, strategy)} costruisce un mazzo della
+dimensione richiesta usando una \texttt{WeightStrategy}. In questa versione
+implementata, la factory calcola il peso associato a ciascuna definizione e usa
+tale valore per effettuare una selezione casuale non uniforme. In seguito le
+carte generate vengono mescolate prima della creazione del \texttt{DeckImpl},
+così da evitare che l'ordine del database influenzi l'ordine di pesca.
+
+Nel caso in cui la dimensione richiesta sia maggiore o uguale al numero di
+carte presenti nel database, la factory inserisce almeno una copia di ogni
+creatura disponibile e completa poi il mazzo tramite selezione pesata. Questo
+evita che, in mazzi abbastanza grandi, alcune creature non compaiano mai solo
+per effetto della casualità. Quando invece la dimensione richiesta è inferiore
+al numero di definizioni disponibili, l'intero mazzo viene generato tramite
+selezione pesata.
+
+La soluzione usa il pattern \textit{Strategy} attraverso l'interfaccia
+{\texttt{WeightStra\-tegy}}. Tale interfaccia rappresenta l'algoritmo
+intercambiabile con cui viene calcolata l'importanza di una
+\texttt{CreatureDefinition} durante la costruzione del mazzo.
+\texttt{DeckFactory} usa la strategia senza conoscere il criterio concreto
+adottato, rendendo possibile introdurre in futuro nuove politiche di
+generazione del deck senza modificare la factory. Inoltre la
+\texttt{WeightStrategy} è una functional interface, il che rende molto facile
+creare al volo delle nuove strategie.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{UMLs/Deck.pdf}
+\end{center}
+
+\subsubsection{Gestione dell'aggiornamento della view}
+
+\textbf{Problema:} Durante lo svolgimento di una partita, lo stato del modello
+cambia frequentemente: la partita viene avviata, il turno passa da un giocatore
+all'altro, vengono pescate o giocate carte, cambiano i punti vita di creature e
+giocatori, varia il mana disponibile e alcune carte possono essere distrutte o
+bruciate. Tutti questi cambiamenti devono essere riflessi nella schermata di
+gioco in modo coerente e tempestivo.
+
+Una prima soluzione possibile sarebbe stata lasciare al controller il compito di
+aggiornare manualmente la view dopo ogni operazione eseguita sul modello. Questa
+scelta, però, avrebbe reso il controller responsabile anche dei dettagli di
+aggiornamento grafico, aumentando il suo accoppiamento sia con il model sia con
+la view.
+
+Un'altra alternativa sarebbe stata usare una notifica generica, basata su un
+unico metodo come \texttt{update()}. In questo caso, però, la view avrebbe
+ricevuto solo l'informazione che qualcosa nel modello è cambiato, dovendo poi
+interrogare il model per ricostruire lo stato aggiornato. Questa variante è
+stata scartata perché avrebbe richiesto alla view di conoscere più dettagli del
+modello e avrebbe reso meno esplicito il significato dei singoli aggiornamenti.
+
+Il problema era quindi progettare un meccanismo che permettesse al model di
+comunicare alla view gli eventi rilevanti della partita, fornendo direttamente
+le informazioni necessarie all'aggiornamento grafico, senza costringere la view
+a richiedere ogni volta lo stato aggiornato.
+
+\textbf{\\Soluzione:} La soluzione adottata applica il pattern
+\textit{Observer} in una variante di tipo \textit{push model}. Il modello della
+partita è l'oggetto osservabile, mentre la view della partita è uno degli
+osservatori registrati. Quando lo stato del model cambia, il model non invia
+una notifica generica, ma comunica direttamente quale evento è avvenuto e quali
+dati aggiornati sono necessari per gestirlo.
+
+L'interfaccia \texttt{ObservableGame} definisce il contratto degli oggetti
+osservabili, esponendo i metodi per registrare e rimuovere osservatori.
+
+L'interfaccia \texttt{BoardGame} estende \texttt{ObservableGame}, rendendo
+esplicito che il modello principale della partita può essere osservato. La
+classe {\texttt{BoardGame\-Impl}} implementa questo contratto, mantiene gli
+observer registrati e li notifica opportunamente quando si verifica un
+cambiamento significativo nello stato della partita.
+
+Gli observer sono rappresentati dall'interfaccia \texttt{GameObserver}. A
+differenza di una versione minimale del pattern \textit{Observer}, non è stato
+usato un unico metodo generico di aggiornamento. L'interfaccia espone invece
+più metodi specifici, ciascuno associato a un evento rilevante del gioco.
+
+Questa scelta rende la comunicazione tra model e view più esplicita. Il nome
+del metodo identifica l'evento avvenuto, mentre i parametri trasportano già le
+informazioni aggiornate.
+
+Sul lato view, \texttt{MatchView} estende \texttt{GameObserver}. In questo
+modo, una schermata di partita è anche un osservatore del modello. La classe
+concreta \texttt{MatchScene} implementa \texttt{MatchView} e definisce come
+tradurre ciascun evento ricevuto in un aggiornamento grafico.
+
+Il collegamento tra model e view viene effettuato dal controller, che registra
+la view come observer del model. Il model, però, non conosce la classe concreta
+\texttt{MatchScene}: conosce solo l'interfaccia \texttt{GameObserver}. Questo
+mantiene basso l'accoppiamento tra le componenti e rispetta la separazione
+prevista dall'architettura MVC.
+
+La soluzione ha anche un compromesso: l'interfaccia \texttt{GameObserver} cresce
+all'aumentare degli eventi osservabili. Se in futuro venissero introdotti nuovi
+eventi di gioco, potrebbe essere necessario aggiungere nuovi metodi
+all'interfaccia e aggiornare le classi che la implementano. Nel contesto del
+progetto, però, questo costo è accettabile, perché gli eventi rilevanti della
+partita sono limitati e ben definiti. In cambio, si ottiene una comunicazione
+più leggibile, più controllata e più aderente al dominio del gioco.
+
+\begin{center}
+    \includegraphics[width=\textwidth]{UMLs/Observer.pdf}
+\end{center}
+
+\newpage
+
+\subsection{Francesco Dama}
+
+\subsubsection{Problema 1}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 2}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 3}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 4}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsection{Lorenzo Mercuriali}
+
+\subsubsection{Problema 1}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 2}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 3}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 4}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
 \subsection{Massimiliano Ria}
 
 \subsubsection{Adattamento dell'interfaccia a diverse risoluzioni}
@@ -288,81 +541,3 @@ avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
 \texttt{MatchController} rimane cosi' il coordinatore del turno, ma non
 contiene logica decisionale ne' dettagli di conversione tra azioni simulate e
 azioni reali.
-
-\subsection{Simone Marsili}
-
-\subsubsection{Problema 1}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 4}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsection{Francesco Dama}
-
-\subsubsection{Problema 1}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 4}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsection{Lorenzo Mercuriali}
-
-\subsubsection{Problema 1}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 4}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}

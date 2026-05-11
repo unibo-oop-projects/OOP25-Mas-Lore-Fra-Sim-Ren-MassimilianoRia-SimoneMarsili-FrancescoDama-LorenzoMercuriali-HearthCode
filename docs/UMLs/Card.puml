@@ -1,0 +1,52 @@
+@startuml Card
+
+interface Card {
+    + getId(): CardId
+    + getName(): String
+    + getManaCost(): Integer
+}
+
+interface Creature {
+    + getHealth(): Integer
+    + getAttackValue(): Integer
+    + decreaseHealth(damage: Integer): Integer
+}
+
+class CreatureImpl {
+    + getId(): CardId
+    + getName(): String
+    + getManaCost(): Integer
+    + getHealth(): Integer
+    + getAttackValue(): Integer
+    + decreaseHealth(damage: Integer): Integer
+}
+
+class CardId {
+    + id(): Integer
+    + type(): CardType
+}
+
+class CreatureDefinition {
+    + name(): String
+    + health(): Integer
+    + attackValue(): Integer
+    + manaCost(): Integer
+
+}
+
+class CreatureImplFactory {
+    + createFromDefinition(definition: CreatureDefinition): Creature
+}
+
+class IdGenerator {
+    + nextId(): Integer
+}
+
+Card <|-- Creature
+Creature <|.. CreatureImpl
+CardId --* CreatureImpl
+CreatureDefinition --o CreatureImpl
+Creature <-- CreatureImplFactory : creates
+IdGenerator --o CreatureImplFactory 
+
+@enduml

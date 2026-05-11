@@ -1,0 +1,54 @@
+@startuml Deck
+
+interface Deck {
+    + draw(): Optional<Card>
+    + getRemaining(): Integer
+}
+
+class DeckImpl {
+    + draw(): Optional<Card>
+    + getRemaining(): Integer
+}
+
+interface Card {
+    + getId(): CardId
+    + getName(): String
+    + getManaCost(): Integer
+}
+
+class CreatureDefinition {
+    + name(): String
+    + health(): Integer
+    + attackValue(): Integer
+    + manaCost(): Integer
+}
+
+class CreatureDatabase {
+    + getAll(): List<CreatureDefinition>
+    + size(): Integer
+}
+
+class CreatureImplFactory {
+    + createFromDefinition(definition: CreatureDefinition): Creature
+}
+
+class DeckFactory {
+    + createWeighted(size: Integer, strategy: WeightStrategy): Deck
+}
+
+interface WeightStrategy {
+    + getWeight(definition: CreatureDefinition): Integer
+}
+
+Deck <|.. DeckImpl
+
+DeckImpl o-- "0..*" Card
+
+DeckFactory o-- CreatureDatabase
+DeckFactory o-- CreatureImplFactory
+DeckFactory --> WeightStrategy : uses
+DeckFactory --> Deck : creates
+
+WeightStrategy --> CreatureDefinition : evaluates
+
+@enduml

@@ -1,0 +1,54 @@
+@startuml Database
+
+interface Parser<T> {
+    + parseLine(line: String): T
+}
+
+class CreatureDefinitionParser {
+    + parseLine(line: String): CreatureDefinition
+}
+
+Parser <|.. CreatureDefinitionParser
+
+interface FullReader<T> {
+    + readAll(): Optional<List<T>>
+}
+
+class TextFileFullReader {
+    + readAll(): Optional<List<String>>
+}
+
+FullReader <|.. TextFileFullReader
+
+class CreatureDatabaseFactory {
+    + {static} createFromFile(fileName: String): CreatureDatabase
+}
+
+interface Database<T> {
+    + getAll(): List<T>
+    + size(): Integer
+}
+
+class CreatureDatabase {
+    + getAll(): List<CreatureDefinition>
+    + size(): Integer
+}
+
+class CreatureDefinition {
+    + name(): String
+    + health(): Integer
+    + attackValue(): Integer
+    + manaCost(): Integer
+}
+
+Database <|.. CreatureDatabase
+
+CreatureDatabase o-- "0..*" CreatureDefinition
+
+CreatureDatabaseFactory --> Parser : uses
+CreatureDatabaseFactory --> FullReader : uses
+CreatureDatabaseFactory --> CreatureDatabase : creates
+
+CreatureDefinitionParser --> CreatureDefinition : creates
+
+@enduml
