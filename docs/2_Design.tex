@@ -3,88 +3,37 @@
 \section{Architettura}
 
 L'architettura dell'applicazione segue il pattern architetturale \textit{Model--View--Controller}
-(MVC), seppur in una sua variante event-driven. Infatti la soluzione adottata prevede
-un \textit{Model} attivo: gli aggiornamenti significativi dello stato della partita vengono
+(MVC), seppur in una sua variante event-driven con \textit{Model} attivo e aggiornamenti
+in modalita' \textit{push}. Infatti gli aggiornamenti significativi dello stato della partita vengono
 comunicati alla scena interessata da parte del Model stesso, mentre per il flusso opposto
 gli input dell'utente vengono intercettati dalla View e interpretati dal Controller,
 secondo MVC standard.
 
 L'entry-point principale del \textit{Model} e' rappresentato dall'interfaccia \texttt{Board\-Game},
-che incapsula lo stato e la logica principale della partita. Grazie alla sua composizione ha
-il compito di applicare le regole del dominio, eseguire le corrette operazioni sulle altre classi e
-di fornire metodi adeguati alla sua interrogazione. È tuttavia presente anche un secondo punto di accesso,
-rappresentato dall'interfaccia \texttt{AiTurnService} che gestisce il servizio di collegamento con
-l'algoritmo decisionale dell'IA.
+che incapsula lo stato e la logica principale della partita. Data la sua composizione ha
+il compito di applicare le regole del dominio ed eseguire le conseguenti operazioni sulle altre classi.
+L'interfaccia espone metodi adeguati alla modifica del suo stato e alla sua interrogazione, permettendo
+al Controller di interagire con esso quando uno dei giocatori desidera applicare una determinata mossa.
+È presente tuttavia un secondo punto di accesso, rappresentato dall'interfaccia \texttt{AiTurnService},
+che gestisce il servizio di collegamento tra il Controller e l'algoritmo decisionale dell'IA.
 
 L'interfaccia \texttt{MainView} funge da entry-point della \textit{View} e rappresenta la finestra principale
-dell'applicazione. Essa mantiene le scene registrate, mostrando solo quella richiesta dal Controller.
+ell'applicazione. Essa tiene traccia delle varie scene dell'applicazione ed è in grado di navigare tra loro grazie a un
+gestore del layout, mentre il criterio di navigazione è affidato al Controller. Per scena si intende una specifica
+schermata del sistema identificata dall'interfaccia \texttt{Scene}. Ciascuna delle scene registrate espone
+un'interfaccia provvista di metodi specifici che permettono al Controller di registrare a un determinato
+componente grafico una determinata azione. In questo modo la View si occupa della rappresentazione grafica, della
+selezione degli elementi e della raccolta degli eventi generati dall'interfaccia, ma non applica direttamente
+le regole di gioco. Inoltre \texttt{MatchScene} può essere considerato come un punto d'accesso secondario
+della View, in quanto è presente un flusso di comunicazione diretta tra essa e il Controller dedicato allo
+stato della partita.
 
-
-
-
-\begin{itemize}
-    \item \texttt{MenuScene}
-    \item \texttt{DifficultySelectionScene}
-    \item \texttt{DatabaseScene}
-    \item \texttt{MatchScene}
-    \item \texttt{EndMatchScene}
-\end{itemize}
-
-Ciascuna schermata espone un'interfaccia specifica per registrare le azioni
-utente. In questo modo la View si occupa della rappresentazione grafica, della
-selezione degli elementi e della raccolta degli eventi generati dall'interfaccia,
-ma non applica direttamente le regole di gioco. Nel caso della partita,
-\texttt{MatchScene} mantiene anche lo stato visuale necessario alla
-rappresentazione corrente, come le carte selezionate, le componenti grafiche
-associate agli identificatori delle carte e l'abilitazione dei comandi
-disponibili.
-
-Il \textit{Controller} principale e' la classe \texttt{MainControllerImpl}. Essa
-implementa le interfacce \texttt{MainController} e \texttt{SceneCoordinator},
-coordina il flusso applicativo generale, crea le schermate, registra le scene
-nella vista principale e gestisce la navigazione tra menu, selezione della
-difficolta', database delle carte, partita ed esito finale.
-
-Per evitare un'eccessiva concentrazione di responsabilita', il controller
-principale e' affiancato da controller specializzati per le singole schermate:
-
-\begin{itemize}
-    \item \texttt{MenuController}
-    \item \texttt{DifficultySelectionController}
-    \item \texttt{DatabaseController}
-    \item \texttt{MatchController}
-    \item \texttt{EndMatchController}
-\end{itemize}
-
-Questi controller collegano le callback esposte dalle View alla logica
-applicativa corrispondente. \texttt{MenuController} gestisce le azioni del menu,
-\texttt{DifficultySelectionController} avvia una nuova partita con la
-difficolta' scelta, \texttt{DatabaseController} controlla il ritorno al menu,
-mentre \texttt{EndMatchController} gestisce la schermata conclusiva. Il ruolo
-piu' articolato e' svolto da \texttt{MatchController}, che riceve le azioni
-della schermata di partita, legge dalla View le carte selezionate, invoca le
-operazioni di \texttt{BoardGame} e integra i servizi dedicati al turno
-dell'intelligenza artificiale.
-
-Il flusso degli input segue quindi la direzione tipica del MVC:
-View--Controller--Model. La scena intercetta l'interazione dell'utente, il
-controller associato la interpreta e invoca l'operazione corretta sul modello.
-Gli aggiornamenti della partita seguono invece una direzione complementare:
-quando il modello cambia stato, comunica alla schermata gli eventi rilevanti
-gia' descritti in termini di dominio, per esempio la pesca di una carta, il
-posizionamento di una creatura, il cambio di turno, la variazione del mana o dei
-punti vita. La View traduce questi eventi in aggiornamenti grafici, senza dover
-conoscere la logica interna che li ha prodotti.
-
-Questa organizzazione puo' quindi essere descritta come un MVC desktop
-event-driven con Model attivo e aggiornamenti in modalita' \textit{push}. La
-scelta mantiene separati dominio, presentazione e coordinamento applicativo:
-il Model non dipende dalle classi concrete della View, la View non modifica
-direttamente lo stato di gioco e i Controller restano il punto di raccordo tra
-azioni utente, navigazione e logica applicativa. Ne consegue che la sostituzione
-della View non richiede modifiche al modello e richiede soltanto il rispetto dei
-contratti esposti da \texttt{MainView}, \texttt{Scene} e dalle interfacce di
-vista specifiche.
+Il \textit{Controller} è rappresentato principalmente dalle interfacce \texttt{MainControl\-ler} e
+\texttt{SceneCoordinator}. Il controller coordina il flusso applicativo generale, crea le schermate, registra le scene
+nella vista principale e gestisce la navigazione tra di esse, a richiesta delle azioni utente catturate dalla View.
+Per evitare un'eccessiva concentrazione di responsabilita', si suddivide le responsabilità in controller
+specializzati per le singole schermate. Questi collegano le callback esposte dalle View alla logica
+applicativa corrispondente.
 
 \section{Design Dettagliato}
 
