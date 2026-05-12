@@ -1,5 +1,7 @@
 @startuml ViewportAdattamento
 
+skinparam linetype ortho
+
 interface MainView {
     + show(): void
     + addScene(id: SceneId, scene: Scene): void

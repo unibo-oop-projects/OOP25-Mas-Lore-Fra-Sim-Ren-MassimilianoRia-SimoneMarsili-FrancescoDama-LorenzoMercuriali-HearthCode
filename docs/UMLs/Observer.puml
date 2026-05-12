@@ -1,6 +1,8 @@
 @startuml Observer
 
 
+skinparam linetype ortho
+
 interface ObservableGame {
     +addObserver(obs: GameObserver): void
     +removeObserver(obs: GameObserver): void

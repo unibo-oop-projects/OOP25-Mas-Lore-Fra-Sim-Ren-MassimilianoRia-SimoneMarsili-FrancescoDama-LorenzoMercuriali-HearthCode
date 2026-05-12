@@ -1,5 +1,7 @@
 @startuml Card
 
+skinparam linetype ortho
+
 interface Card {
     + getId(): CardId
     + getName(): String

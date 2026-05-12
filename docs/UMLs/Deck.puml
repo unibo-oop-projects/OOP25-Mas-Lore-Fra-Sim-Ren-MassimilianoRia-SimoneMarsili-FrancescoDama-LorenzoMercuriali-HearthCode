@@ -1,5 +1,7 @@
 @startuml Deck
 
+skinparam linetype ortho
+
 interface Deck {
     + draw(): Optional<Card>
     + getRemaining(): Integer

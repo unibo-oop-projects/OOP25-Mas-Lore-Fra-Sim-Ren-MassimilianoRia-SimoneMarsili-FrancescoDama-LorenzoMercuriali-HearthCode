@@ -1,5 +1,7 @@
 @startuml AiStatoSimulabile
 
+skinparam linetype ortho
+
 interface BoardGame {
     + getPlayerHealth(playerId: PlayerId): int
     + getPlayerActualMana(playerId: PlayerId): int

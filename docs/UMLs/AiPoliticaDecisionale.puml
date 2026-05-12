@@ -1,7 +1,63 @@
 @startuml AiPoliticaDecisionale
 
-class MainControllerImpl {
-    + startMatch(difficulty: Difficulty): void
+skinparam linetype ortho
+
+package "Controller" {
+    class MainControllerImpl {
+        + startMatch(difficulty: Difficulty): void
+    }
+
+    class MatchController
+
 }
+
+package "Turn Service" {
+    interface AiTurnService {
+        + decideTurn(game: BoardGame): List<AiAction>
+    }
+
+    class AiTurnServiceImpl {
+        + decideTurn(game: BoardGame): List<AiAction>
+    }
+}
+
+package "Strategy" {
+    interface AiDecisionAlgorithm <<Strategy>> {
+        + decide(initialState: AiGameState): List<AiAction>
+    }
+
+    class GreedySequentialAiAlgorithm <<ConcreteStrategy>> {
+        + decide(initialState: AiGameState): List<AiAction>
+    }
+
+    class DepthLimitedLookaheadAiAlgorithm <<ConcreteStrategy>> {
+        + decide(initialState: AiGameState): List<AiAction>
+    }
+}
+
+package "Execution" {
+    interface AiActionExecutor {
+        + execute(game: BoardGame, action: AiAction): void
+    }
+
+    class AiActionExecutorImpl {
+        + execute(game: BoardGame, action: AiAction): void
+    }
+
+    interface BoardGame
+}
+
+AiTurnService <|.. AiTurnServiceImpl
+AiDecisionAlgorithm <|.. GreedySequentialAiAlgorithm
+AiDecisionAlgorithm <|.. DepthLimitedLookaheadAiAlgorithm
+AiActionExecutor <|.. AiActionExecutorImpl
+
+MainControllerImpl ..> MatchController : creates
+
+MatchController --> AiTurnService : requests plan
+MatchController --> AiActionExecutor : executes plan
+
+AiTurnServiceImpl o-- AiDecisionAlgorithm : delegates
+AiActionExecutorImpl ..> BoardGame : applies
 
 @enduml

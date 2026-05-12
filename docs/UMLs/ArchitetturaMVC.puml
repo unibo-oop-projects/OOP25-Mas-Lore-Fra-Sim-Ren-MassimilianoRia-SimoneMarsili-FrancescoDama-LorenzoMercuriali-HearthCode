@@ -1,0 +1,65 @@
+@startuml ArchitetturaMVC
+
+skinparam linetype ortho
+
+package "Controller" as ControllerLayer {
+    interface MainController {
+        +start(): void
+    }
+
+    interface SceneCoordinator {
+        +showMainMenu(): void
+        +showDatabase(): void
+        +showDifficultySelection(): void
+        +startMatch(difficulty: Difficulty): void
+        +showEndMatch(playerId: PlayerId): void
+        +requestExit(): void
+    }
+}
+
+package "View" as ViewLayer {
+    interface MainView {
+        +show(): void
+        +close(): void
+        +addScene(id: SceneId, scene: Scene): void
+        +showScene(id: SceneId): void
+        +confirmExit(): boolean
+    }
+
+    interface Scene {
+        +getComponent(): JComponent
+    }
+}
+
+package "Model" as ModelLayer {
+    interface BoardGame {
+        +startGame(): void
+        +getWinner(): Optional<PlayerId>
+        +getPlayerHealth(playerId: PlayerId): int
+        +getPlayerActualMana(playerId: PlayerId): int
+        +getHandCardsCopies(playerId: PlayerId): List<CardState>
+        +getArmyCardsCopies(playerId: PlayerId): List<CardState>
+        +place(selectedIdCard: CardId): void
+        +attackCard(attackingIdCard: CardId, defendingIdCard: CardId): void
+        +attackHero(attackingIdCard: CardId): void
+        +switchTurn(): void
+    }
+
+    interface AiTurnService {
+        +decideTurn(game: BoardGame): List<AiAction>
+    }
+}
+
+MainController ..> SceneCoordinator : delegates
+MainController --> MainView : starts
+
+SceneCoordinator --> MainView : switches
+MainView o-- "0..*" Scene : scenes
+
+SceneCoordinator ..> Scene : binds
+
+SceneCoordinator ..> BoardGame : updates
+SceneCoordinator ..> AiTurnService : uses
+AiTurnService ..> BoardGame : reads
+
+@enduml

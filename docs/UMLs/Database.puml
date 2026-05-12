@@ -1,5 +1,7 @@
 @startuml Database
 
+skinparam linetype ortho
+
 interface Parser<T> {
     + parseLine(line: String): T
 }
