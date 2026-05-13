@@ -4,12 +4,12 @@
 
 L'architettura dell'applicazione segue il pattern architetturale \textit{Model--View--Controller}
 (MVC), seppur in una sua variante event-driven con \textit{Model} attivo e aggiornamenti
-in modalita' \textit{push}. Infatti gli aggiornamenti significativi dello stato della partita vengono
+in modalità \textit{push}. Infatti gli aggiornamenti significativi dello stato della partita vengono
 comunicati alla scena interessata da parte del Model stesso, mentre per il flusso opposto
 gli input dell'utente vengono intercettati dalla View e interpretati dal Controller,
 secondo MVC standard.
 
-L'entry-point principale del \textit{Model} e' rappresentato dall'interfaccia \texttt{Board\-Game},
+L'entry-point principale del \textit{Model} è rappresentato dall'interfaccia \texttt{Board\-Game},
 che incapsula lo stato e la logica principale della partita. Data la sua composizione ha
 il compito di applicare le regole del dominio ed eseguire le conseguenti operazioni sulle altre classi.
 L'interfaccia espone metodi adeguati alla modifica del suo stato e alla sua interrogazione, permettendo
@@ -31,13 +31,15 @@ stato della partita.
 Il \textit{Controller} è rappresentato principalmente dalle interfacce \texttt{MainControl\-ler} e
 \texttt{SceneCoordinator}. Il controller coordina il flusso applicativo generale, crea le schermate, registra le scene
 nella vista principale e gestisce la navigazione tra di esse, a richiesta delle azioni utente catturate dalla View.
-Per evitare un'eccessiva concentrazione di responsabilita', si suddivide le responsabilità in controller
+Per evitare un'eccessiva concentrazione di responsabilità, si suddivide le responsabilità in controller
 specializzati per le singole schermate. Questi collegano le callback esposte dalle View alla logica
 applicativa corrispondente.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/ArchitetturaMVC.pdf}
-\end{center}
+    \caption{Schema UML dell'architettura MVC dell'applicazione.}
+\end{figure}
 
 \section{Design Dettagliato}
 
@@ -65,9 +67,11 @@ manutenibile. La factory utilizza un \texttt{IdGenerator}, che non istanzia
 autonomamente, ma che riceve tramite costruttore, riducendo l'accoppiamento e
 migliorando testabilità ed estendibilità.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/Card.pdf}
-\end{center}
+    \caption{Schema UML della gestione delle carte e delle relative definizioni.}
+\end{figure}
 
 \subsubsection{Gestione del database di carte}
 
@@ -95,9 +99,11 @@ intercambiabili (pattern \textit{Strategy}) rispettivamente per
 l'interpretazione dei dati e per la lettura delle sorgenti, permettendo di
 estendere facilmente il sistema a nuovi formati o fonti dati.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/Database.pdf}
-\end{center}
+    \caption{Schema UML del database delle carte e dei componenti di lettura e parsing.}
+\end{figure}
 
 \subsubsection{Gestione del deck}
 
@@ -161,9 +167,11 @@ generazione del deck senza modificare la factory. Inoltre la
 \texttt{WeightStrategy} è una functional interface, il che rende molto facile
 creare al volo delle nuove strategie.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/Deck.pdf}
-\end{center}
+    \caption{Schema UML della costruzione e gestione del mazzo di gioco.}
+\end{figure}
 
 \subsubsection{Gestione dell'aggiornamento della view}
 
@@ -236,9 +244,11 @@ progetto, però, questo costo è accettabile, perché gli eventi rilevanti della
 partita sono limitati e ben definiti. In cambio, si ottiene una comunicazione
 più leggibile, più controllata e più aderente al dominio del gioco.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/Observer.pdf}
-\end{center}
+    \caption{Schema UML del meccanismo di aggiornamento della view tramite observer.}
+\end{figure}
 
 \newpage
 
@@ -339,9 +349,11 @@ della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
 risultante. Tutto lo spazio esterno rimane nero,
 generando bande laterali oppure superiori e inferiori in base alla situazione.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/ViewportAdattamento.pdf}
-\end{center}
+    \caption{Schema UML dell'adattamento della viewport al rapporto 16:9.}
+\end{figure}
 
 \subsubsection{Multi-Risoluzione per schermi Hi-DPI}
 
@@ -467,9 +479,11 @@ quelle sconfitte.
 Gli algoritmi decisionali possono così avere un riferimento a questa classe e utilizzarla
 per esplorare scenari successivi senza dipendere dalle regole concrete di modifica dello stato.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/AiStatoSimulabile.pdf}
-\end{center}
+    \caption{Schema UML dello stato simulabile utilizzato dall'intelligenza artificiale.}
+\end{figure}
 
 \subsubsection{Politica Decisionale Sostituibile per l'IA}
 
@@ -477,11 +491,11 @@ per esplorare scenari successivi senza dipendere dalle regole concrete di modifi
 di integrarla con il ciclo reale del turno. L'algoritmo poteva
 scegliere una sequenza di mosse su uno stato astratto, ma tali decisioni dovevano
 poi essere applicate alla partita effettivamente giocata dall'utente. Inoltre la
-selezione della difficolta' richiedeva di poter sostituire la politica
+selezione della difficoltà richiedeva di poter sostituire la politica
 decisionale senza modificare il controller della partita o le regole del modello.
 
 \textbf{\\Soluzione:} La soluzione adottata separa la scelta delle mosse dalla
-loro esecuzione reale. Il punto di raccordo principale e' rappresentato
+loro esecuzione reale. Il punto di raccordo principale è rappresentato
 dall'interfaccia \texttt{AiTurnService} e dalla classe \texttt{AiTurnServiceImpl}.
 Il servizio riceve il \texttt{BoardGame} corrente, usa
 \texttt{AiGameStateFactory} per costruire lo snapshot simulabile e delega la
@@ -489,14 +503,14 @@ decisione a un oggetto di tipo \texttt{AiDecisionAlgorithm}. Il controller della
 partita non deve quindi conoscere il funzionamento interno dell'IA: richiede
 soltanto il piano del turno e ottiene una lista ordinata di \texttt{AiAction}.
 
-La sostituibilita' della politica decisionale e' ottenuta applicando il pattern
+La sostituibilità della politica decisionale è ottenuta applicando il pattern
 \textit{Strategy}. L'interfaccia \texttt{AiDecisionAlgorithm} definisce il
 contratto comune degli algoritmi, mentre le implementazioni
 \texttt{GreedySequentialAiAlgorithm} e
 \texttt{DepthLimitedLookaheadAiAlgorithm} rappresentano due strategie
 alternative. La prima sceglie iterativamente la migliore azione che produce un
 miglioramento immediato dello stato, la seconda esplora sequenze di azioni fino
-a una profondita' limitata e seleziona quella con la valutazione euristica
+a una profondità limitata e seleziona quella con la valutazione euristica
 migliore. Entrambe usano gli stessi componenti di supporto:
 \texttt{AiActionGeneratorImpl} per generare le azioni legali,
 \texttt{AiStateTransitionImpl} per applicarle allo stato simulato e
@@ -507,20 +521,22 @@ una mappa associa \texttt{Difficulty.NORMAL} a
 \texttt{GreedySequentialAiAlgorithm} e \texttt{Difficulty.HARD} a
 \texttt{DepthLimitedLookaheadAiAlgorithm}. Quando l'utente avvia una partita,
 il controller costruisce \texttt{AiTurnServiceImpl} passando l'algoritmo
-corrispondente alla difficolta' selezionata. In questo modo l'aggiunta di una
-nuova difficolta' o di un nuovo algoritmo richiede soltanto una nuova
+corrispondente alla difficoltà selezionata. In questo modo l'aggiunta di una
+nuova difficoltà o di un nuovo algoritmo richiede soltanto una nuova
 implementazione della strategia e la sua registrazione nel punto di creazione.
 
-L'applicazione delle azioni decise dall'IA e' invece responsabilita' di
+L'applicazione delle azioni decise dall'IA è invece responsabilità di
 \texttt{AiActionExecutor}, implementata da \texttt{AiActionExecutorImpl}. Questa
 classe traduce le azioni astratte prodotte dagli algoritmi nelle operazioni
 effettive di \texttt{BoardGame}: posizionare una carta, attaccare l'eroe
 avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
 \texttt{place}, \texttt{attackHero} e \texttt{attackCard}. Il
-\texttt{MatchController} rimane cosi' il coordinatore del turno, ma non
-contiene logica decisionale ne' dettagli di conversione tra azioni simulate e
+\texttt{MatchController} rimane così il coordinatore del turno, ma non
+contiene logica decisionale né dettagli di conversione tra azioni simulate e
 azioni reali.
 
-\begin{center}
+\begin{figure}[htbp]
+    \centering
     \includegraphics[width=\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
-\end{center}
+    \caption{Schema UML della politica decisionale sostituibile dell'intelligenza artificiale.}
+\end{figure}

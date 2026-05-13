@@ -7,7 +7,17 @@
 \usepackage{microtype}
 \usepackage{titlesec}
 \usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{caption}
 \usepackage{xurl}
+
+\definecolor{captiongray}{RGB}{70, 70, 70}
+\captionsetup[figure]{
+    font=small,
+    labelfont={color=captiongray},
+    textfont={color=captiongray},
+    justification=centering
+}
 
 \titleformat{\chapter}[hang]
     {\normalfont\huge\bfseries}

@@ -1,1 +1,98 @@
 \chapter{Guida Utente}
+
+HearthCode è una versione semplificata di un gioco di carte a turni ispirato a
+Hearthstone. Il giocatore affronta un avversario controllato dal computer,
+giocando creature dalla propria mano, attaccando il nemico e cercando di
+portare i suoi punti vita a zero.
+
+\section{Navigazione nel menu}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/Menu.png}
+    \caption{Menu principale dell'applicazione.}
+    \label{fig:guida-menu}
+\end{figure}
+
+All'avvio dell'applicazione viene mostrato il menu principale. Da qui è
+possibile iniziare una nuova partita, consultare il mazzo oppure chiudere il
+gioco. Il pulsante \textit{Play} porta alla scelta della difficoltà, mentre
+\textit{Deck} apre una schermata riassuntiva con tutte le carte disponibili.
+
+Nella schermata di selezione della difficoltà si può scegliere tra
+\textit{Normal} e \textit{Hard}. La modalità \textit{Normal} usa un avversario
+più semplice, mentre \textit{Hard} rende le decisioni del computer più
+strategiche. Il pulsante \textit{Back} riporta al menu principale.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/Difficulty.png}
+    \caption{Schermata per la scelta della difficoltà.}
+    \label{fig:guida-difficulty}
+\end{figure}
+
+La sezione \textit{Deck} permette di visualizzare le creature presenti nel
+gioco. Ogni carta mostra costo in mana, nome, attacco e salute: queste
+informazioni aiutano a capire quali creature conviene giocare durante la
+partita. Anche da questa schermata il pulsante \textit{Back} consente di
+tornare al menu.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/Deck.png}
+    \caption{Visualizzazione delle carte disponibili nel mazzo.}
+    \label{fig:guida-deck}
+\end{figure}
+
+\newpage
+
+\section{Schermata di gioco}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/Match.png}
+    \caption{Schermata principale della partita.}
+    \label{fig:guida-match}
+\end{figure}
+
+La partita è divisa in due aree: in alto si trovano le informazioni
+dell'avversario, in basso quelle del giocatore. Per entrambi sono indicati i
+punti vita, il mana disponibile, il numero di carte in mano, il numero di
+creature sul campo e le carte rimaste nel mazzo. Le carte dell'avversario in
+mano sono coperte, mentre quelle del giocatore sono visibili.
+
+Al centro della schermata si trovano i campi di battaglia: \textit{Enemy Army}
+per le creature nemiche e \textit{Player Army} per quelle del giocatore. A
+sinistra sono presenti i pulsanti d'azione:
+\begin{itemize}
+    \item \textit{Place Card}: gioca sul campo la carta selezionata dalla mano,
+    se il mana disponibile è sufficiente.
+    \item \textit{Attack Hero}: attacca direttamente l'avversario con una
+    creatura selezionata.
+    \item \textit{Attack Creature}: attacca una creatura nemica dopo aver
+    selezionato una propria creatura e un bersaglio avversario.
+    \item \textit{End Turn}: termina il turno del giocatore e lascia agire il
+    computer.
+    \item \textit{Exit}: abbandona la partita e torna al menu, dopo una
+    conferma.
+\end{itemize}
+
+\section{Come si gioca}
+
+Ogni turno il giocatore dispone di una quantità di mana, indicata nella barra
+in basso a sinistra. Per giocare una carta, bisogna selezionarla dalla mano e
+premere \textit{Place Card}; la carta viene spostata nella propria armata e il
+suo costo viene sottratto dal mana disponibile. Le carte appena posizionate non
+possono attaccare immediatamente: diventano utilizzabili nei turni successivi.
+
+Per attaccare, si seleziona una creatura già pronta nel proprio campo. Se si
+vuole colpire direttamente l'avversario si preme \textit{Attack Hero}; se
+invece si vuole colpire una creatura nemica, si seleziona anche il bersaglio
+nell'\textit{Enemy Army} e poi si preme \textit{Attack Creature}. Dopo un
+attacco la creatura viene esaurita e non può attaccare di nuovo nello stesso
+turno.
+
+Quando non si desidera compiere altre azioni, si preme \textit{End Turn}. Il
+computer esegue il proprio turno automaticamente e poi il controllo torna al
+giocatore. La partita termina quando i punti vita di uno dei due giocatori
+raggiungono lo zero; viene quindi mostrata la schermata finale con il vincitore.
