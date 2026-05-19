@@ -2,9 +2,9 @@
 
 \section{Testing automatizzato}
 
-Il testing automatizzato e' stato realizzato con JUnit ed eseguito tramite il
+Il testing automatizzato è stato realizzato con JUnit ed eseguito tramite il
 task Gradle \texttt{test}, configurato con \texttt{useJUnitPlatform()}. I test
-sono concentrati sulla parte di modello dell'applicazione.In particolare
+sono concentrati sulla parte di modello dell'applicazione. In particolare
 sono stati testati i componenti che gestiscono giocatore, mano,
 mazzo, armata, creature e caricamento delle definizioni delle carte. Sono
 inoltre presenti test per il \texttt{BoardGame} e per le componenti
@@ -18,7 +18,62 @@ della suite.
 
 \subsection{Massimiliano Ria}
 
+\begin{itemize}
+    \item \texttt{Stream} + \textit{Generics} + \textit{Lambda Expression} + \textit{Method Reference}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/model/ai/action/impl/AiActionGeneratorImpl.java#L39-L48}
+    {AiActionGeneratorImpl.java, righe 39--48}.
+    \item \texttt{Stream} + \texttt{Comparator} + \textit{Lambda Expression} + \textit{Method Reference}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/model/ai/algorithm/impl/GreedySequentialAiAlgorithm.java#L76-L79}
+    {GreedySequentialAiAlgorithm.java, righe 76--79}.
+    \item \texttt{Stream} + Ricorsione + \texttt{Comparator} + Fallback Lazy + \textit{Lambda Expression} + \textit{Method Reference}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/model/ai/algorithm/impl/DepthLimitedLookaheadAiAlgorithm.java#L64-L85}
+    {DepthLimitedLookaheadAiAlgorithm.java, righe 64--85}.
+    
+    Questa pipeline consente la visita implicita di un albero dove ogni figlio è uno stato del gioco a cui è stata applicata una determinata azione. Grazie a un'implementazione che registra solo determinati nodi durante la visita stessa, non si necessita di classi e librerie avanzate per la costruzione e l'esplorazione di un grafo.
+    \item \texttt{Stream} + \textit{Method Reference} + \texttt{Optional}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/model/ai/simulation/impl/PlayerStateImpl.java#L35-L52}
+    {PlayerStateImpl.java, righe 35--52}.
+    \item \texttt{Consumer}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/controller/impl/MatchController.java#L100-L107}
+    {MatchController.java, righe 100--107}.
+    \item \textit{Lambda Expression} + \textit{Method Reference}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/controller/impl/MatchController.java#L46-L51}
+    {MatchController.java, righe 46--51}
+    \item \texttt{Optional} + \textit{Java Sound}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/audio/impl/AudioClipLoader.java#L30-L47}
+    {AudioClipLoader.java, righe 30--47}
+    \item \textit{Override} di \texttt{paintComponent} per rendering custom con \texttt{Graphics2D}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/view/impl/CardComponent.java#L85-L110}
+    {CardComponent.java, righe 85--110}
+    \item Settaggio di \textit{Rendering Hints}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/view/impl/CardComponent.java#L166-L170}
+    {CardComponent.java, righe 166-170}
+    \item Utilizzo di classi avanzate quali \texttt{AffineTransform}, \texttt{BufferedImage}, \texttt{BaseMultiResolutionImage} e \texttt{GraphicsEnvironment}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/view/utility/AsyncCachedImageRepository.java#L99-L131}
+    {AsyncCachedImageRepository.java, righe 99--131}
+    \item Esecuzione di azioni IA riconducibile al Pattern \textit{Command}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/model/ai/action/impl/AttackCardAction.java#L12}
+    {AttackCardAction.java, riga 12} + 
+    \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/ad762040c1d12b7b424ce558a19d3ee38d20870c/src/main/java/it/unibo/oop/hearthcode/model/ai/executor/impl/AiActionExecutorImpl.java#L19-L34}
+    {AiActionExecutorImpl.java, righe 19--34}.
+\end{itemize}
+
 \subsection{Simone Marsili}
+
+\begin{itemize}
+    \item \textit{Generics + Functional Interface}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/creature/api/Parser.java}
+    {Parser.java}.
+    \item \textit{Generics}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/database/api/Database.java}
+    {Database.java}.
+    \item \textit{Generics + Functional Interface}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/file_management/api/FullReader.java}
+    {FullReader.java}.
+    \item \textit{Functional Interface}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/deck/api/WeightStrategy.java}
+    {WeightStrategy.java}.
+    \item \texttt{Input Stream + Optional}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/file_management/impl/TextFileFullReader.java#L37-L47}
+    {TextFileFullReader.java, righe 37-47}.
+    \item \texttt{Stream} + \textit{Method Reference}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/database/impl/CreatureDatabaseFactory.java#L19-L33}
+    {CreatureDatabaseFactory.java, righe 19-33}.
+    \item \texttt{Optional}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/deck/impl/DeckImpl.java#L25-L30}
+    {DeckImpl.java, righe 25-30}.
+    \item \texttt{Stream} + \textit{Method Reference} + \textit{Lambda Expression}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/deck/impl/DeckFactory.java#L53-L74}
+    {DeckFactory.java, righe 53-74}.
+    \item \texttt{Record}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/creature/api/CardId.java}
+    {CardId.java}.
+    \item \texttt{Record}: \href{https://github.com/MassimilianoRia/OOP25-MassimilianoRia-SimoneMarsili-FrancescoDama-LorenzoMercuriali-HearthCode/blob/6d35e600e411f43f067f89b81fb2be3c76c8b926/src/main/java/it/unibo/oop/hearthcode/model/creature/api/CreatureDefinition.java}
+    {CreatureDefinition.java}.
+    
+\end{itemize}
+
+
 
 \subsection{Francesco Dama}
 

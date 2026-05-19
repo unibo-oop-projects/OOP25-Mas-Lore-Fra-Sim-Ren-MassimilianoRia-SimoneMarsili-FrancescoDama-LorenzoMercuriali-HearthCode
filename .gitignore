@@ -18,3 +18,5 @@ docs/**
 !docs/**/
 !docs/**/*.tex
 !docs/**/*.pdf
+!docs/**/*.puml
+!docs/**/*.png

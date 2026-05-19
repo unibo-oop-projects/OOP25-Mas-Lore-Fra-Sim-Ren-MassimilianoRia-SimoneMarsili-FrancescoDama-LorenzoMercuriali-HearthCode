@@ -2,73 +2,307 @@
 
 \section{Architettura}
 
-L'architettura dell'applicazione segue un'impostazione riconducibile al pattern
-\textit{Model--View--Controller} (MVC). Il \textit{Model} e' rappresentato
-dall'interfaccia \texttt{BoardGame} e dalla sua implementazione
-\texttt{BoardGameImpl}, che costituiscono il punto d'ingresso della logica di
-partita. Il modello incapsula lo stato del gioco, le operazioni principali
-della partita e la gestione del turno, delegata internamente al
-\texttt{TurnManager}. Inoltre espone metodi di controllo e interrogazione dello
-stato senza dipendere dalla View o dalle modalita' con cui l'utente interagisce
-con l'applicazione.
+L'architettura dell'applicazione segue il pattern architetturale \textit{Model--View--Controller}
+(MVC), seppur in una sua variante event-driven con \textit{Model} attivo e aggiornamenti
+in modalità \textit{push}. Infatti gli aggiornamenti significativi dello stato della partita vengono
+comunicati alla scena interessata da parte del Model stesso, mentre per il flusso opposto
+gli input dell'utente vengono intercettati dalla View e interpretati dal Controller,
+secondo MVC standard.
 
-Il Controller principale e' la classe \texttt{MainControllerImpl}. Essa
-implementa le interfacce \texttt{MainController} e
-\texttt{SceneCoordinator}, coordina il flusso applicativo generale, crea le
-schermate, registra le scene nella vista principale e gestisce la navigazione
-tra menu, selezione della difficolta', database delle carte, partita ed esito
-finale.
+L'entry-point principale del \textit{Model} è rappresentato dall'interfaccia \texttt{Board\-Game},
+che incapsula lo stato e la logica principale della partita. Data la sua composizione ha
+il compito di applicare le regole del dominio ed eseguire le conseguenti operazioni sulle altre classi.
+L'interfaccia espone metodi adeguati alla modifica del suo stato e alla sua interrogazione, permettendo
+al Controller di interagire con esso quando uno dei giocatori desidera applicare una determinata mossa.
+È presente tuttavia un secondo punto di accesso, rappresentato dall'interfaccia \texttt{AiTurnService},
+che gestisce il servizio di collegamento tra il Controller e l'algoritmo decisionale dell'IA.
 
-Per evitare un'eccessiva concentrazione di responsabilita', il controller
-principale e' affiancato da controller specializzati per le singole schermate:
+L'interfaccia \texttt{MainView} funge da entry-point della \textit{View} e rappresenta la finestra principale
+dell'applicazione. Essa tiene traccia delle varie scene dell'applicazione ed è in grado di navigare tra loro grazie a un
+gestore del layout, mentre il criterio di navigazione è affidato al Controller. Per scena si intende una specifica
+schermata del sistema identificata dall'interfaccia \texttt{Scene}. Ciascuna delle scene registrate espone
+un'interfaccia provvista di metodi specifici che permettono al Controller di registrare a un determinato
+componente grafico una determinata azione. In questo modo la View si occupa della rappresentazione grafica, della
+selezione degli elementi e della raccolta degli eventi generati dall'interfaccia, ma non applica direttamente
+le regole di gioco. Inoltre \texttt{MatchScene} può essere considerato come un punto d'accesso secondario
+della View, in quanto è presente un flusso di comunicazione diretta tra essa e il Controller dedicato allo
+stato della partita.
 
-\begin{itemize}
-    \item \texttt{MenuController}
-    \item \texttt{DifficultySelectionController}
-    \item \texttt{DatabaseController}
-    \item \texttt{MatchController}
-    \item \texttt{EndMatchController}
-\end{itemize}
+Il \textit{Controller} è rappresentato principalmente dalle interfacce \texttt{MainControl\-ler} e
+\texttt{SceneCoordinator}. Il controller coordina il flusso applicativo generale, crea le schermate, registra le scene
+nella vista principale e gestisce la navigazione tra di esse, a richiesta delle azioni utente catturate dalla View.
+Per evitare un'eccessiva concentrazione di responsabilità, si suddivide le responsabilità in controller
+specializzati per le singole schermate. Questi collegano le callback esposte dalle View alla logica
+applicativa corrispondente.
 
-Tra questi, \texttt{MatchController} riceve le azioni della schermata di
-partita, interagisce con \texttt{BoardGame} e integra i servizi dedicati al
-turno dell'intelligenza artificiale.
-
-La View e' rappresentata dall'interfaccia \texttt{MainView}, implementata da
-\texttt{MainViewImpl}. Essa funge da finestra principale dell'applicazione,
-mantiene le scene registrate e visualizza una sola \texttt{Scene} alla volta
-tramite un \texttt{CardLayout}. Le schermate concrete sono:
-
-\begin{itemize}
-    \item \texttt{MenuScene}
-    \item \texttt{DifficultySelectionScene}
-    \item \texttt{DatabaseScene}
-    \item \texttt{MatchScene}
-    \item \texttt{EndMatchScene}
-\end{itemize}
-
-Ciascuna espone un'interfaccia specifica per registrare le azioni utente. I
-controller collegano tali azioni alla logica applicativa tramite callback,
-mantenendo separata la gestione degli eventi grafici dalla logica di dominio.
-
-Durante la partita, il flusso principale degli input segue quindi la catena
-View--Controller--Model: la scena intercetta l'interazione dell'utente, il
-controller associato la interpreta e invoca le operazioni del modello. Gli
-aggiornamenti dello stato di partita vengono invece propagati dal modello alla
-schermata tramite il contratto \texttt{GameObserver}, implementato da
-\texttt{MatchView}. La navigazione tra schermate avviene attraverso
-\texttt{SceneCoordinator}, che usa \texttt{MainView} per rendere effettivo il
-cambio di scena.
-
-Questa organizzazione garantisce un buon disaccoppiamento tra modello, vista e
-controller. In particolare, la sostituzione della View non richiede modifiche al
-modello e richiede soltanto che la nuova interfaccia grafica rispetti i
-contratti esposti da \texttt{MainView}, \texttt{Scene} e dalle interfacce di
-vista specifiche. La logica di dominio e il coordinamento applicativo restano
-quindi indipendenti dalla tecnologia usata per rappresentare l'interfaccia
-utente.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/ArchitetturaMVC.pdf}
+    \caption{Schema UML dell'architettura MVC dell'applicazione.}
+\end{figure}
 
 \section{Design Dettagliato}
+
+\subsection{Simone Marsili}
+
+\subsubsection{Gestione delle carte di gioco}
+
+\textbf{Problema:} Le carte nel gioco possono essere di varie tipologie, come
+\texttt{Creatures} e \texttt{Spells} (requisito opzionale del progetto), e il
+sistema deve essere estendibile a nuove aggiunte e tipi di carte. Inoltre le
+carte devono contenere un apposito identificatore, il quale permette le
+operazioni sul modello durante la partita e impedisce la duplicazione di dati
+tra istanze. Tuttavia è necessario separare l'identità runtime delle carte
+dalla loro definizione statica. Si è cercato inoltre un modo per separare
+efficacemente dichiarazioni e implementazioni delle creature.
+
+\textbf{\\Soluzione:} L'interfaccia \texttt{Creature} rappresenta una tipologia
+di carte schierabili, e l'implementazione \texttt{CreatureImpl} si compone di
+un \texttt{CardId}, il quale informa sulla tipologia di carta e sulla sua
+numerazione univoca nel game, e di una \texttt{CreatureDefinition}, che
+rappresenta invece l'aspetto statico della carta (le sue statistiche base).
+L'implementazione delle creature è stata realizzata tramite una
+\textit{Simple Factory}, che rende il codice facilmente estendibile e
+manutenibile. La factory utilizza un \texttt{IdGenerator}, che non istanzia
+autonomamente, ma che riceve tramite costruttore, riducendo l'accoppiamento e
+migliorando testabilità ed estendibilità.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/Card.pdf}
+    \caption{Schema UML della gestione delle carte e delle relative definizioni.}
+\end{figure}
+
+\subsubsection{Gestione del database di carte}
+
+\textbf{Problema:} Il gioco prevede la presenza di un database contenente tutte
+le carte che possono comparire in un match. Il sistema necessita di una
+rappresentazione centralizzata e facilmente estendibile delle carte, caricata
+da una fonte esterna (file), mantenendo separata la logica di parsing dalla
+logica di dominio. Inoltre, il database deve gestire esclusivamente dati
+statici delle carte, risultando indipendente dall'identità runtime delle
+istanze generate durante la partita.
+
+\textbf{\\Soluzione:} Il database gestisce esclusivamente definizioni statiche
+delle carte (\texttt{CreatureDefinition}), risultando completamente
+disaccoppiato dal concetto di identità runtime, che viene invece introdotto
+solo in fase di creazione delle istanze.
+
+Inoltre la creazione di un'istanza del database avviene tramite apposita
+Factory statica, che utilizza componenti distinti per la lettura del file e per
+il parsing del contenuto, mantenendo separate le responsabilità di accesso ai
+dati e interpretazione degli stessi.
+
+Le interfacce \texttt{Parser\textless{}T\textgreater{}} e
+\texttt{FullReader\textless{}T\textgreater{}} rappresentano due strategie
+intercambiabili (pattern \textit{Strategy}) rispettivamente per
+l'interpretazione dei dati e per la lettura delle sorgenti, permettendo di
+estendere facilmente il sistema a nuovi formati o fonti dati.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/Database.pdf}
+    \caption{Schema UML del database delle carte e dei componenti di lettura e parsing.}
+\end{figure}
+
+\subsubsection{Gestione del deck}
+
+\textbf{Problema:} Il gioco richiede la creazione di un mazzo da cui il
+giocatore possa pescare progressivamente le carte durante la partita. Tuttavia,
+il mazzo non deve essere costruito manualmente né contenere direttamente le
+definizioni statiche presenti nel database: ogni carta inserita nel deck deve
+essere una nuova istanza runtime, dotata del proprio identificatore.
+
+Un ulteriore problema riguarda la composizione del mazzo. Non tutte le carte
+dovrebbero avere necessariamente la stessa probabilità di comparire: ad esempio,
+carte più forti possono essere rese meno frequenti rispetto a carte più deboli,
+così da ottenere un deck più bilanciato. Il sistema deve quindi permettere di
+modificare il criterio di selezione delle carte senza intervenire sulla logica
+interna del mazzo o sulla factory che lo costruisce.
+
+\textbf{\\Soluzione:} La gestione del mazzo è stata separata dalla sua
+costruzione. L'interfaccia \texttt{Deck} espone soltanto le operazioni
+necessarie durante la partita, cioè la pesca di una carta tramite
+\texttt{draw()} e la consultazione del numero di carte rimanenti tramite
+\texttt{getRemaining()}. L'implementazione \texttt{DeckImpl} incapsula quindi
+la lista delle carte effettivamente presenti nel mazzo e si occupa solo della
+loro gestione runtime.
+
+La creazione del mazzo è invece affidata a \texttt{DeckFactory}. Questa classe
+riceve tramite costruttore un \texttt{CreatureDatabase}, da cui ottiene le
+definizioni statiche delle creature, e una \texttt{CreatureImplFactory}, usata
+per trasformare ogni \texttt{CreatureDefinition} selezionata in una vera
+istanza runtime di \texttt{Card}. In questo modo il database resta separato
+dall'identità delle carte usate nella partita, che viene introdotta solo al
+momento della generazione del deck.
+
+La classe \texttt{DeckFactory} realizza sostanzialmente una
+\textit{Simple Factory}, poiché centralizza la logica di creazione del mazzo e
+nasconde al resto del modello i dettagli necessari alla sua costruzione
+(recupero definizioni dal database, creazione istanze runtime, selezione
+pesata, mescolamento finale\ldots{}).
+
+Il metodo \texttt{createWeighted(size, strategy)} costruisce un mazzo della
+dimensione richiesta usando una \texttt{WeightStrategy}. In questa versione
+implementata, la factory calcola il peso associato a ciascuna definizione e usa
+tale valore per effettuare una selezione casuale non uniforme. In seguito le
+carte generate vengono mescolate prima della creazione del \texttt{DeckImpl},
+così da evitare che l'ordine del database influenzi l'ordine di pesca.
+
+Nel caso in cui la dimensione richiesta sia maggiore o uguale al numero di
+carte presenti nel database, la factory inserisce almeno una copia di ogni
+creatura disponibile e completa poi il mazzo tramite selezione pesata. Questo
+evita che, in mazzi abbastanza grandi, alcune creature non compaiano mai solo
+per effetto della casualità. Quando invece la dimensione richiesta è inferiore
+al numero di definizioni disponibili, l'intero mazzo viene generato tramite
+selezione pesata.
+
+La soluzione usa il pattern \textit{Strategy} attraverso l'interfaccia
+{\texttt{WeightStra\-tegy}}. Tale interfaccia rappresenta l'algoritmo
+intercambiabile con cui viene calcolata l'importanza di una
+\texttt{CreatureDefinition} durante la costruzione del mazzo.
+\texttt{DeckFactory} usa la strategia senza conoscere il criterio concreto
+adottato, rendendo possibile introdurre in futuro nuove politiche di
+generazione del deck senza modificare la factory. Inoltre la
+\texttt{WeightStrategy} è una functional interface, il che rende molto facile
+creare al volo delle nuove strategie.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/Deck.pdf}
+    \caption{Schema UML della costruzione e gestione del mazzo di gioco.}
+\end{figure}
+
+\subsubsection{Gestione dell'aggiornamento della view}
+
+\textbf{Problema:} Durante lo svolgimento di una partita, lo stato del modello
+cambia frequentemente: la partita viene avviata, il turno passa da un giocatore
+all'altro, vengono pescate o giocate carte, cambiano i punti vita di creature e
+giocatori, varia il mana disponibile e alcune carte possono essere distrutte o
+bruciate. Tutti questi cambiamenti devono essere riflessi nella schermata di
+gioco in modo coerente e tempestivo.
+
+Una prima soluzione possibile sarebbe stata lasciare al controller il compito di
+aggiornare manualmente la view dopo ogni operazione eseguita sul modello. Questa
+scelta, però, avrebbe reso il controller responsabile anche dei dettagli di
+aggiornamento grafico, aumentando il suo accoppiamento sia con il model sia con
+la view.
+
+Un'altra alternativa sarebbe stata usare una notifica generica, basata su un
+unico metodo come \texttt{update()}. In questo caso, però, la view avrebbe
+ricevuto solo l'informazione che qualcosa nel modello è cambiato, dovendo poi
+interrogare il model per ricostruire lo stato aggiornato. Questa variante è
+stata scartata perché avrebbe richiesto alla view di conoscere più dettagli del
+modello e avrebbe reso meno esplicito il significato dei singoli aggiornamenti.
+
+Il problema era quindi progettare un meccanismo che permettesse al model di
+comunicare alla view gli eventi rilevanti della partita, fornendo direttamente
+le informazioni necessarie all'aggiornamento grafico, senza costringere la view
+a richiedere ogni volta lo stato aggiornato.
+
+\textbf{\\Soluzione:} La soluzione adottata applica il pattern
+\textit{Observer} in una variante di tipo \textit{push model}. Il modello della
+partita è l'oggetto osservabile, mentre la view della partita è uno degli
+osservatori registrati. Quando lo stato del model cambia, il model non invia
+una notifica generica, ma comunica direttamente quale evento è avvenuto e quali
+dati aggiornati sono necessari per gestirlo.
+
+L'interfaccia \texttt{ObservableGame} definisce il contratto degli oggetti
+osservabili, esponendo i metodi per registrare e rimuovere osservatori.
+
+L'interfaccia \texttt{BoardGame} estende \texttt{ObservableGame}, rendendo
+esplicito che il modello principale della partita può essere osservato. La
+classe {\texttt{BoardGame\-Impl}} implementa questo contratto, mantiene gli
+observer registrati e li notifica opportunamente quando si verifica un
+cambiamento significativo nello stato della partita.
+
+Gli observer sono rappresentati dall'interfaccia \texttt{GameObserver}. A
+differenza di una versione minimale del pattern \textit{Observer}, non è stato
+usato un unico metodo generico di aggiornamento. L'interfaccia espone invece
+più metodi specifici, ciascuno associato a un evento rilevante del gioco.
+
+Questa scelta rende la comunicazione tra model e view più esplicita. Il nome
+del metodo identifica l'evento avvenuto, mentre i parametri trasportano già le
+informazioni aggiornate.
+
+Sul lato view, \texttt{MatchView} estende \texttt{GameObserver}. In questo
+modo, una schermata di partita è anche un osservatore del modello. La classe
+concreta \texttt{MatchScene} implementa \texttt{MatchView} e definisce come
+tradurre ciascun evento ricevuto in un aggiornamento grafico.
+
+Il collegamento tra model e view viene effettuato dal controller, che registra
+la view come observer del model. Il model, però, non conosce la classe concreta
+\texttt{MatchScene}: conosce solo l'interfaccia \texttt{GameObserver}. Questo
+mantiene basso l'accoppiamento tra le componenti e rispetta la separazione
+prevista dall'architettura MVC.
+
+La soluzione ha anche un compromesso: l'interfaccia \texttt{GameObserver} cresce
+all'aumentare degli eventi osservabili. Se in futuro venissero introdotti nuovi
+eventi di gioco, potrebbe essere necessario aggiungere nuovi metodi
+all'interfaccia e aggiornare le classi che la implementano. Nel contesto del
+progetto, però, questo costo è accettabile, perché gli eventi rilevanti della
+partita sono limitati e ben definiti. In cambio, si ottiene una comunicazione
+più leggibile, più controllata e più aderente al dominio del gioco.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/Observer.pdf}
+    \caption{Schema UML del meccanismo di aggiornamento della view tramite observer.}
+\end{figure}
+
+\newpage
+
+\subsection{Francesco Dama}
+
+\subsubsection{Problema 1}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 2}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 3}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 4}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsection{Lorenzo Mercuriali}
+
+\subsubsection{Problema 1}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 2}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 3}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
+
+\subsubsection{Problema 4}
+
+\textbf{Problema:}
+
+\textbf{\\Soluzione:}
 
 \subsection{Massimiliano Ria}
 
@@ -114,6 +348,12 @@ viene mostrata per la prima volta o quando cambia dimensione,
 della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
 risultante. Tutto lo spazio esterno rimane nero,
 generando bande laterali oppure superiori e inferiori in base alla situazione.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/ViewportAdattamento.pdf}
+    \caption{Schema UML dell'adattamento della viewport al rapporto 16:9.}
+\end{figure}
 
 \subsubsection{Multi-Risoluzione per schermi Hi-DPI}
 
@@ -239,17 +479,23 @@ quelle sconfitte.
 Gli algoritmi decisionali possono così avere un riferimento a questa classe e utilizzarla
 per esplorare scenari successivi senza dipendere dalle regole concrete di modifica dello stato.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/AiStatoSimulabile.pdf}
+    \caption{Schema UML dello stato simulabile utilizzato dall'intelligenza artificiale.}
+\end{figure}
+
 \subsubsection{Politica Decisionale Sostituibile per l'IA}
 
 \textbf{Problema:} A un certo punto dell'implementazione dell'IA, è sorta la necessità
 di integrarla con il ciclo reale del turno. L'algoritmo poteva
 scegliere una sequenza di mosse su uno stato astratto, ma tali decisioni dovevano
 poi essere applicate alla partita effettivamente giocata dall'utente. Inoltre la
-selezione della difficolta' richiedeva di poter sostituire la politica
+selezione della difficoltà richiedeva di poter sostituire la politica
 decisionale senza modificare il controller della partita o le regole del modello.
 
 \textbf{\\Soluzione:} La soluzione adottata separa la scelta delle mosse dalla
-loro esecuzione reale. Il punto di raccordo principale e' rappresentato
+loro esecuzione reale. Il punto di raccordo principale è rappresentato
 dall'interfaccia \texttt{AiTurnService} e dalla classe \texttt{AiTurnServiceImpl}.
 Il servizio riceve il \texttt{BoardGame} corrente, usa
 \texttt{AiGameStateFactory} per costruire lo snapshot simulabile e delega la
@@ -257,14 +503,14 @@ decisione a un oggetto di tipo \texttt{AiDecisionAlgorithm}. Il controller della
 partita non deve quindi conoscere il funzionamento interno dell'IA: richiede
 soltanto il piano del turno e ottiene una lista ordinata di \texttt{AiAction}.
 
-La sostituibilita' della politica decisionale e' ottenuta applicando il pattern
+La sostituibilità della politica decisionale è ottenuta applicando il pattern
 \textit{Strategy}. L'interfaccia \texttt{AiDecisionAlgorithm} definisce il
 contratto comune degli algoritmi, mentre le implementazioni
 \texttt{GreedySequentialAiAlgorithm} e
 \texttt{DepthLimitedLookaheadAiAlgorithm} rappresentano due strategie
 alternative. La prima sceglie iterativamente la migliore azione che produce un
 miglioramento immediato dello stato, la seconda esplora sequenze di azioni fino
-a una profondita' limitata e seleziona quella con la valutazione euristica
+a una profondità limitata e seleziona quella con la valutazione euristica
 migliore. Entrambe usano gli stessi componenti di supporto:
 \texttt{AiActionGeneratorImpl} per generare le azioni legali,
 \texttt{AiStateTransitionImpl} per applicarle allo stato simulato e
@@ -275,94 +521,22 @@ una mappa associa \texttt{Difficulty.NORMAL} a
 \texttt{GreedySequentialAiAlgorithm} e \texttt{Difficulty.HARD} a
 \texttt{DepthLimitedLookaheadAiAlgorithm}. Quando l'utente avvia una partita,
 il controller costruisce \texttt{AiTurnServiceImpl} passando l'algoritmo
-corrispondente alla difficolta' selezionata. In questo modo l'aggiunta di una
-nuova difficolta' o di un nuovo algoritmo richiede soltanto una nuova
+corrispondente alla difficoltà selezionata. In questo modo l'aggiunta di una
+nuova difficoltà o di un nuovo algoritmo richiede soltanto una nuova
 implementazione della strategia e la sua registrazione nel punto di creazione.
 
-L'applicazione delle azioni decise dall'IA e' invece responsabilita' di
+L'applicazione delle azioni decise dall'IA è invece responsabilità di
 \texttt{AiActionExecutor}, implementata da \texttt{AiActionExecutorImpl}. Questa
 classe traduce le azioni astratte prodotte dagli algoritmi nelle operazioni
 effettive di \texttt{BoardGame}: posizionare una carta, attaccare l'eroe
 avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
 \texttt{place}, \texttt{attackHero} e \texttt{attackCard}. Il
-\texttt{MatchController} rimane cosi' il coordinatore del turno, ma non
-contiene logica decisionale ne' dettagli di conversione tra azioni simulate e
+\texttt{MatchController} rimane così il coordinatore del turno, ma non
+contiene logica decisionale né dettagli di conversione tra azioni simulate e
 azioni reali.
 
-\subsection{Simone Marsili}
-
-\subsubsection{Problema 1}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 4}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsection{Francesco Dama}
-
-\subsubsection{Problema 1}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 4}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsection{Lorenzo Mercuriali}
-
-\subsubsection{Problema 1}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 4}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
+    \caption{Schema UML della politica decisionale sostituibile dell'intelligenza artificiale.}
+\end{figure}

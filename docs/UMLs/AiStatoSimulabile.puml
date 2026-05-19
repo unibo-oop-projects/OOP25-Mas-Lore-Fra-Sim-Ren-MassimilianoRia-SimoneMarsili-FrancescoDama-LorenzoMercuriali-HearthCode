@@ -1,0 +1,63 @@
+@startuml AiStatoSimulabile
+
+skinparam linetype ortho
+
+interface BoardGame {
+    + getPlayerHealth(playerId: PlayerId): int
+    + getPlayerActualMana(playerId: PlayerId): int
+    + getHandCardsCopies(playerId: PlayerId): List<CardState>
+    + getArmyCardsCopies(playerId: PlayerId): List<CardState>
+}
+
+interface AiGameStateFactory {
+    + create(game: BoardGame): AiGameState
+}
+
+class AiGameStateFactoryImpl {
+    + create(game: BoardGame): AiGameState
+}
+
+interface AiGameState {
+    + copy(): AiGameState
+    + getPlayerState(playerId: PlayerId): PlayerState
+    + damagePlayer(playerId: PlayerId, damage: int): void
+    + consumeMana(playerId: PlayerId, mana: int): void
+    + placeCard(playerId: PlayerId, cardId: CardId): void
+    + damageCard(playerId: PlayerId, cardId: CardId, damage: int): void
+    + destroyCard(playerId: PlayerId, cardId: CardId): void
+}
+
+class AiGameStateImpl
+
+interface PlayerState {
+}
+
+class PlayerStateImpl
+
+interface CardState
+
+class CardStateImpl
+
+interface AiStateTransition {
+    + apply(gameState: AiGameState, action: AiAction): AiGameState
+}
+
+class AiStateTransitionImpl {
+    + apply(gameState: AiGameState, action: AiAction): AiGameState
+}
+
+
+AiGameStateFactory <|.. AiGameStateFactoryImpl
+AiGameStateFactoryImpl ..> BoardGame
+AiGameStateFactoryImpl ..> AiGameStateImpl
+
+AiGameState <|.. AiGameStateImpl
+AiGameStateImpl *-- PlayerState
+PlayerState <|.. PlayerStateImpl
+PlayerStateImpl o-- "0..*" CardState
+CardState <|.. CardStateImpl
+
+AiStateTransition <|.. AiStateTransitionImpl
+AiStateTransitionImpl ..> AiGameState
+
+@enduml

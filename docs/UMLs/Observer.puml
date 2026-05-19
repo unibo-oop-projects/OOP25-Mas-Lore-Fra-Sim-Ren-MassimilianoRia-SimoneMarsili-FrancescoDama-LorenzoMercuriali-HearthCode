@@ -1,0 +1,44 @@
+@startuml Observer
+
+
+skinparam linetype ortho
+
+interface ObservableGame {
+    +addObserver(obs: GameObserver): void
+    +removeObserver(obs: GameObserver): void
+}
+
+interface GameObserver {
+    +onGameStarted(startingPlayer: PlayerId, playersInitialState : Map<PlayerId, PlayerInitialState>): void
+    +onTurnSwitch(nextPlayer: PlayerId): void
+    +onCreatureDrawn(playerId: PlayerId, drawnCard: CardId, def: CreatureDefinition): void
+    +onCardPlaced(playerId: PlayerId, placedCard: CardId): void
+    +onCardHealthChanged(playerId: PlayerId, cardId: CardId, newHealth: int): void
+    +onCardDestroyed(playerId: PlayerId, cardId: CardId): void
+    +onPlayerHealthChanged(playerId: PlayerId, newHealth: int): void
+    +onManaChanged(playerId: PlayerId, actualMana: int, manaLimit: int): void
+    +onCardExhausted(playerId: PlayerId, exhaustedCard: CardId): void
+    +onCardBurned(playerId: PlayerId): void
+}
+
+interface BoardGame
+class BoardGameImpl
+
+interface MatchView
+class MatchScene
+
+ObservableGame <|-- BoardGame
+BoardGame <|.. BoardGameImpl
+
+BoardGameImpl ..> GameObserver : notifies
+
+BoardGameImpl o-- "0..*" GameObserver
+GameObserver <|-- MatchView
+
+
+MatchView <|.. MatchScene
+
+
+
+
+@enduml

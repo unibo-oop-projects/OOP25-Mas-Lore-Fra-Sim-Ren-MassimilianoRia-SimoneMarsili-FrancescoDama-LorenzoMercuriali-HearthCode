@@ -6,6 +6,18 @@
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{xurl}
+
+\definecolor{captiongray}{RGB}{70, 70, 70}
+\captionsetup[figure]{
+    font=small,
+    labelfont={color=captiongray},
+    textfont={color=captiongray},
+    justification=centering
+}
 
 \titleformat{\chapter}[hang]
     {\normalfont\huge\bfseries}
@@ -17,7 +29,7 @@
 \hypersetup{
     linktoc=all,
     pdftitle={HearthCode},
-    pdfauthor={Massimiliano Ria, Simone Marsili, Franscesco Dama, Lorenzo Mercuriali}
+    pdfauthor={Massimiliano Ria, Simone Marsili, Francesco Dama, Lorenzo Mercuriali}
 }
 
 \begin{document}
@@ -36,7 +48,7 @@
     \begin{flushright}
         Massimiliano Ria\\
         Simone Marsili\\
-        Franscesco Dama\\
+        Francesco Dama\\
         Lorenzo Mercuriali
     \end{flushright}
 \end{titlepage}
