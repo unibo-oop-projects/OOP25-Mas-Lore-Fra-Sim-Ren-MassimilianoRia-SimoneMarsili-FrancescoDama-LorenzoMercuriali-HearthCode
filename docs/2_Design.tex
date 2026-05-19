@@ -280,29 +280,175 @@ più leggibile, più controllata e più aderente al dominio del gioco.
 
 \subsection{Lorenzo Mercuriali}
 
-\subsubsection{Problema 1}
+\subsubsection{Coordinamento delle azioni di partita}
 
-\textbf{Problema:}
+\textbf{Problema:} Nel modello di HearthCode una partita coinvolge più
+entità di dominio, e il dubbio creatosi nelle prime fasi di progettazione è stato come
+rendere coerente il loro aggiornamento e applicare le regole di dominio senza
+spargerle in giro per il codice. Le azioni principali richiedevano quindi l'esistenza
+di un'entità che contenesse e coordinasse le varie parti create dal sistema.
 
-\textbf{\\Soluzione:}
+\textbf{\\Soluzione:} Un primo approccio al problema è stato quello di suddividere queste
+responsabilità in due classi differenti, rispettivamente \textit{Game} e \textit{BoardGame}.
+La prima avrebbe affrontato interrogazioni di tipo tecnico, come la creazione e l'inizializzazione
+della partita, divenendo l'entry point del modello, mentre la seconda avrebbe svolto il ruolo
+di wrapper nei confronti delle altre entità del modello. Tuttavia una seconda analisi ha
+portato a una conclusione diversa: assegnare a un'entità come \textit{Game} il compito
+di stabilire dati su informazioni che concretamente non aveva, obbligando il sistema
+a gestire un flusso ridondante, non era affatto sensato. Infatti non rappresentava una responsabilità
+diversa, bensì era una facciata finta priva di significato.
 
-\subsubsection{Problema 2}
+La soluzione adottata e poi finalizzata concentra dunque le operazioni di partita
+dietro l'unica entità \texttt{BoardGame}, la quale agisce come punto di coordinamento delle
+regole di dominio. L'interfaccia è stata modellata attorno alle azioni
+che descrivono realmente una partita, così da gestire internamente le operazioni di dominio
+ed esporre solo il risultato alle entità richiedenti.
 
-\textbf{Problema:}
+Sul piano implementativo, l'avvio della partita è stato gestito facendo pescare
+un numero fisso di carte iniziali, rappresentato dalla costante
+\texttt{STARTING\_HAND\_CARDS}. La scelta di mantenere questo valore nella board
+permette di legare la regola di apertura del match al punto che coordina lo
+stato complessivo, senza duplicarla nelle classi che rappresentano i singoli
+giocatori. Anche la verifica della fine della partita resta centralizzata:
+\texttt{getWinner()} filtra i giocatori ancora in vita e restituisce un
+\texttt{Optional<PlayerId>}, evitando valori speciali o controlli sparsi sul
+numero di punti vita.
 
-\textbf{\\Soluzione:}
+Le azioni offensive sono state trattate come operazioni atomiche sullo stato di
+partita. Nel caso di \texttt{attackCard}, la board recupera l'armata del
+giocatore che sta agendo e quella del difensore, verifica che la creatura
+bersaglio sia effettivamente presente e che la creatura attaccante possa
+attaccare, quindi applica il danno reciproco. Se una delle due creature arriva
+a zero punti vita, la rimozione viene eseguita immediatamente sull'armata
+corretta. \texttt{attackHero} segue lo stesso principio, ma invece di cercare una
+creatura bersaglio applica il valore d'attacco della carta al giocatore
+avversario e consuma l'attacco della creatura usata.
 
-\subsubsection{Problema 3}
+Il piazzamento di una carta è stato invece separato in una sequenza di controlli
+prima dell'aggiornamento dello stato: la board accetta solo carte di tipo
+\texttt{CREATURE} e rifiuta l'azione se l'armata del giocatore corrente è già
+piena. Solo dopo queste verifiche la carta può essere rimossa dalla mano del
+giocatore e inserita tra le creature in campo. In questo modo le classi
+specializzate continuano a gestire i propri dettagli interni, mentre
+\texttt{BoardGameImpl} rimane il punto in cui vengono composte le regole che
+coinvolgono più entità contemporaneamente.
 
-\textbf{Problema:}
+\subsubsection{Separazione della costruzione della partita tramite Factory}
 
-\textbf{\\Soluzione:}
+\textbf{Problema:} Prima che il match possa iniziare devono
+essere assemblati componenti diversi del model, e per alleggerire le
+responsabilità di \texttt{BoardGame} si è deciso di assegnare il compito della sua
+instanziazione al pattern \textit{Factory}.
 
-\subsubsection{Problema 4}
+\textbf{\\Soluzione:} Inizialmente l'assemblaggio era collocato all'interno del costruttore di
+\texttt{BoardGameImpl}, rendendo la classe molto verbosa. La board rappresenta
+il punto d'ingresso della logica di partita e deve concentrarsi sulla gestione dello stato
+e delle azioni di gioco, non sulle scelte di creazione di altre entità.
 
-\textbf{Problema:}
+Una prima alternativa sarebbe stata collocare questa costruzione nel controller
+che avvia la partita. In questo modo, il \textit{Controller} avrebbe dovuto incorporare
+scelte di costruzione e entità che appartengono al model, perdendo parte del proprio
+ruolo di coordinatore e non rispettando il dogma del pattern MVC.
 
-\textbf{\\Soluzione:}
+La responsabilità di assemblare una partita è stata dunque
+isolata in \texttt{BoardGameFactory}, una factory statica riconducibile ai
+pattern creazionali e dedicata alla configurazione standard del match. Il
+controller non crea direttamente la board né le sue dipendenze: in
+\texttt{MainControllerImpl.startMatch()} richiede una \texttt{BoardGame} tramite
+\texttt{createDefaultGame()}, ottenendo un oggetto già pronto per essere passato
+al \texttt{MatchController}.
+
+La costruzione dei dettagli iniziali è confinata in
+\texttt{createDefaultSetup()}. Qui vengono preparati gli oggetti necessari alla
+partita: le definizioni delle creature sono caricate tramite
+\texttt{CreatureDatabaseFactory}, le carte concrete vengono prodotte con
+\texttt{CreatureImplFactory}, i mazzi con \texttt{DeckFactory} e i giocatori
+con \texttt{PlayerFactory}. La factory associa poi a ciascun giocatore una
+\texttt{ArmyImpl} e stabilisce il giocatore iniziale.
+
+Il risultato dell'assemblaggio non viene passato alla board come una lunga
+lista di parametri, ma viene raccolto in \texttt{GameSetup}. Questo oggetto
+rappresenta la configurazione iniziale del match e contiene giocatori, armate e
+giocatore di partenza, proteggendo la struttura delle collezioni tramite mappe
+immutabili. \texttt{BoardGameImpl} riceve un \texttt{GameSetup} nel proprio
+costruttore protetto e non decide come costruire i componenti iniziali della
+partita, ma usa la configurazione ricevuta per inizializzare il proprio stato
+interno, compreso il \texttt{TurnManager}. In questo modo la factory incapsula
+la creazione della partita, \texttt{GameSetup} trasporta la configurazione
+iniziale e \texttt{BoardGameImpl} rimane focalizzata sulle regole e sulle
+operazioni del match.
+
+\subsubsection{Caricamento asincrono e caching delle risorse grafiche}
+
+\textbf{Problema:} Una volta realizzata l'architettura e finalizzata
+l'interfaccia grafica dell'applicazione, ci siamo scontrati con un ostacolo significativo. 
+La View di HearthCode utilizza molte risorse grafiche, e la loro lettura in diverse parti
+del codice ha prodotto dei concreti rallentamenti in alcune schermate del sistema.
+Il problema era particolarmente visibile nelle scene più pesanti. Inizialmente
+l'ingresso nella partita dopo il click su \textit{Play} poteva congelare l'EDT di
+\textit{Swing} per diversi secondi, perché la scena di gioco doveva caricare e ridimensionare
+le immagini delle carte nel momento stesso in cui veniva costruita.
+
+Era quindi necessario progettare un meccanismo che permettesse di riutilizzare
+le immagini già caricate, avviare in anticipo il caricamento dei gruppi di
+risorse associati alle scene principali e lasciare semplice l'uso delle immagini
+da parte della View.
+
+\textbf{\\Soluzione:} La soluzione adottata separa l'uso delle immagini dal modo
+in cui esse vengono caricate. Il punto di accesso per la View è la facciata
+statica \texttt{ImageLoader}, che espone i metodi \texttt{load(String)} e
+\texttt{load(String, int, int)} per ottenere rispettivamente immagini originali
+e immagini scalate.
+
+Dietro la facciata è presente \texttt{ImageLoaderProxy}, che traduce le
+richieste sincrone della View in richieste asincrone verso un
+\texttt{ImageRepository}. Il proxy usa il metodo \texttt{join()} solo quando una
+classe grafica richiede effettivamente l'icona, ma può anche avviare più
+caricamenti in background tramite \texttt{preload()}, combinandoli con
+\texttt{Completable\-Future.allOf}. In questo modo il codice della View conserva
+un'interfaccia semplice, mentre l'infrastruttura può lavorare in anticipo.
+
+La classe concreta \texttt{AsyncCachedImageRepository} mantiene due cache
+concorrenti: una per le immagini originali e una per le immagini scalate. Le
+chiavi delle immagini originali coincidono con il percorso della risorsa, mentre
+quelle delle immagini scalate includono anche la dimensione logica richiesta e
+la dimensione fisica calcolata per lo schermo. L'uso di
+\texttt{computeIfAbsent} fa sì che due richieste uguali condividano lo
+stesso \texttt{CompletableFuture}, evitando letture e ridimensionamenti
+ripetuti.
+
+Il caricamento effettivo viene eseguito su un \texttt{ExecutorService} dedicato,
+creato con thread demoni denominati \texttt{image-loader}. Le immagini originali
+sono lette con \texttt{ImageIO}, validate tramite le dimensioni dell'icona e poi
+salvate nella cache. Per le richieste scalate, descritte da
+\texttt{ImageLoadRequest.scaled}, il repository passa prima dalla cache
+dell'immagine originale, caricandola se necessario, e poi produce l'icona alla
+dimensione richiesta; le richieste senza ridimensionamento sono invece create con
+\texttt{ImageLoadRequest.raw}.
+
+I gruppi di risorse da precaricare sono raccolti in
+\texttt{ImagePreloadCatalog}. Il metodo \texttt{menuAndNavigation()}
+prepara lo sfondo comune, i banner della schermata finale e le texture dei
+pulsanti usati nelle schermate di navigazione; \texttt{match()} prepara le
+immagini usate dalle carte nella scena di gioco, compreso il retro delle carte e
+le immagini delle creature; \texttt{database()} prepara invece le immagini usate
+nella schermata del mazzo. Le dimensioni delle immagini scalate vengono ricavate
+da \texttt{ViewMetrics}, così il catalogo produce richieste coerenti con la
+risoluzione effettiva dell'interfaccia.
+
+Il precaricamento viene quindi avviato all'avvio dell'applicazione. Qui vengono
+chiamati tre punti di ingresso di \texttt{ImageLoader} corrispondenti alle diverse schermate
+dell'applicazione e i contenuti grafici da loro richiesti. Ogni metodo
+conserva il proprio \texttt{CompletableFuture} statico e lo crea una sola
+volta, quindi richieste successive non riavviano lo stesso piano di
+caricamento.
+
+In questo modo la View rimane semplice, continuando a richiedere immagini tramite
+metodi sincroni; il controller si limita ad avviare i piani di preload;
+il repository gestisce caching, esecuzione asincrona e riuso dei risultati.
+Quando una risorsa è già presente in cache, la View la ottiene senza ripetere lettura
+e ridimensionamento; quando invece il caricamento è ancora in corso, la chiamata sincrona
+attende il completamento dello stesso \texttt{CompletableFuture} già avviato.
 
 \subsection{Massimiliano Ria}
 
