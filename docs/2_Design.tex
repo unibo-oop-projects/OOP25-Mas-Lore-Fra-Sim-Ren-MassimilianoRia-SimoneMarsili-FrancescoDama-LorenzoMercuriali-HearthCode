@@ -67,7 +67,7 @@ manutenibile. La factory utilizza un \texttt{IdGenerator}, che non istanzia
 autonomamente, ma che riceve tramite costruttore, riducendo l'accoppiamento e
 migliorando testabilità ed estendibilità.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{UMLs/Card.pdf}
     \caption{Schema UML della gestione delle carte e delle relative definizioni.}
@@ -99,7 +99,7 @@ intercambiabili (pattern \textit{Strategy}) rispettivamente per
 l'interpretazione dei dati e per la lettura delle sorgenti, permettendo di
 estendere facilmente il sistema a nuovi formati o fonti dati.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{UMLs/Database.pdf}
     \caption{Schema UML del database delle carte e dei componenti di lettura e parsing.}
@@ -167,7 +167,7 @@ generazione del deck senza modificare la factory. Inoltre la
 \texttt{WeightStrategy} è una functional interface, il che rende molto facile
 creare al volo delle nuove strategie.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{UMLs/Deck.pdf}
     \caption{Schema UML della costruzione e gestione del mazzo di gioco.}
@@ -244,7 +244,7 @@ progetto, però, questo costo è accettabile, perché gli eventi rilevanti della
 partita sono limitati e ben definiti. In cambio, si ottiene una comunicazione
 più leggibile, più controllata e più aderente al dominio del gioco.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{UMLs/Observer.pdf}
     \caption{Schema UML del meccanismo di aggiornamento della view tramite observer.}
@@ -495,7 +495,7 @@ della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
 risultante. Tutto lo spazio esterno rimane nero,
 generando bande laterali oppure superiori e inferiori in base alla situazione.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{UMLs/ViewportAdattamento.pdf}
     \caption{Schema UML dell'adattamento della viewport al rapporto 16:9.}
@@ -625,7 +625,7 @@ quelle sconfitte.
 Gli algoritmi decisionali possono così avere un riferimento a questa classe e utilizzarla
 per esplorare scenari successivi senza dipendere dalle regole concrete di modifica dello stato.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{UMLs/AiStatoSimulabile.pdf}
     \caption{Schema UML dello stato simulabile utilizzato dall'intelligenza artificiale.}
@@ -681,7 +681,7 @@ avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
 contiene logica decisionale né dettagli di conversione tra azioni simulate e
 azioni reali.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
     \caption{Schema UML della politica decisionale sostituibile dell'intelligenza artificiale.}
