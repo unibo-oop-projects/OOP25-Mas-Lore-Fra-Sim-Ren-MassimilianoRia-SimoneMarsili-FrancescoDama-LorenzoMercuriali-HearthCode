@@ -43,6 +43,243 @@ applicativa corrispondente.
 
 \section{Design Dettagliato}
 
+\subsection{Massimiliano Ria}
+
+\subsubsection{Adattamento dell'interfaccia a diverse risoluzioni}
+
+\textbf{Problema:} Dopo aver ottenuto un'interfaccia grafica funzionante e
+un'architettura coerente, è emersa la necessità di mantenerne l'aspetto
+uniforme su risoluzioni e rapporti d'aspetto diversi.
+
+\textbf{\\Soluzione:} Un primo approccio al problema è stato l'introduzione della
+classe \texttt{ViewMetrics}, usata come punto di accesso unico alle principali
+dimensioni grafiche dell'applicazione. Nella sua versione iniziale, tali misure
+venivano calcolate a partire dalla dimensione fisica dello schermo. La classe
+determina una sola volta le grandezze necessarie e le espone tramite metodi
+statici dedicati, come ad esempio \texttt{cardWidth()} e \texttt{cardHeight()}.
+In questo modo si riduce la duplicazione del codice e ogni scena può richiedere
+solo la metrica di cui ha bisogno.
+
+I test successivi hanno però evidenziato un limite: scalare ogni componente in
+base all'intero schermo non garantiva automaticamente una buona visualizzazione.
+Su schermi con risoluzioni elevate o con un rapporto d'aspetto diverso da quello
+previsto, alcuni elementi risultavano troppo grandi o disposti in modo poco
+bilanciato. Inoltre lo sfondo del menu, realizzato nativamente con risoluzione
+3840x2160 e rapporto 16:9, rischiava di essere adattato a superfici non coerenti
+con la sua proporzione originale, producendo tagli dell'immagine o distorsioni
+impreviste.
+
+Per risolvere il problema è stato introdotto il concetto di \textit{viewport}:
+l'applicazione continua ad aprirsi a schermo intero, ma la zona effettiva in cui
+vengono disegnate le scene corrisponde alla più grande area 16:9 contenibile
+nello schermo dell'utente. Il calcolo è centralizzato nel metodo
+\texttt{ViewMetrics.viewportSize(Dimension)}, che confronta il rapporto tra la
+larghezza e l'altezza disponibili con il rapporto obiettivo 16:9. Se lo schermo
+è più largo del necessario, viene mantenuta l'altezza e ridotta la larghezza; se
+invece è troppo alto, viene mantenuta la larghezza e ridotta l'altezza.
+
+La classe \texttt{BlackBounds} applica concretamente questa scelta: viene usata
+da \texttt{MainViewImpl} come pannello radice della finestra e contiene il
+pannello delle scene gestito dal \texttt{CardLayout}. Nell'override del metodo
+\texttt{doLayout()}, richiamato automaticamente da Swing quando la finestra
+viene mostrata per la prima volta o quando cambia dimensione,
+\texttt{BlackBounds} calcola la viewport a partire dalla dimensione corrente
+della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
+risultante. Tutto lo spazio esterno rimane nero,
+generando bande laterali oppure superiori e inferiori in base alla situazione.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\textwidth]{UMLs/ViewportAdattamento.pdf}
+    \caption{Schema UML dell'adattamento della viewport al rapporto 16:9.}
+\end{figure}
+
+\subsubsection{Multi-Risoluzione per schermi Hi-DPI}
+
+\textbf{Problema:} Nelle ultime fasi di sviluppo è emerso un bug legato alla
+qualità delle immagini delle carte. Il problema non si presentava in modo
+uniforme: su alcuni schermi le texture risultavano nitide, mentre su altri
+apparivano sgranate o sfocate, senza che inizialmente fosse riconoscibile un
+legame evidente con la risoluzione nominale del monitor.
+
+L'analisi successiva ha ricondotto il comportamento agli schermi Hi-DPI. Su
+questi dispositivi il sistema operativo può applicare uno \textit{zoom} logico:
+l'interfaccia continua a ragionare in pixel logici, ma ogni pixel logico viene
+poi rappresentato tramite più pixel fisici. Questa scelta evita che finestre e
+componenti diventino troppo piccoli su pannelli molto densi, ma introduce una
+differenza tra la dimensione richiesta da Swing e la dimensione realmente usata
+dal dispositivo di output. Nel caso specifico, le classi della View ottenevano le
+immagini tramite \texttt{ImageLoader}, che le restituiva già scalate alle
+dimensioni calcolate da \texttt{ViewMetrics}. Quando però Swing disegnava quelle
+icone su uno schermo con fattore di scala maggiore di 1, l'immagine già ridotta
+veniva adattata a una superficie fisica più grande, producendo l'effetto di
+sgranatura osservato sulle carte.
+
+\textbf{\\Soluzione:} L'idea adottata è stata quella di non trattare più una
+richiesta di immagine scalata come una singola bitmap, ma come un'immagine
+multi-risoluzione. Per ogni risorsa grafica richiesta a una certa dimensione
+logica viene preparata una variante coerente con quella dimensione e, quando
+necessario, una seconda variante coerente con la dimensione fisica del
+dispositivo. In questo modo le classi della View continuano a chiedere immagini
+in termini di pixel logici, ma il sottosistema grafico di Java può selezionare
+la variante più adatta al momento del disegno.
+
+Il punto centrale del fix è \texttt{AsyncCachedImageRepository}, che implementa
+\texttt{ImageRepository} ed è usata da \texttt{ImageLoaderProxy} dietro alla
+facciata statica \texttt{ImageLoader}. Quando riceve una
+\texttt{ImageLoadRequest} scalata, il repository calcola prima la dimensione
+fisica equivalente tramite il metodo \texttt{deviceSize(int, int)}. Questo metodo
+legge il \texttt{defaultTransform} della configurazione grafica principale,
+ottenuta da \texttt{GraphicsEnvironment}, e moltiplica larghezza e altezza
+logiche per i fattori di scala dello schermo. Nei contesti senza ambiente
+grafico viene invece usato un fattore 1.0, così il caricamento resta valido anche
+in esecuzioni headless.
+
+Una volta note le due dimensioni, \texttt{AsyncCachedImageRepository} costruisce
+l'icona nel metodo \texttt{createScaledIcon}. La risorsa originale viene letta
+con \texttt{ImageIO} come \texttt{BufferedImage}, così può essere ridimensionata
+in modo controllato. Se dimensione logica e dimensione fisica coincidono, viene
+restituita una normale \texttt{ImageIcon}. Se invece lo schermo richiede più
+pixel fisici, viene creata una \texttt{BaseMultiResolutionImage} contenente la
+variante logica e quella fisica, poi incapsulata in una \texttt{ImageIcon}. Le
+chiavi della cache delle immagini scalate includono sia la dimensione logica sia
+quella fisica, evitando di riutilizzare per errore la stessa bitmap su schermi
+con fattori di scala diversi.
+
+Il ridimensionamento non usa più direttamente \texttt{getScaledInstance}, ma una
+procedura esplicita basata su \texttt{Graphics2D}. Il metodo \texttt{scaleImage}
+riceve l'immagine sorgente e la dimensione obiettivo, poi la riduce con passi
+intermedi: finché la distanza dal risultato finale resta elevata, la bitmap
+viene dimezzata; solo alla fine viene prodotta la dimensione esatta. Ogni
+passaggio è disegnato da \texttt{renderScaledImage} con interpolazione bicubica,
+qualità di rendering elevata e antialiasing. Questa scelta aumenta leggermente
+il costo del precaricamento, ma concentra il lavoro in un punto controllato e
+produce una qualità più stabile.
+
+Le classi che mostrano effettivamente le carte non devono conoscere il dettaglio
+Hi-DPI. \texttt{CardComponent} continua a caricare fronte e retro tramite
+\texttt{ImageLoader}. Le misure restano quelle di \texttt{ViewMetrics}; nel
+metodo \texttt{paintComponent} il componente disegna l'immagine ricevuta nello
+spazio del bottone. Analogamente \texttt{CardsPanel} usa lo stesso caricatore per
+costruire gli \texttt{IconPanel} del database. Il catalogo
+\texttt{ImagePreloadCatalog} produce invece le richieste scalate per carte,
+bottoni e banner, così \texttt{ImageLoader} può precaricare le varianti prima
+della visualizzazione delle scene.
+
+Prima di stabilizzare questa soluzione sono stati valutati anche refactor
+alternativi. In particolare è stato provato un approccio in cui l'immagine ad
+alta risoluzione veniva mantenuta più a lungo e ridimensionata nel punto più
+vicino possibile al disegno finale. La qualità visiva era promettente, ma il
+compromesso risultava meno adatto all'applicazione: il costo dello scaling
+tendeva a spostarsi sul primo rendering dei componenti, oppure rendeva il
+precaricamento più pesante e meno prevedibile nelle schermate con molte carte.
+La soluzione multi-risoluzione centralizzata nel repository è quindi risultata
+più equilibrata, perché mantiene l'API della View invariata, conserva il
+precaricamento asincrono già presente e delega a Java la scelta della variante
+grafica corretta per lo schermo in uso.
+
+\subsubsection{Stato Simulabile per l'IA}
+
+\textbf{Problema:} L'approccio scelto per l'implementazione dell'IA in fase di
+progettazione ha da subito evidenziato un concetto inevitabile: per permettere
+all'IA di valutare l'applicazione di determinate mosse sullo stato della
+partita, era necessario che queste venissero effettivamente applicate sul tavolo
+da gioco, ma modificare direttamente lo stato reale del match avrebbe compromesso
+la partita in corso.
+
+\textbf{\\Soluzione:} La soluzione più logica è stata dunque introdurre una
+rappresentazione separata dello stato della partita, ricostruita in un contesto
+simulato e interamente modificabile. Questo ruolo è affidato all'interfaccia
+\texttt{AiGameState} e alla sua implementazione \texttt{AiGameStateImpl}, che
+espongono le operazioni minime necessarie alla pianificazione: danneggiare un
+giocatore, consumare mana, giocare una carta, danneggiare o rimuovere una carta
+dal campo e produrre una copia dello stato corrente.
+
+La costruzione dello stato simulabile è delegata a
+\texttt{AiGameStateFactory}, implementata da \texttt{AiGameStateFactoryImpl}.
+La factory interroga lo stato reale attraverso \texttt{BoardGame} e costruisce
+lo snapshot copiando i dati dello stato reale e usando copie delle carte.
+Lo stato del giocatore umano viene creato in maniera dedicata per evitare di
+copiare dati sensibili che dal punto di vista dell'IA non sono accessibili.
+
+Le informazioni dei singoli giocatori sono isolate dietro \texttt{PlayerState}
+e \texttt{PlayerStateImpl}. Questa classe mantiene l'identificativo del
+giocatore, la sua salute, il mana attuale, l'eventuale mano e l'armata in campo, mentre
+\texttt{CardStateImpl} rappresenta gli stati delle carte copiate.
+
+Infine l'interfaccia \texttt{AiStateTransition} completa l'implementazione, rappresentando
+il concetto di transizione da uno stato simulato a un altro.
+La classe \texttt{AiStateTransitionImpl} infatti crea una copia dello stato
+ricevuto e poi la modifica in base all'azione da applicare:
+\texttt{PlayCardAction} consuma mana e sposta la carta dalla mano all'armata,
+\texttt{AttackHeroAction} riduce la salute dell'eroe avversario, mentre
+\texttt{AttackCardAction} applica i danni a entrambe le creature e rimuove
+quelle sconfitte.
+Gli algoritmi decisionali possono così avere un riferimento a questa classe e utilizzarla
+per esplorare scenari successivi senza dipendere dalle regole concrete di modifica dello stato.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\textwidth]{UMLs/AiStatoSimulabile.pdf}
+    \caption{Schema UML dello stato simulabile utilizzato dall'intelligenza artificiale.}
+\end{figure}
+
+\subsubsection{Politica Decisionale Sostituibile per l'IA}
+
+\textbf{Problema:} A un certo punto dell'implementazione dell'IA, è sorta la necessità
+di integrarla con il ciclo reale del turno. L'algoritmo poteva
+scegliere una sequenza di mosse su uno stato astratto, ma tali decisioni dovevano
+poi essere applicate alla partita effettivamente giocata dall'utente. Inoltre la
+selezione della difficoltà richiedeva di poter sostituire la politica
+decisionale senza modificare il controller della partita o le regole del modello.
+
+\textbf{\\Soluzione:} La soluzione adottata separa la scelta delle mosse dalla
+loro esecuzione reale. Il punto di raccordo principale è rappresentato
+dall'interfaccia \texttt{AiTurnService} e dalla classe \texttt{AiTurnServiceImpl}.
+Il servizio riceve il \texttt{BoardGame} corrente, usa
+\texttt{AiGameStateFactory} per costruire lo snapshot simulabile e delega la
+decisione a un oggetto di tipo \texttt{AiDecisionAlgorithm}. Il controller della
+partita non deve quindi conoscere il funzionamento interno dell'IA: richiede
+soltanto il piano del turno e ottiene una lista ordinata di \texttt{AiAction}.
+
+La sostituibilità della politica decisionale è ottenuta applicando il pattern
+\textit{Strategy}. L'interfaccia \texttt{AiDecisionAlgorithm} definisce il
+contratto comune degli algoritmi, mentre le implementazioni
+\texttt{GreedySequentialAiAlgorithm} e
+\texttt{DepthLimitedLookaheadAiAlgorithm} rappresentano due strategie
+alternative. La prima sceglie iterativamente la migliore azione che produce un
+miglioramento immediato dello stato, la seconda esplora sequenze di azioni fino
+a una profondità limitata e seleziona quella con la valutazione euristica
+migliore. Entrambe usano gli stessi componenti di supporto:
+\texttt{AiActionGeneratorImpl} per generare le azioni legali,
+\texttt{AiStateTransitionImpl} per applicarle allo stato simulato e
+\texttt{HeuristicAiStateEvaluator} per assegnare un punteggio agli scenari.
+
+La scelta concreta della strategia avviene in \texttt{MainControllerImpl}, dove
+una mappa associa \texttt{Difficulty.NORMAL} a
+\texttt{GreedySequentialAiAlgorithm} e \texttt{Difficulty.HARD} a
+\texttt{DepthLimitedLookaheadAiAlgorithm}. Quando l'utente avvia una partita,
+il controller costruisce \texttt{AiTurnServiceImpl} passando l'algoritmo
+corrispondente alla difficoltà selezionata. In questo modo l'aggiunta di una
+nuova difficoltà o di un nuovo algoritmo richiede soltanto una nuova
+implementazione della strategia e la sua registrazione nel punto di creazione.
+
+L'applicazione delle azioni decise dall'IA è invece responsabilità di\\
+\texttt{AiAction\-Executor}, implementata da \texttt{AiAction\-Executor\-Impl}. Questa
+classe traduce le azioni astratte prodotte dagli algoritmi nelle operazioni
+effettive di \texttt{BoardGame}: posizionare una carta, attaccare l'eroe
+avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
+\texttt{place}, \texttt{attackHero} e \texttt{attackCard}. Il
+\texttt{MatchController} rimane così il coordinatore del turno, ma non
+contiene logica decisionale né dettagli di conversione tra azioni simulate e
+azioni reali.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.80\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
+    \caption{Schema UML della politica decisionale sostituibile dell'intelligenza artificiale.}
+\end{figure}
+
 \subsection{Simone Marsili}
 
 \subsubsection{Gestione delle carte di gioco}
@@ -447,240 +684,3 @@ il repository gestisce caching, esecuzione asincrona e riuso dei risultati.
 Quando una risorsa è già presente in cache, la View la ottiene senza ripetere lettura
 e ridimensionamento; quando invece il caricamento è ancora in corso, la chiamata sincrona
 attende il completamento dello stesso \texttt{CompletableFuture} già avviato.
-
-\subsection{Massimiliano Ria}
-
-\subsubsection{Adattamento dell'interfaccia a diverse risoluzioni}
-
-\textbf{Problema:} Dopo aver ottenuto un'interfaccia grafica funzionante e
-un'architettura coerente, è emersa la necessità di mantenerne l'aspetto
-uniforme su risoluzioni e rapporti d'aspetto diversi.
-
-\textbf{\\Soluzione:} Un primo approccio al problema è stato l'introduzione della
-classe \texttt{ViewMetrics}, usata come punto di accesso unico alle principali
-dimensioni grafiche dell'applicazione. Nella sua versione iniziale, tali misure
-venivano calcolate a partire dalla dimensione fisica dello schermo. La classe
-determina una sola volta le grandezze necessarie e le espone tramite metodi
-statici dedicati, come ad esempio \texttt{cardWidth()} e \texttt{cardHeight()}.
-In questo modo si riduce la duplicazione del codice e ogni scena può richiedere
-solo la metrica di cui ha bisogno.
-
-I test successivi hanno però evidenziato un limite: scalare ogni componente in
-base all'intero schermo non garantiva automaticamente una buona visualizzazione.
-Su schermi con risoluzioni elevate o con un rapporto d'aspetto diverso da quello
-previsto, alcuni elementi risultavano troppo grandi o disposti in modo poco
-bilanciato. Inoltre lo sfondo del menu, realizzato nativamente con risoluzione
-3840x2160 e rapporto 16:9, rischiava di essere adattato a superfici non coerenti
-con la sua proporzione originale, producendo tagli dell'immagine o distorsioni
-impreviste.
-
-Per risolvere il problema è stato introdotto il concetto di \textit{viewport}:
-l'applicazione continua ad aprirsi a schermo intero, ma la zona effettiva in cui
-vengono disegnate le scene corrisponde alla più grande area 16:9 contenibile
-nello schermo dell'utente. Il calcolo è centralizzato nel metodo
-\texttt{ViewMetrics.viewportSize(Dimension)}, che confronta il rapporto tra la
-larghezza e l'altezza disponibili con il rapporto obiettivo 16:9. Se lo schermo
-è più largo del necessario, viene mantenuta l'altezza e ridotta la larghezza; se
-invece è troppo alto, viene mantenuta la larghezza e ridotta l'altezza.
-
-La classe \texttt{BlackBounds} applica concretamente questa scelta: viene usata
-da \texttt{MainViewImpl} come pannello radice della finestra e contiene il
-pannello delle scene gestito dal \texttt{CardLayout}. Nell'override del metodo
-\texttt{doLayout()}, richiamato automaticamente da Swing quando la finestra
-viene mostrata per la prima volta o quando cambia dimensione,
-\texttt{BlackBounds} calcola la viewport a partire dalla dimensione corrente
-della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
-risultante. Tutto lo spazio esterno rimane nero,
-generando bande laterali oppure superiori e inferiori in base alla situazione.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.80\textwidth]{UMLs/ViewportAdattamento.pdf}
-    \caption{Schema UML dell'adattamento della viewport al rapporto 16:9.}
-\end{figure}
-
-\subsubsection{Multi-Risoluzione per schermi Hi-DPI}
-
-\textbf{Problema:} Nelle ultime fasi di sviluppo è emerso un bug legato alla
-qualità delle immagini delle carte. Il problema non si presentava in modo
-uniforme: su alcuni schermi le texture risultavano nitide, mentre su altri
-apparivano sgranate o sfocate, senza che inizialmente fosse riconoscibile un
-legame evidente con la risoluzione nominale del monitor.
-
-L'analisi successiva ha ricondotto il comportamento agli schermi Hi-DPI. Su
-questi dispositivi il sistema operativo può applicare uno \textit{zoom} logico:
-l'interfaccia continua a ragionare in pixel logici, ma ogni pixel logico viene
-poi rappresentato tramite più pixel fisici. Questa scelta evita che finestre e
-componenti diventino troppo piccoli su pannelli molto densi, ma introduce una
-differenza tra la dimensione richiesta da Swing e la dimensione realmente usata
-dal dispositivo di output. Nel caso specifico, le classi della View ottenevano le
-immagini tramite \texttt{ImageLoader}, che le restituiva già scalate alle
-dimensioni calcolate da \texttt{ViewMetrics}. Quando però Swing disegnava quelle
-icone su uno schermo con fattore di scala maggiore di 1, l'immagine già ridotta
-veniva adattata a una superficie fisica più grande, producendo l'effetto di
-sgranatura osservato sulle carte.
-
-\textbf{\\Soluzione:} L'idea adottata è stata quella di non trattare più una
-richiesta di immagine scalata come una singola bitmap, ma come un'immagine
-multi-risoluzione. Per ogni risorsa grafica richiesta a una certa dimensione
-logica viene preparata una variante coerente con quella dimensione e, quando
-necessario, una seconda variante coerente con la dimensione fisica del
-dispositivo. In questo modo le classi della View continuano a chiedere immagini
-in termini di pixel logici, ma il sottosistema grafico di Java può selezionare
-la variante più adatta al momento del disegno.
-
-Il punto centrale del fix è \texttt{AsyncCachedImageRepository}, che implementa
-\texttt{ImageRepository} ed è usata da \texttt{ImageLoaderProxy} dietro alla
-facciata statica \texttt{ImageLoader}. Quando riceve una
-\texttt{ImageLoadRequest} scalata, il repository calcola prima la dimensione
-fisica equivalente tramite il metodo \texttt{deviceSize(int, int)}. Questo metodo
-legge il \texttt{defaultTransform} della configurazione grafica principale,
-ottenuta da \texttt{GraphicsEnvironment}, e moltiplica larghezza e altezza
-logiche per i fattori di scala dello schermo. Nei contesti senza ambiente
-grafico viene invece usato un fattore 1.0, così il caricamento resta valido anche
-in esecuzioni headless.
-
-Una volta note le due dimensioni, \texttt{AsyncCachedImageRepository} costruisce
-l'icona nel metodo \texttt{createScaledIcon}. La risorsa originale viene letta
-con \texttt{ImageIO} come \texttt{BufferedImage}, così può essere ridimensionata
-in modo controllato. Se dimensione logica e dimensione fisica coincidono, viene
-restituita una normale \texttt{ImageIcon}. Se invece lo schermo richiede più
-pixel fisici, viene creata una \texttt{BaseMultiResolutionImage} contenente la
-variante logica e quella fisica, poi incapsulata in una \texttt{ImageIcon}. Le
-chiavi della cache delle immagini scalate includono sia la dimensione logica sia
-quella fisica, evitando di riutilizzare per errore la stessa bitmap su schermi
-con fattori di scala diversi.
-
-Il ridimensionamento non usa più direttamente \texttt{getScaledInstance}, ma una
-procedura esplicita basata su \texttt{Graphics2D}. Il metodo \texttt{scaleImage}
-riceve l'immagine sorgente e la dimensione obiettivo, poi la riduce con passi
-intermedi: finché la distanza dal risultato finale resta elevata, la bitmap
-viene dimezzata; solo alla fine viene prodotta la dimensione esatta. Ogni
-passaggio è disegnato da \texttt{renderScaledImage} con interpolazione bicubica,
-qualità di rendering elevata e antialiasing. Questa scelta aumenta leggermente
-il costo del precaricamento, ma concentra il lavoro in un punto controllato e
-produce una qualità più stabile.
-
-Le classi che mostrano effettivamente le carte non devono conoscere il dettaglio
-Hi-DPI. \texttt{CardComponent} continua a caricare fronte e retro tramite
-\texttt{ImageLoader}. Le misure restano quelle di \texttt{ViewMetrics}; nel
-metodo \texttt{paintComponent} il componente disegna l'immagine ricevuta nello
-spazio del bottone. Analogamente \texttt{CardsPanel} usa lo stesso caricatore per
-costruire gli \texttt{IconPanel} del database. Il catalogo
-\texttt{ImagePreloadCatalog} produce invece le richieste scalate per carte,
-bottoni e banner, così \texttt{ImageLoader} può precaricare le varianti prima
-della visualizzazione delle scene.
-
-Prima di stabilizzare questa soluzione sono stati valutati anche refactor
-alternativi. In particolare è stato provato un approccio in cui l'immagine ad
-alta risoluzione veniva mantenuta più a lungo e ridimensionata nel punto più
-vicino possibile al disegno finale. La qualità visiva era promettente, ma il
-compromesso risultava meno adatto all'applicazione: il costo dello scaling
-tendeva a spostarsi sul primo rendering dei componenti, oppure rendeva il
-precaricamento più pesante e meno prevedibile nelle schermate con molte carte.
-La soluzione multi-risoluzione centralizzata nel repository è quindi risultata
-più equilibrata, perché mantiene l'API della View invariata, conserva il
-precaricamento asincrono già presente e delega a Java la scelta della variante
-grafica corretta per lo schermo in uso.
-
-\subsubsection{Stato Simulabile per l'IA}
-
-\textbf{Problema:} L'approccio scelto per l'implementazione dell'IA in fase di
-progettazione ha da subito evidenziato un concetto inevitabile: per permettere
-all'IA di valutare l'applicazione di determinate mosse sullo stato della
-partita, era necessario che queste venissero effettivamente applicate sul tavolo
-da gioco, ma modificare direttamente lo stato reale del match avrebbe compromesso
-la partita in corso.
-
-\textbf{\\Soluzione:} La soluzione più logica è stata dunque introdurre una
-rappresentazione separata dello stato della partita, ricostruita in un contesto
-simulato e interamente modificabile. Questo ruolo è affidato all'interfaccia
-\texttt{AiGameState} e alla sua implementazione \texttt{AiGameStateImpl}, che
-espongono le operazioni minime necessarie alla pianificazione: danneggiare un
-giocatore, consumare mana, giocare una carta, danneggiare o rimuovere una carta
-dal campo e produrre una copia dello stato corrente.
-
-La costruzione dello stato simulabile è delegata a
-\texttt{AiGameStateFactory}, implementata da \texttt{AiGameStateFactoryImpl}.
-La factory interroga lo stato reale attraverso \texttt{BoardGame} e costruisce
-lo snapshot copiando i dati dello stato reale e usando copie delle carte.
-Lo stato del giocatore umano viene creato in maniera dedicata per evitare di
-copiare dati sensibili che dal punto di vista dell'IA non sono accessibili.
-
-Le informazioni dei singoli giocatori sono isolate dietro \texttt{PlayerState}
-e \texttt{PlayerStateImpl}. Questa classe mantiene l'identificativo del
-giocatore, la sua salute, il mana attuale, l'eventuale mano e l'armata in campo, mentre
-\texttt{CardStateImpl} rappresenta gli stati delle carte copiate.
-
-Infine l'interfaccia \texttt{AiStateTransition} completa l'implementazione, rappresentando
-il concetto di transizione da uno stato simulato a un altro.
-La classe \texttt{AiStateTransitionImpl} infatti crea una copia dello stato
-ricevuto e poi la modifica in base all'azione da applicare:
-\texttt{PlayCardAction} consuma mana e sposta la carta dalla mano all'armata,
-\texttt{AttackHeroAction} riduce la salute dell'eroe avversario, mentre
-\texttt{AttackCardAction} applica i danni a entrambe le creature e rimuove
-quelle sconfitte.
-Gli algoritmi decisionali possono così avere un riferimento a questa classe e utilizzarla
-per esplorare scenari successivi senza dipendere dalle regole concrete di modifica dello stato.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.80\textwidth]{UMLs/AiStatoSimulabile.pdf}
-    \caption{Schema UML dello stato simulabile utilizzato dall'intelligenza artificiale.}
-\end{figure}
-
-\subsubsection{Politica Decisionale Sostituibile per l'IA}
-
-\textbf{Problema:} A un certo punto dell'implementazione dell'IA, è sorta la necessità
-di integrarla con il ciclo reale del turno. L'algoritmo poteva
-scegliere una sequenza di mosse su uno stato astratto, ma tali decisioni dovevano
-poi essere applicate alla partita effettivamente giocata dall'utente. Inoltre la
-selezione della difficoltà richiedeva di poter sostituire la politica
-decisionale senza modificare il controller della partita o le regole del modello.
-
-\textbf{\\Soluzione:} La soluzione adottata separa la scelta delle mosse dalla
-loro esecuzione reale. Il punto di raccordo principale è rappresentato
-dall'interfaccia \texttt{AiTurnService} e dalla classe \texttt{AiTurnServiceImpl}.
-Il servizio riceve il \texttt{BoardGame} corrente, usa
-\texttt{AiGameStateFactory} per costruire lo snapshot simulabile e delega la
-decisione a un oggetto di tipo \texttt{AiDecisionAlgorithm}. Il controller della
-partita non deve quindi conoscere il funzionamento interno dell'IA: richiede
-soltanto il piano del turno e ottiene una lista ordinata di \texttt{AiAction}.
-
-La sostituibilità della politica decisionale è ottenuta applicando il pattern
-\textit{Strategy}. L'interfaccia \texttt{AiDecisionAlgorithm} definisce il
-contratto comune degli algoritmi, mentre le implementazioni
-\texttt{GreedySequentialAiAlgorithm} e
-\texttt{DepthLimitedLookaheadAiAlgorithm} rappresentano due strategie
-alternative. La prima sceglie iterativamente la migliore azione che produce un
-miglioramento immediato dello stato, la seconda esplora sequenze di azioni fino
-a una profondità limitata e seleziona quella con la valutazione euristica
-migliore. Entrambe usano gli stessi componenti di supporto:
-\texttt{AiActionGeneratorImpl} per generare le azioni legali,
-\texttt{AiStateTransitionImpl} per applicarle allo stato simulato e
-\texttt{HeuristicAiStateEvaluator} per assegnare un punteggio agli scenari.
-
-La scelta concreta della strategia avviene in \texttt{MainControllerImpl}, dove
-una mappa associa \texttt{Difficulty.NORMAL} a
-\texttt{GreedySequentialAiAlgorithm} e \texttt{Difficulty.HARD} a
-\texttt{DepthLimitedLookaheadAiAlgorithm}. Quando l'utente avvia una partita,
-il controller costruisce \texttt{AiTurnServiceImpl} passando l'algoritmo
-corrispondente alla difficoltà selezionata. In questo modo l'aggiunta di una
-nuova difficoltà o di un nuovo algoritmo richiede soltanto una nuova
-implementazione della strategia e la sua registrazione nel punto di creazione.
-
-L'applicazione delle azioni decise dall'IA è invece responsabilità di\\
-\texttt{AiAction\-Executor}, implementata da \texttt{AiAction\-Executor\-Impl}. Questa
-classe traduce le azioni astratte prodotte dagli algoritmi nelle operazioni
-effettive di \texttt{BoardGame}: posizionare una carta, attaccare l'eroe
-avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
-\texttt{place}, \texttt{attackHero} e \texttt{attackCard}. Il
-\texttt{MatchController} rimane così il coordinatore del turno, ma non
-contiene logica decisionale né dettagli di conversione tra azioni simulate e
-azioni reali.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.80\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
-    \caption{Schema UML della politica decisionale sostituibile dell'intelligenza artificiale.}
-\end{figure}
