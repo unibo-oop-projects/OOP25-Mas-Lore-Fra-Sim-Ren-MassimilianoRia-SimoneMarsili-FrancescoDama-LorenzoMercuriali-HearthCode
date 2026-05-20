@@ -37,7 +37,7 @@ applicativa corrispondente.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/ArchitetturaMVC.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/ArchitetturaMVC.pdf}
     \caption{Schema UML dell'architettura MVC dell'applicazione.}
 \end{figure}
 
@@ -69,7 +69,7 @@ migliorando testabilità ed estendibilità.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/Card.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/Card.pdf}
     \caption{Schema UML della gestione delle carte e delle relative definizioni.}
 \end{figure}
 
@@ -101,7 +101,7 @@ estendere facilmente il sistema a nuovi formati o fonti dati.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/Database.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/Database.pdf}
     \caption{Schema UML del database delle carte e dei componenti di lettura e parsing.}
 \end{figure}
 
@@ -169,7 +169,7 @@ creare al volo delle nuove strategie.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/Deck.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/Deck.pdf}
     \caption{Schema UML della costruzione e gestione del mazzo di gioco.}
 \end{figure}
 
@@ -246,11 +246,9 @@ più leggibile, più controllata e più aderente al dominio del gioco.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/Observer.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/Observer.pdf}
     \caption{Schema UML del meccanismo di aggiornamento della view tramite observer.}
 \end{figure}
-
-\newpage
 
 \subsection{Francesco Dama}
 
@@ -497,7 +495,7 @@ generando bande laterali oppure superiori e inferiori in base alla situazione.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/ViewportAdattamento.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/ViewportAdattamento.pdf}
     \caption{Schema UML dell'adattamento della viewport al rapporto 16:9.}
 \end{figure}
 
@@ -627,7 +625,7 @@ per esplorare scenari successivi senza dipendere dalle regole concrete di modifi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/AiStatoSimulabile.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/AiStatoSimulabile.pdf}
     \caption{Schema UML dello stato simulabile utilizzato dall'intelligenza artificiale.}
 \end{figure}
 
@@ -671,8 +669,8 @@ corrispondente alla difficoltà selezionata. In questo modo l'aggiunta di una
 nuova difficoltà o di un nuovo algoritmo richiede soltanto una nuova
 implementazione della strategia e la sua registrazione nel punto di creazione.
 
-L'applicazione delle azioni decise dall'IA è invece responsabilità di
-\texttt{AiActionExecutor}, implementata da \texttt{AiActionExecutorImpl}. Questa
+L'applicazione delle azioni decise dall'IA è invece responsabilità di\\
+\texttt{AiAction\-Executor}, implementata da \texttt{AiAction\-Executor\-Impl}. Questa
 classe traduce le azioni astratte prodotte dagli algoritmi nelle operazioni
 effettive di \texttt{BoardGame}: posizionare una carta, attaccare l'eroe
 avversario oppure attaccare una creatura. Per farlo invoca rispettivamente
@@ -683,6 +681,6 @@ azioni reali.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
+    \includegraphics[width=0.80\textwidth]{UMLs/AiPoliticaDecisionale.pdf}
     \caption{Schema UML della politica decisionale sostituibile dell'intelligenza artificiale.}
 \end{figure}
