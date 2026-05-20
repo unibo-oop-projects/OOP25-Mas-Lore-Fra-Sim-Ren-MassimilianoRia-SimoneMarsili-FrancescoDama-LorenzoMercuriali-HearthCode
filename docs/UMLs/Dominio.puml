@@ -1,5 +1,7 @@
 @startuml Dominio
 
+skinparam linetype ortho
+
 interface BoardGame {
     + startGame(): void
     + getWinner(): Optional<PlayerId>
