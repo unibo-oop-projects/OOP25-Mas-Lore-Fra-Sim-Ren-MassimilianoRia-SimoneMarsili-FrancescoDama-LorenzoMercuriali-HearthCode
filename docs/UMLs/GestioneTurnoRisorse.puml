@@ -1,0 +1,30 @@
+@startuml GestioneTurnoRIsorse
+class BoardGameImpl {
++ startGame(): void
++ switchTurn(): void
+}
+class TurnManager {
++ getCurrentPlayer(): PlayerId
++ switchAndAwake(): void
++ drawNewCard(): void
+}
+class Player {
++ getId(): PlayerId
++ getActualMana(): Integer
++ getTurnManaLimit(): Integer
++ getHealth(): Integer
++ decreaseHealth(amount: Integer): void
++ incrementMana(): void
++ playCard(cardId: CardId): Card
++ drawCard(): DrawCardResult
+}
+class ManaManager {
++ actualMana(): Integer
++ maxMana(): Integer
++ updateMana(): void
++ decreaseActualMana(amount: Integer): void
+}
+BoardGameImpl o-- TurnManager
+TurnManager --> Player
+ TurnManager --> ManaManager
+@enduml

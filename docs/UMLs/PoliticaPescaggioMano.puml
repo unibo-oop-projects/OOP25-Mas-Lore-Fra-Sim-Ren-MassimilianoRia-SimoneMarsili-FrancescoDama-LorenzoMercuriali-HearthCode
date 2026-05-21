@@ -1,0 +1,49 @@
+@startuml PoliticaPescaggioMano
+class DrawCardResult {
++ type(): DrawCardResultType
++ card(): Optional
+}
+enum DrawCardResultType {
+SUCCESS
+EMPTY_DECK
+BURNED
+}
+interface Hand {
++ addCard(card: Card): void
++ removeCard(cardId: CardId): Card
++ getCard(cardId: CardId): Card
++ getActualSize(): Integer
++ getMaximumSize(): Integer
++ getCardsCopies(): List<CardState>
+}
+interface Army {
++ isArmyFull(): boolean
++ getMaximumSize(): Integer
++ getPlacedCard(cardId: CardId): Optional<Creature>
++ getCardsCopies(): List<CardState>
++ placeCard(creature: Creature): void
++ deleteDeathCreature(cardId: CardId): void
++ canAttack(cardId: CardId): boolean
++ disableAttack(cardId: CardId): void
++ awakeCreatures(): void
+}
+class HandImpl
+class ArmyImpl
+interface Card {
++ getId(): CardId
++ getName(): String
++ getManaCost(): Integer
+}
+interface Creature {
++ getHealth(): Integer
++ getAttackValue(): Integer
++ decreaseHealth(damage: Integer): Integer
+}
+Hand <|.. HandImpl
+Army <|.. ArmyImpl
+HandImpl o-- "0.." Card
+ArmyImpl o-- "0.." Creature
+DrawCardResult --> DrawCardResultType
+DrawCardResult --> Card
+
+@enduml

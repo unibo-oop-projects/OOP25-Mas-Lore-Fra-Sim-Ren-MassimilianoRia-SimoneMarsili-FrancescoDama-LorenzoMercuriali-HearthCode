@@ -1,0 +1,39 @@
+@startuml GestioneStatoGiocatore
+interface Player {
++ getId(): PlayerId
++ getActualMana(): Integer
++ getTurnManaLimit(): Integer
++ getHealth(): Integer
++ getHandCardsLimit(): Integer
++ decreaseHealth(amount: Integer): void
++ incrementMana(): void
++ playCard(cardId: CardId): Card
++ drawCard(): DrawCardResult
+}
+class PlayerImpl
+class Hand
+class Army
+class Deck {
++ draw(): Optional<Card>
++ getRemaining(): Integer
+}
+class ManaManager {
++ actualMana(): Integer
++ maxMana(): Integer
++ updateMana(): void
++ decreaseActualMana(amount: Integer): void
+}
+class PlayerFactory {
++ createPlayer(deck: Deck, health: Integer, id: PlayerId): PlayerImpl   
+}
+class PlayerId
+enum PlayerType
+Player <|.. PlayerImpl
+PlayerImpl o-- Hand
+ PlayerImpl o-- Army
+ PlayerImpl o-- Deck
+ PlayerImpl o-- ManaManager
+PlayerImpl --> PlayerId
+ PlayerImpl --> PlayerType
+PlayerFactory --> Player : creates
+@enduml
