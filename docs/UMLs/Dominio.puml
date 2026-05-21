@@ -1,0 +1,67 @@
+@startuml Dominio
+
+skinparam linetype ortho
+
+interface BoardGame {
+    + startGame(): void
+    + getWinner(): Optional<PlayerId>
+    + place(selectedIdCard: CardId): void
+    + attackCard(attackingIdCard: CardId, defendingIdCard: CardId): void
+    + attackHero(attackingIdCard: CardId): void
+}
+
+interface Player {
+    + getActualMana(): Integer
+    + getHealth(): Integer
+    + decreaseHealth(amount : Integer): void
+    + drawCard(): DrawCardResult
+    + playCard(cardId: CardId): Card
+    + incrementMana(): void
+}
+
+interface Deck {
+    +draw(): Optional<Card>
+    +getRemaining(): Integer
+}
+
+interface Hand {
+    + getActualSize(): Integer
+    + addCard(card : Card): void
+    + getCard(cardId : CardId): Card
+    + removeCard(cardId : CardId): Card
+}
+
+interface Card {
+    + getId(): CardId
+    + getName(): String
+    + getManaCost(): Integer
+}
+
+interface Creature {
+    +getHealth(): Integer
+    +getAttackValue(): Integer
+    +decreaseHealth(damage: Integer): Integer
+}
+
+interface Army {
+    + isArmyFull(): boolean
+    + getPlacedCard(cardId : CardId): Optional<Creature>
+    + placeCard(creature: Creature): void
+    + canAttack(cardId : CardId): boolean
+    + deleteDeathCreature(cardId: CardId): void
+    + disableAttack(cardId: CardId): void
+    + awakeCreatures(): void
+}
+
+BoardGame *-- "2" Player
+BoardGame o-- "2" Army
+
+Army o-- "0..*" Creature
+Player *-- Deck
+Player *-- Hand
+
+Deck o-- "0..*" Card
+Hand o-- "0..*" Card
+Card <|-- Creature
+
+@enduml
