@@ -43,461 +43,6 @@ applicativa corrispondente.
 
 \section{Design Dettagliato}
 
-<<<<<<< HEAD
-\subsection{Simone Marsili}
-
-\subsubsection{Gestione delle carte di gioco}
-
-\textbf{Problema:} Le carte nel gioco possono essere di varie tipologie, come
-\texttt{Creatures} e \texttt{Spells} (requisito opzionale del progetto), e il
-sistema deve essere estendibile a nuove aggiunte e tipi di carte. Inoltre le
-carte devono contenere un apposito identificatore, il quale permette le
-operazioni sul modello durante la partita e impedisce la duplicazione di dati
-tra istanze. Tuttavia è necessario separare l'identità runtime delle carte
-dalla loro definizione statica. Si è cercato inoltre un modo per separare
-efficacemente dichiarazioni e implementazioni delle creature.
-
-\textbf{\\Soluzione:} L'interfaccia \texttt{Creature} rappresenta una tipologia
-di carte schierabili, e l'implementazione \texttt{CreatureImpl} si compone di
-un \texttt{CardId}, il quale informa sulla tipologia di carta e sulla sua
-numerazione univoca nel game, e di una \texttt{CreatureDefinition}, che
-rappresenta invece l'aspetto statico della carta (le sue statistiche base).
-L'implementazione delle creature è stata realizzata tramite una
-\textit{Simple Factory}, che rende il codice facilmente estendibile e
-manutenibile. La factory utilizza un \texttt{IdGenerator}, che non istanzia
-autonomamente, ma che riceve tramite costruttore, riducendo l'accoppiamento e
-migliorando testabilità ed estendibilità.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{UMLs/Card.pdf}
-    \caption{Schema UML della gestione delle carte e delle relative definizioni.}
-\end{figure}
-
-\subsubsection{Gestione del database di carte}
-
-\textbf{Problema:} Il gioco prevede la presenza di un database contenente tutte
-le carte che possono comparire in un match. Il sistema necessita di una
-rappresentazione centralizzata e facilmente estendibile delle carte, caricata
-da una fonte esterna (file), mantenendo separata la logica di parsing dalla
-logica di dominio. Inoltre, il database deve gestire esclusivamente dati
-statici delle carte, risultando indipendente dall'identità runtime delle
-istanze generate durante la partita.
-
-\textbf{\\Soluzione:} Il database gestisce esclusivamente definizioni statiche
-delle carte (\texttt{CreatureDefinition}), risultando completamente
-disaccoppiato dal concetto di identità runtime, che viene invece introdotto
-solo in fase di creazione delle istanze.
-
-Inoltre la creazione di un'istanza del database avviene tramite apposita
-Factory statica, che utilizza componenti distinti per la lettura del file e per
-il parsing del contenuto, mantenendo separate le responsabilità di accesso ai
-dati e interpretazione degli stessi.
-
-Le interfacce \texttt{Parser\textless{}T\textgreater{}} e
-\texttt{FullReader\textless{}T\textgreater{}} rappresentano due strategie
-intercambiabili (pattern \textit{Strategy}) rispettivamente per
-l'interpretazione dei dati e per la lettura delle sorgenti, permettendo di
-estendere facilmente il sistema a nuovi formati o fonti dati.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{UMLs/Database.pdf}
-    \caption{Schema UML del database delle carte e dei componenti di lettura e parsing.}
-\end{figure}
-
-\subsubsection{Gestione del deck}
-
-\textbf{Problema:} Il gioco richiede la creazione di un mazzo da cui il
-giocatore possa pescare progressivamente le carte durante la partita. Tuttavia,
-il mazzo non deve essere costruito manualmente né contenere direttamente le
-definizioni statiche presenti nel database: ogni carta inserita nel deck deve
-essere una nuova istanza runtime, dotata del proprio identificatore.
-
-Un ulteriore problema riguarda la composizione del mazzo. Non tutte le carte
-dovrebbero avere necessariamente la stessa probabilità di comparire: ad esempio,
-carte più forti possono essere rese meno frequenti rispetto a carte più deboli,
-così da ottenere un deck più bilanciato. Il sistema deve quindi permettere di
-modificare il criterio di selezione delle carte senza intervenire sulla logica
-interna del mazzo o sulla factory che lo costruisce.
-
-\textbf{\\Soluzione:} La gestione del mazzo è stata separata dalla sua
-costruzione. L'interfaccia \texttt{Deck} espone soltanto le operazioni
-necessarie durante la partita, cioè la pesca di una carta tramite
-\texttt{draw()} e la consultazione del numero di carte rimanenti tramite
-\texttt{getRemaining()}. L'implementazione \texttt{DeckImpl} incapsula quindi
-la lista delle carte effettivamente presenti nel mazzo e si occupa solo della
-loro gestione runtime.
-
-La creazione del mazzo è invece affidata a \texttt{DeckFactory}. Questa classe
-riceve tramite costruttore un \texttt{CreatureDatabase}, da cui ottiene le
-definizioni statiche delle creature, e una \texttt{CreatureImplFactory}, usata
-per trasformare ogni \texttt{CreatureDefinition} selezionata in una vera
-istanza runtime di \texttt{Card}. In questo modo il database resta separato
-dall'identità delle carte usate nella partita, che viene introdotta solo al
-momento della generazione del deck.
-
-La classe \texttt{DeckFactory} realizza sostanzialmente una
-\textit{Simple Factory}, poiché centralizza la logica di creazione del mazzo e
-nasconde al resto del modello i dettagli necessari alla sua costruzione
-(recupero definizioni dal database, creazione istanze runtime, selezione
-pesata, mescolamento finale\ldots{}).
-
-Il metodo \texttt{createWeighted(size, strategy)} costruisce un mazzo della
-dimensione richiesta usando una \texttt{WeightStrategy}. In questa versione
-implementata, la factory calcola il peso associato a ciascuna definizione e usa
-tale valore per effettuare una selezione casuale non uniforme. In seguito le
-carte generate vengono mescolate prima della creazione del \texttt{DeckImpl},
-così da evitare che l'ordine del database influenzi l'ordine di pesca.
-
-Nel caso in cui la dimensione richiesta sia maggiore o uguale al numero di
-carte presenti nel database, la factory inserisce almeno una copia di ogni
-creatura disponibile e completa poi il mazzo tramite selezione pesata. Questo
-evita che, in mazzi abbastanza grandi, alcune creature non compaiano mai solo
-per effetto della casualità. Quando invece la dimensione richiesta è inferiore
-al numero di definizioni disponibili, l'intero mazzo viene generato tramite
-selezione pesata.
-
-La soluzione usa il pattern \textit{Strategy} attraverso l'interfaccia
-{\texttt{WeightStra\-tegy}}. Tale interfaccia rappresenta l'algoritmo
-intercambiabile con cui viene calcolata l'importanza di una
-\texttt{CreatureDefinition} durante la costruzione del mazzo.
-\texttt{DeckFactory} usa la strategia senza conoscere il criterio concreto
-adottato, rendendo possibile introdurre in futuro nuove politiche di
-generazione del deck senza modificare la factory. Inoltre la
-\texttt{WeightStrategy} è una functional interface, il che rende molto facile
-creare al volo delle nuove strategie.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{UMLs/Deck.pdf}
-    \caption{Schema UML della costruzione e gestione del mazzo di gioco.}
-\end{figure}
-
-\subsubsection{Gestione dell'aggiornamento della view}
-
-\textbf{Problema:} Durante lo svolgimento di una partita, lo stato del modello
-cambia frequentemente: la partita viene avviata, il turno passa da un giocatore
-all'altro, vengono pescate o giocate carte, cambiano i punti vita di creature e
-giocatori, varia il mana disponibile e alcune carte possono essere distrutte o
-bruciate. Tutti questi cambiamenti devono essere riflessi nella schermata di
-gioco in modo coerente e tempestivo.
-
-Una prima soluzione possibile sarebbe stata lasciare al controller il compito di
-aggiornare manualmente la view dopo ogni operazione eseguita sul modello. Questa
-scelta, però, avrebbe reso il controller responsabile anche dei dettagli di
-aggiornamento grafico, aumentando il suo accoppiamento sia con il model sia con
-la view.
-
-Un'altra alternativa sarebbe stata usare una notifica generica, basata su un
-unico metodo come \texttt{update()}. In questo caso, però, la view avrebbe
-ricevuto solo l'informazione che qualcosa nel modello è cambiato, dovendo poi
-interrogare il model per ricostruire lo stato aggiornato. Questa variante è
-stata scartata perché avrebbe richiesto alla view di conoscere più dettagli del
-modello e avrebbe reso meno esplicito il significato dei singoli aggiornamenti.
-
-Il problema era quindi progettare un meccanismo che permettesse al model di
-comunicare alla view gli eventi rilevanti della partita, fornendo direttamente
-le informazioni necessarie all'aggiornamento grafico, senza costringere la view
-a richiedere ogni volta lo stato aggiornato.
-
-\textbf{\\Soluzione:} La soluzione adottata applica il pattern
-\textit{Observer} in una variante di tipo \textit{push model}. Il modello della
-partita è l'oggetto osservabile, mentre la view della partita è uno degli
-osservatori registrati. Quando lo stato del model cambia, il model non invia
-una notifica generica, ma comunica direttamente quale evento è avvenuto e quali
-dati aggiornati sono necessari per gestirlo.
-
-L'interfaccia \texttt{ObservableGame} definisce il contratto degli oggetti
-osservabili, esponendo i metodi per registrare e rimuovere osservatori.
-
-L'interfaccia \texttt{BoardGame} estende \texttt{ObservableGame}, rendendo
-esplicito che il modello principale della partita può essere osservato. La
-classe {\texttt{BoardGame\-Impl}} implementa questo contratto, mantiene gli
-observer registrati e li notifica opportunamente quando si verifica un
-cambiamento significativo nello stato della partita.
-
-Gli observer sono rappresentati dall'interfaccia \texttt{GameObserver}. A
-differenza di una versione minimale del pattern \textit{Observer}, non è stato
-usato un unico metodo generico di aggiornamento. L'interfaccia espone invece
-più metodi specifici, ciascuno associato a un evento rilevante del gioco.
-
-Questa scelta rende la comunicazione tra model e view più esplicita. Il nome
-del metodo identifica l'evento avvenuto, mentre i parametri trasportano già le
-informazioni aggiornate.
-
-Sul lato view, \texttt{MatchView} estende \texttt{GameObserver}. In questo
-modo, una schermata di partita è anche un osservatore del modello. La classe
-concreta \texttt{MatchScene} implementa \texttt{MatchView} e definisce come
-tradurre ciascun evento ricevuto in un aggiornamento grafico.
-
-Il collegamento tra model e view viene effettuato dal controller, che registra
-la view come observer del model. Il model, però, non conosce la classe concreta
-\texttt{MatchScene}: conosce solo l'interfaccia \texttt{GameObserver}. Questo
-mantiene basso l'accoppiamento tra le componenti e rispetta la separazione
-prevista dall'architettura MVC.
-
-La soluzione ha anche un compromesso: l'interfaccia \texttt{GameObserver} cresce
-all'aumentare degli eventi osservabili. Se in futuro venissero introdotti nuovi
-eventi di gioco, potrebbe essere necessario aggiungere nuovi metodi
-all'interfaccia e aggiornare le classi che la implementano. Nel contesto del
-progetto, però, questo costo è accettabile, perché gli eventi rilevanti della
-partita sono limitati e ben definiti. In cambio, si ottiene una comunicazione
-più leggibile, più controllata e più aderente al dominio del gioco.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\textwidth]{UMLs/Observer.pdf}
-    \caption{Schema UML del meccanismo di aggiornamento della view tramite observer.}
-\end{figure}
-
-\newpage
-
-\subsection{Francesco Dama}
-
-\subsubsection{Problema 1:Gestione della mano del giocatore}
-
-Nel gioco ogni giocatore deve poter gestire una mano di carte pescate dal deck durante la partita. 
-La mano rappresenta una struttura centrale del gameplay, poiché viene continuamente modificata: nuove carte vengono aggiunte
- tramite pesca, alcune vengono rimosse quando giocate, e il numero massimo di carte deve essere limitato.
-Una possibile soluzione sarebbe stata trattare la mano semplicemente come una lista esposta 
-direttamente dal giocatore, lasciando al resto del sistema la responsabilità di controllarne dimensione, inserimenti e rimozioni.
-Questa scelta, però, avrebbe distribuito la logica della mano in più punti del codice, 
-aumentando l'accoppiamento e rendendo più difficile garantire la coerenza dello stato.
-Il problema era quindi progettare una componente autonoma che incapsulasse completamente la gestione
-della mano, mantenendo separate le responsabilità del giocatore da quelle della collezione di carte possedute.
-
-\textbf{\\Soluzione:}
-La soluzione adottata introduce l’interfaccia \texttt{Hand}, che rappresenta il contratto
-astratto di una mano di gioco. Essa espone soltanto le operazioni rilevanti per il dominio,
-come l’aggiunta, la rimozione e la consultazione delle carte presenti.
-
-La classe \texttt{HandImpl} implementa tale comportamento incapsulando internamente la struttura
-dati concreta utilizzata per memorizzare le carte. In questo modo il resto del modello non dipende 
-direttamente dalla rappresentazione interna della mano.
-La responsabilità del giocatore (\texttt{PlayerImpl}) viene così semplificata: il giocatore possiede una mano,
-ma non gestisce direttamente la logica di manipolazione delle carte al suo interno. 
-Questo migliora la separazione delle responsabilità e mantiene il modello più modulare.
-La soluzione applica inoltre il principio di \textit{information hiding}: il resto del sistema 
-interagisce con la mano esclusivamente tramite l'interfaccia \texttt{Hand}, senza conoscere dettagli implementativi.
-
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.85\textwidth]{UMLs/PoliticaPescaggioMano.pdf}
-%\caption{Schema UML della gestione della mano del giocatore.}
-%\end{figure}
-
-\subsubsection{Problema 2:Gestione della pesca delle carte e degli esiti della pesca}
-
-Durante la partita un giocatore può pescare carte dal proprio deck.
-Tuttavia l'operazione di pesca non produce sempre lo stesso risultato: il deck potrebbe essere vuoto,
-oppure la mano potrebbe essere piena e la carta pescata dovrebbe quindi essere bruciata.
-
-Una possibile soluzione sarebbe stata usare valori speciali (\texttt{null})
-oppure lanciare eccezioni per rappresentare i casi particolari della pesca. 
-Questa alternativa è stata scartata perché avrebbe reso meno esplicita la semantica 
-dell'operazione e avrebbe distribuito la gestione dei casi speciali nel controller o nel model.
-
-Il problema era quindi rappresentare in modo chiaro e tipizzato tutti i possibili esiti dell'operazione
-di pesca, mantenendo il codice leggibile ed evitando ambiguità.
-
-\textbf{\\Soluzione:}
-La soluzione adottata introduce il tipo \texttt{DrawCardResult}, che rappresenta esplicitamente
-il risultato di una pesca. Tale oggetto contiene tutte le informazioni necessarie per descrivere l'esito dell'operazione.
-
-Il tipo di risultato viene modellato tramite l'enumerazione 
-\texttt{DrawCardResultType}, che distingue i vari scenari possibili, come:
-\begin{itemize}
-\item pesca completata correttamente;
-\item deck vuoto;
-\item carta bruciata per mano piena.
-\end{itemize}
-
-In questo modo il modello comunica chiaramente cosa è accaduto senza ricorrere a valori speciali o controlli impliciti.
-
-La soluzione segue un approccio simile al pattern \textit{Result Object}:
-invece di restituire semplicemente una carta o fallire tramite eccezioni,
-il metodo restituisce un oggetto che rappresenta semanticamente l'esito dell'operazione.
-
-Questo rende il codice più robusto e leggibile, perché i casi gestibili dal dominio
-vengono esplicitati direttamente nel tipo restituito.
-
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.7\textwidth]{UMLs/DrawCardResult.pdf}
-%\caption{Schema UML della gestione degli esiti della pesca.}
-%\end{figure}
-
-\subsubsection{Problema 3:Gestione dello stato del giocatore}
-
-Nel gioco il giocatore rappresenta una componente complessa del modello. Ogni giocatore possiede:
-\begin{itemize}
-\item un deck;
-\item una mano;
-\item un esercito di creature schierate;
-\item punti vita;
-\item mana disponibile;
-\item un'identità logica all'interno della partita.
-\end{itemize}
-
-Una possibile soluzione sarebbe stata concentrare tutta questa logica direttamente all'interno
-della classe del giocatore, rendendola responsabile sia della gestione delle risorse sia della
-logica di combattimento e del turno. Questa scelta, però, avrebbe prodotto una classe molto accoppiata e difficile da estendere.
-
-Il problema era quindi modellare il giocatore come aggregatore delle varie componenti del gameplay,
-delegando però le responsabilità specifiche a classi dedicate.
-
-\textbf{\\Soluzione:}
-La soluzione adottata utilizza l'interfaccia \texttt{Player} come rappresentazione astratta di un giocatore della partita.
-
-La classe \texttt{PlayerImpl} coordina le varie componenti che costituiscono lo stato del giocatore:
-\begin{itemize}
-\item \texttt{Hand} per la gestione delle carte in mano;
-\item \texttt{Army} per le creature schierate;
-\item \texttt{Deck} per la pesca;
-\item \texttt{ManaManager} per la gestione del mana.
-\end{itemize}
-
-Questa scelta permette di suddividere il comportamento in componenti specializzate,
-mantenendo il giocatore come coordinatore logico dello stato.
-L'identità del giocatore viene separata tramite \texttt{PlayerId}, mentre \texttt{PlayerType}
-rappresenta la natura del giocatore (umano o IA). In questo modo il sistema può distinguere chiaramente
-il ruolo del giocatore senza introdurre controlli sparsi nel codice.
-La creazione dei giocatori viene inoltre centralizzata tramite \texttt{PlayerFactory},
-che costruisce correttamente tutte le dipendenze necessarie. Questa soluzione riduce l'accoppiamento e nasconde 
-la complessità di inizializzazione al resto del sistema.
-
-La gestione del mana viene delegata a \texttt{ManaManager}, evitando che \texttt{PlayerImpl}
-debba conoscere i dettagli delle regole di incremento e consumo del mana durante i turni.
-
-La soluzione applica quindi una combinazione di:
-\begin{itemize}
-\item composizione;
-\item separation of concerns;
-\item factory pattern.
-\end{itemize}
-
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.95\textwidth]{UMLs/GestioneStatoGiocatore.pdf}
-%\caption{Schema UML della gestione dello stato del giocatore.}
-%\end{figure}
-
-\subsubsection{Problema 1:Gestione delle creature schierate sul campo}
-
-Durante la partita ogni giocatore può schierare creature sul campo di gioco. Tali creature devono essere
-gestite separatamente dalla mano e dal deck, poiché rappresentano lo stato attivo del combattimento.
-
-Una possibile soluzione sarebbe stata trattare le creature schierate come una semplice lista interna al giocatore.
-Tuttavia questa scelta avrebbe accoppiato fortemente la logica del combattimento con quella del giocatore stesso.
-
-Il problema era quindi creare una struttura dedicata alla gestione delle creature presenti sul board, 
-mantenendo separate le responsabilità del giocatore dalla gestione delle unità schierate.
-
-\textbf{\\Soluzione:}
-La soluzione adottata introduce l'interfaccia \texttt{Army},
-che rappresenta l'insieme delle creature schierate da un giocatore.
-
-L'implementazione \texttt{ArmyImpl} incapsula completamente la gestione delle creature
-presenti sul campo, occupandosi delle operazioni di inserimento, rimozione e consultazione.
-
-Il giocatore possiede quindi un'istanza di \texttt{Army}, ma non gestisce direttamente
-la struttura interna delle creature schierate.
-
-Questa soluzione migliora la modularità del sistema e rende più semplice estendere in futuro
-le regole legate al campo di gioco, ad esempio:
-\begin{itemize}
-\item limiti sul numero di creature;
-\item ordinamento sul board;
-\item effetti ad area;
-\item gestione di evocazioni speciali.
-\end{itemize}
-
-La soluzione segue il principio di composizione, mantenendo il board del giocatore come componente autonoma del modello.
-
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.8\textwidth]{UMLs/ArmyManagement.pdf}
-%\caption{Schema UML della gestione delle creature schierate.}
-%\end{figure}
-
-\subsubsection{Problema 3:Gestione del turno e delle risorse di mana}
-
-Il sistema di turni rappresenta una parte critica della logica di gioco. A ogni cambio turno devono essere aggiornati:
-\begin{itemize}
-\item il giocatore attivo;
-\item il mana disponibile;
-\item lo stato di esaurimento delle creature;
-\item eventuali operazioni automatiche di inizio turno.
-\end{itemize}
-
-Una possibile soluzione sarebbe stata implementare tutta questa logica direttamente all'interno
-di \texttt{BoardGameImpl}, centralizzando l'intero flusso della partita in un'unica classe.
-Questa scelta, però, avrebbe prodotto una classe troppo grande e difficile da mantenere.
-
-Il problema era quindi isolare la logica specifica di gestione dei turni,
-mantenendola separata dalla restante logica del board game.
-
-\textbf{\\Soluzione:}
-La soluzione adottata introduce il componente \texttt{TurnManager}, definito internamente a \texttt{BoardGameImpl}, responsabile esclusivamente della gestione dell’alternanza dei turni.
-
-\texttt{TurnManager} coordina:
-\begin{itemize}
-\item il passaggio del turno tra i giocatori;
-\item l'aggiornamento del mana;
-\item il reset dello stato delle creature;
-\item le operazioni automatiche di inizio turno.
-\end{itemize}
-
-La gestione del mana viene ulteriormente delegata a \texttt{ManaManager},
-che incapsula le regole di incremento e consumo delle risorse.
-
-Questa separazione permette di mantenere \texttt{BoardGameImpl} focalizzata sulla coordinazione generale
-della partita, evitando che conosca tutti i dettagli operativi del turno.
-
-La soluzione migliora:
-\begin{itemize}
-\item leggibilità;
-\item manutenibilità;
-\item separazione delle responsabilità.
-\end{itemize}
-
-Inoltre rende più semplice modificare in futuro le regole del turno senza impattare il resto del modello.
-
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.7\textwidth]{UMLs/GestioneTurnoRIsorse.pdf.pdf}
-%\caption{Schema UML della gestione dei turni e del mana.}
-%\end{figure}
-
-\subsection{Lorenzo Mercuriali}
-
-\subsubsection{Problema 1}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 4}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-=======
->>>>>>> a37475b83fcde8f16653ed8d7754bb38db763666
 \subsection{Massimiliano Ria}
 
 \subsubsection{Adattamento dell'interfaccia a diverse risoluzioni}
@@ -944,29 +489,215 @@ più leggibile, più controllata e più aderente al dominio del gioco.
 
 \subsection{Francesco Dama}
 
-\subsubsection{Problema 1}
+\subsubsection{Problema 1: Gestione della mano del giocatore}
 
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 2}
-
-\textbf{Problema:}
-
-\textbf{\\Soluzione:}
-
-\subsubsection{Problema 3}
-
-\textbf{Problema:}
+Nel gioco ogni giocatore deve poter gestire una mano di carte pescate dal deck durante la partita. 
+La mano rappresenta una struttura centrale del gameplay, poiché viene continuamente modificata: nuove carte vengono aggiunte
+ tramite pesca, alcune vengono rimosse quando giocate, e il numero massimo di carte deve essere limitato.
+Una possibile soluzione sarebbe stata trattare la mano semplicemente come una lista esposta 
+direttamente dal giocatore, lasciando al resto del sistema la responsabilità di controllarne dimensione, inserimenti e rimozioni.
+Questa scelta, però, avrebbe distribuito la logica della mano in più punti del codice, 
+aumentando l'accoppiamento e rendendo più difficile garantire la coerenza dello stato.
+Il problema era quindi progettare una componente autonoma che incapsulasse completamente la gestione
+della mano, mantenendo separate le responsabilità del giocatore da quelle della collezione di carte possedute.
 
 \textbf{\\Soluzione:}
+La soluzione adottata introduce l’interfaccia \texttt{Hand}, che rappresenta il contratto
+astratto di una mano di gioco. Essa espone soltanto le operazioni rilevanti per il dominio,
+come l'aggiunta, la rimozione e la consultazione delle carte presenti.
+La classe \texttt{HandImpl} implementa tale comportamento incapsulando internamente la struttura
+dati concreta utilizzata per memorizzare le carte. In questo modo il resto del modello non dipende 
+direttamente dalla rappresentazione interna della mano.
+La responsabilità del giocatore (\texttt{PlayerImpl}) viene così semplificata: il giocatore possiede una mano,
+ma non gestisce direttamente la logica di manipolazione delle carte al suo interno. 
+Questo migliora la separazione delle responsabilità e mantiene il modello più modulare.
+La soluzione applica inoltre il principio di \textit{information hiding}: il resto del sistema 
+interagisce con la mano esclusivamente tramite l'interfaccia \texttt{Hand}, senza conoscere dettagli implementativi.
 
-\subsubsection{Problema 4}
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=0.85\textwidth]{UMLs/PoliticaPescaggioMano.pdf}
+%\caption{Schema UML della gestione della mano del giocatore.}
+%\end{figure}
 
-\textbf{Problema:}
+\subsubsection{Problema 2: Gestione della pesca delle carte e degli esiti della pesca}
+
+Durante la partita un giocatore può pescare carte dal proprio deck.
+Tuttavia l'operazione di pesca non produce sempre lo stesso risultato: il deck potrebbe essere vuoto,
+oppure la mano potrebbe essere piena e la carta pescata dovrebbe quindi essere bruciata.
+Una possibile soluzione sarebbe stata usare valori speciali (\texttt{null})
+oppure lanciare eccezioni per rappresentare i casi particolari della pesca. 
+Questa alternativa è stata scartata perché avrebbe reso meno esplicita la semantica 
+dell'operazione e avrebbe distribuito la gestione dei casi speciali nel controller o nel model.
+Il problema era quindi rappresentare in modo chiaro e tipizzato tutti i possibili esiti dell'operazione
+di pesca, mantenendo il codice leggibile ed evitando ambiguità.
 
 \textbf{\\Soluzione:}
+La soluzione adottata introduce il tipo \texttt{DrawCardResult}, che rappresenta esplicitamente
+il risultato di una pesca. Tale oggetto contiene tutte le informazioni necessarie per descrivere l'esito dell'operazione.
+Il tipo di risultato viene modellato tramite l'enumerazione \texttt{DrawCardResultType}, che distingue i vari scenari possibili, come:
+\begin{itemize}
+\item pesca completata correttamente;
+\item deck vuoto;
+\item carta bruciata per mano piena.
+\end{itemize}
+
+In questo modo il modello comunica chiaramente cosa è accaduto senza ricorrere a valori speciali o controlli impliciti.
+
+La soluzione segue un approccio simile al pattern \textit{Result Object}:
+invece di restituire semplicemente una carta o fallire tramite eccezioni,
+il metodo restituisce un oggetto che rappresenta semanticamente l'esito dell'operazione.
+
+Questo rende il codice più robusto e leggibile, perché i casi gestibili dal dominio
+vengono esplicitati direttamente nel tipo restituito.
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=0.7\textwidth]{UMLs/DrawCardResult.pdf}
+%\caption{Schema UML della gestione degli esiti della pesca.}
+%\end{figure}
+
+\subsubsection{Problema 3:Gestione dello stato del giocatore}
+
+Nel gioco il giocatore rappresenta una componente complessa del modello. Ogni giocatore possiede:
+\begin{itemize}
+\item un deck;
+\item una mano;
+\item un esercito di creature schierate;
+\item punti vita;
+\item mana disponibile;
+\item un'identità logica all'interno della partita.
+\end{itemize}
+
+Una possibile soluzione sarebbe stata concentrare tutta questa logica direttamente all'interno
+della classe del giocatore, rendendola responsabile sia della gestione delle risorse sia della
+logica di combattimento e del turno. Questa scelta, però, avrebbe prodotto una classe molto accoppiata e difficile da estendere.
+
+Il problema era quindi modellare il giocatore come aggregatore delle varie componenti del gameplay,
+delegando però le responsabilità specifiche a classi dedicate.
+
+\textbf{\\Soluzione:}
+La soluzione adottata utilizza l'interfaccia \texttt{Player} come rappresentazione astratta di un giocatore della partita.
+
+La classe \texttt{PlayerImpl} coordina le varie componenti che costituiscono lo stato del giocatore:
+\begin{itemize}
+\item \texttt{Hand} per la gestione delle carte in mano;
+\item \texttt{Army} per le creature schierate;
+\item \texttt{Deck} per la pesca;
+\item \texttt{ManaManager} per la gestione del mana.
+\end{itemize}
+
+Questa scelta permette di suddividere il comportamento in componenti specializzate,
+mantenendo il giocatore come coordinatore logico dello stato.
+L'identità del giocatore viene separata tramite \texttt{PlayerId}, mentre \texttt{PlayerType}
+rappresenta la natura del giocatore (umano o IA). In questo modo il sistema può distinguere chiaramente
+il ruolo del giocatore senza introdurre controlli sparsi nel codice.
+La creazione dei giocatori viene inoltre centralizzata tramite \texttt{PlayerFactory},
+che costruisce correttamente tutte le dipendenze necessarie. Questa soluzione riduce l'accoppiamento e nasconde 
+la complessità di inizializzazione al resto del sistema.
+
+La gestione del mana viene delegata a \texttt{ManaManager}, evitando che \texttt{PlayerImpl}
+debba conoscere i dettagli delle regole di incremento e consumo del mana durante i turni.
+
+La soluzione applica quindi una combinazione di:
+\begin{itemize}
+\item composizione;
+\item separation of concerns;
+\item factory pattern.
+\end{itemize}
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=0.95\textwidth]{UMLs/GestioneStatoGiocatore.pdf}
+%\caption{Schema UML della gestione dello stato del giocatore.}
+%\end{figure}
+
+\subsubsection{Problema 1:Gestione delle creature schierate sul campo}
+
+Durante la partita ogni giocatore può schierare creature sul campo di gioco. Tali creature devono essere
+gestite separatamente dalla mano e dal deck, poiché rappresentano lo stato attivo del combattimento.
+
+Una possibile soluzione sarebbe stata trattare le creature schierate come una semplice lista interna al giocatore.
+Tuttavia questa scelta avrebbe accoppiato fortemente la logica del combattimento con quella del giocatore stesso.
+
+Il problema era quindi creare una struttura dedicata alla gestione delle creature presenti sul board, 
+mantenendo separate le responsabilità del giocatore dalla gestione delle unità schierate.
+
+\textbf{\\Soluzione:}
+La soluzione adottata introduce l'interfaccia \texttt{Army},
+che rappresenta l'insieme delle creature schierate da un giocatore.
+
+L'implementazione \texttt{ArmyImpl} incapsula completamente la gestione delle creature
+presenti sul campo, occupandosi delle operazioni di inserimento, rimozione e consultazione.
+
+Il giocatore possiede quindi un'istanza di \texttt{Army}, ma non gestisce direttamente
+la struttura interna delle creature schierate.
+
+Questa soluzione migliora la modularità del sistema e rende più semplice estendere in futuro
+le regole legate al campo di gioco, ad esempio:
+\begin{itemize}
+\item limiti sul numero di creature;
+\item ordinamento sul board;
+\item effetti ad area;
+\item gestione di evocazioni speciali.
+\end{itemize}
+
+La soluzione segue il principio di composizione, mantenendo il board del giocatore come componente autonoma del modello.
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=0.8\textwidth]{UMLs/ArmyManagement.pdf}
+%\caption{Schema UML della gestione delle creature schierate.}
+%\end{figure}
+
+\subsubsection{Problema 3:Gestione del turno e delle risorse di mana}
+
+Il sistema di turni rappresenta una parte critica della logica di gioco. A ogni cambio turno devono essere aggiornati:
+\begin{itemize}
+\item il giocatore attivo;
+\item il mana disponibile;
+\item lo stato di esaurimento delle creature;
+\item eventuali operazioni automatiche di inizio turno.
+\end{itemize}
+
+Una possibile soluzione sarebbe stata implementare tutta questa logica direttamente all'interno
+di \texttt{BoardGameImpl}, centralizzando l'intero flusso della partita in un'unica classe.
+Questa scelta, però, avrebbe prodotto una classe troppo grande e difficile da mantenere.
+
+Il problema era quindi isolare la logica specifica di gestione dei turni,
+mantenendola separata dalla restante logica del board game.
+
+\textbf{\\Soluzione:}
+La soluzione adottata introduce il componente \texttt{TurnManager}, definito internamente a \texttt{BoardGameImpl}, responsabile esclusivamente della gestione dell’alternanza dei turni.
+
+\texttt{TurnManager} coordina:
+\begin{itemize}
+\item il passaggio del turno tra i giocatori;
+\item l'aggiornamento del mana;
+\item il reset dello stato delle creature;
+\item le operazioni automatiche di inizio turno.
+\end{itemize}
+
+La gestione del mana viene ulteriormente delegata a \texttt{ManaManager},
+che incapsula le regole di incremento e consumo delle risorse.
+
+Questa separazione permette di mantenere \texttt{BoardGameImpl} focalizzata sulla coordinazione generale
+della partita, evitando che conosca tutti i dettagli operativi del turno.
+
+La soluzione migliora:
+\begin{itemize}
+\item leggibilità;
+\item manutenibilità;
+\item separazione delle responsabilità.
+\end{itemize}
+
+Inoltre rende più semplice modificare in futuro le regole del turno senza impattare il resto del modello.
+
+%\begin{figure}[htbp]
+%\centering
+%\includegraphics[width=0.7\textwidth]{UMLs/GestioneTurnoRIsorse.pdf.pdf}
+%\caption{Schema UML della gestione dei turni e del mana.}
+%\end{figure}
 
 \subsection{Lorenzo Mercuriali}
 
