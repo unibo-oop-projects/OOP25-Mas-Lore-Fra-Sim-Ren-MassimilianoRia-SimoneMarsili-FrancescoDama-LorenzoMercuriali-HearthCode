@@ -1,0 +1,55 @@
+@startuml CaricamentoRisorseGrafiche
+
+skinparam linetype ortho
+
+class ImageLoader {
+    + {static} load(...): ImageIcon
+    + {static} preload...Assets()
+}
+
+class ImageLoaderProxy {
+    + load(...) : ImageIcon
+    + loadAsync(...): CompletableFuture
+    + preload(requests): CompletableFuture
+}
+
+interface ImageRepository {
+    + loadAsync(request): CompletableFuture
+}
+
+class AsyncCachedImageRepository {
+    - rawCache
+    - scaledCache
+    - executor
+}
+
+class ImageLoadRequest <<record>> {
+    path
+    width
+    height
+}
+
+class ImagePreloadCatalog {
+    + {static} menuAndNavigation()
+    + {static} match()
+    + {static} database()
+}
+
+class CreatureImagePaths
+class ViewMetrics
+
+ImageLoader *-- ImageLoaderProxy
+ImageLoader ..> ImagePreloadCatalog : uses
+ImageLoaderProxy --> ImageRepository : delegates
+
+ImageRepository <|.. AsyncCachedImageRepository
+
+ImageLoaderProxy ..> ImageLoadRequest : uses
+
+ImagePreloadCatalog ..> ImageLoadRequest
+ImagePreloadCatalog ..> CreatureImagePaths
+ImagePreloadCatalog ..> ViewMetrics : scaled
+
+AsyncCachedImageRepository ..> ImageLoadRequest
+
+@enduml

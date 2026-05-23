@@ -1,0 +1,29 @@
+@startuml BoardGameFactory
+
+skinparam linetype ortho
+
+interface MainController {
+    + startMatch(difficulty: Difficulty): void
+}
+
+interface BoardGame
+
+class BoardGameFactory <<static factory>> {
+    + {static} createDefaultGame(): BoardGame
+    + {static} createDefaultSetup(): GameSetup
+}
+
+class GameSetup <<immutable setup>> {
+    - players
+    - armies
+    - startingPlayerId
+}
+
+MainController ..> BoardGameFactory : uses
+
+BoardGameFactory --> BoardGame : creates
+BoardGameFactory --> GameSetup : builds
+
+BoardGame ..> GameSetup : initializes from
+
+@enduml

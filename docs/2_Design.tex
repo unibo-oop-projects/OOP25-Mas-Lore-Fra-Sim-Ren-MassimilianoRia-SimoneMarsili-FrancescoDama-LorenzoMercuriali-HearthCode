@@ -799,6 +799,14 @@ la creazione della partita, \texttt{GameSetup} trasporta la configurazione
 iniziale e \texttt{BoardGameImpl} rimane focalizzata sulle regole e sulle
 operazioni del match.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.60\textwidth]{UMLs/BoardGameFactory.pdf}
+    \caption{Schema UML della costruzione della partita tramite Factory.}
+\end{figure}
+
+\newpage
+
 \subsubsection{Caricamento asincrono e caching delle risorse grafiche}
 
 \textbf{Problema:} Una volta realizzata l'architettura e finalizzata
@@ -870,3 +878,11 @@ il repository gestisce caching, esecuzione asincrona e riuso dei risultati.
 Quando una risorsa è già presente in cache, la View la ottiene senza ripetere lettura
 e ridimensionamento; quando invece il caricamento è ancora in corso, la chiamata sincrona
 attende il completamento dello stesso \texttt{CompletableFuture} già avviato.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{UMLs/CaricamentoRisorseGrafiche.pdf}
+    \caption{Schema UML del caricamento asincrono e caching delle risorse grafiche.}
+\end{figure}
+
+\newpage
