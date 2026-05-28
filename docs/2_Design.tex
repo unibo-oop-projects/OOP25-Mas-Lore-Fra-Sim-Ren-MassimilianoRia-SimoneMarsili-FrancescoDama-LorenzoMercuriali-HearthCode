@@ -15,7 +15,7 @@ il compito di applicare le regole del dominio ed eseguire le conseguenti operazi
 L'interfaccia espone metodi adeguati alla modifica del suo stato e alla sua interrogazione, permettendo
 al Controller di interagire con esso quando uno dei giocatori desidera applicare una determinata mossa.
 È presente tuttavia un secondo punto di accesso, rappresentato dall'interfaccia \texttt{AiTurnService},
-che gestisce il servizio di collegamento tra il Controller e l'algoritmo decisionale dell'IA.
+che gestisce il servizio di collegamento tra il Controller e l'algoritmo decisionale dell'IA\@.
 
 L'interfaccia \texttt{MainView} funge da entry-point della \textit{View} e rappresenta la finestra principale
 dell'applicazione. Essa tiene traccia delle varie scene dell'applicazione ed è in grado di navigare tra loro grazie a un
@@ -56,7 +56,7 @@ classe \texttt{ViewMetrics}, usata come punto di accesso unico alle principali
 dimensioni grafiche dell'applicazione. Nella sua versione iniziale, tali misure
 venivano calcolate a partire dalla dimensione fisica dello schermo. La classe
 determina una sola volta le grandezze necessarie e le espone tramite metodi
-statici dedicati, come ad esempio \texttt{cardWidth()} e \texttt{cardHeight()}.
+statici dedicati, come ad esempio \texttt{cardWidth ()} e \texttt{cardHeight ()}.
 In questo modo si riduce la duplicazione del codice e ogni scena può richiedere
 solo la metrica di cui ha bisogno.
 
@@ -65,7 +65,7 @@ base all'intero schermo non garantiva automaticamente una buona visualizzazione.
 Su schermi con risoluzioni elevate o con un rapporto d'aspetto diverso da quello
 previsto, alcuni elementi risultavano troppo grandi o disposti in modo poco
 bilanciato. Inoltre lo sfondo del menu, realizzato nativamente con risoluzione
-3840x2160 e rapporto 16:9, rischiava di essere adattato a superfici non coerenti
+3840$\times$2160 e rapporto 16:9, rischiava di essere adattato a superfici non coerenti
 con la sua proporzione originale, producendo tagli dell'immagine o distorsioni
 impreviste.
 
@@ -73,7 +73,7 @@ Per risolvere il problema è stato introdotto il concetto di \textit{viewport}:
 l'applicazione continua ad aprirsi a schermo intero, ma la zona effettiva in cui
 vengono disegnate le scene corrisponde alla più grande area 16:9 contenibile
 nello schermo dell'utente. Il calcolo è centralizzato nel metodo
-\texttt{ViewMetrics.viewportSize(Dimension)}, che confronta il rapporto tra la
+\texttt{ViewMetrics.viewportSize (Dimension)}, che confronta il rapporto tra la
 larghezza e l'altezza disponibili con il rapporto obiettivo 16:9. Se lo schermo
 è più largo del necessario, viene mantenuta l'altezza e ridotta la larghezza; se
 invece è troppo alto, viene mantenuta la larghezza e ridotta l'altezza.
@@ -81,7 +81,7 @@ invece è troppo alto, viene mantenuta la larghezza e ridotta l'altezza.
 La classe \texttt{BlackBounds} applica concretamente questa scelta: viene usata
 da \texttt{MainViewImpl} come pannello radice della finestra e contiene il
 pannello delle scene gestito dal \texttt{CardLayout}. Nell'override del metodo
-\texttt{doLayout()}, richiamato automaticamente da Swing quando la finestra
+\texttt{doLayout ()}, richiamato automaticamente da Swing quando la finestra
 viene mostrata per la prima volta o quando cambia dimensione,
 \texttt{BlackBounds} calcola la viewport a partire dalla dimensione corrente
 della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
@@ -102,7 +102,7 @@ uniforme: su alcuni schermi le texture risultavano nitide, mentre su altri
 apparivano sgranate o sfocate, senza che inizialmente fosse riconoscibile un
 legame evidente con la risoluzione nominale del monitor.
 
-L'analisi successiva ha ricondotto il comportamento agli schermi Hi-DPI. Su
+L'analisi successiva ha ricondotto il comportamento agli schermi Hi-DPI\@. Su
 questi dispositivi il sistema operativo può applicare uno \textit{zoom} logico:
 l'interfaccia continua a ragionare in pixel logici, ma ogni pixel logico viene
 poi rappresentato tramite più pixel fisici. Questa scelta evita che finestre e
@@ -128,7 +128,7 @@ Il punto centrale del fix è \texttt{AsyncCachedImageRepository}, che implementa
 \texttt{ImageRepository} ed è usata da \texttt{ImageLoaderProxy} dietro alla
 facciata statica \texttt{ImageLoader}. Quando riceve una
 \texttt{ImageLoadRequest} scalata, il repository calcola prima la dimensione
-fisica equivalente tramite il metodo \texttt{deviceSize(int, int)}. Questo metodo
+fisica equivalente tramite il metodo \texttt{deviceSize (int, int)}. Questo metodo
 legge il \texttt{defaultTransform} della configurazione grafica principale,
 ottenuta da \texttt{GraphicsEnvironment}, e moltiplica larghezza e altezza
 logiche per i fattori di scala dello schermo. Nei contesti senza ambiente
@@ -157,7 +157,7 @@ il costo del precaricamento, ma concentra il lavoro in un punto controllato e
 produce una qualità più stabile.
 
 Le classi che mostrano effettivamente le carte non devono conoscere il dettaglio
-Hi-DPI. \texttt{CardComponent} continua a caricare fronte e retro tramite
+Hi-DPI\@. \texttt{CardComponent} continua a caricare fronte e retro tramite
 \texttt{ImageLoader}. Le misure restano quelle di \texttt{ViewMetrics}; nel
 metodo \texttt{paintComponent} il componente disegna l'immagine ricevuta nello
 spazio del bottone. Analogamente \texttt{CardsPanel} usa lo stesso caricatore per
@@ -360,8 +360,8 @@ interna del mazzo o sulla factory che lo costruisce.
 \textbf{\\Soluzione:} La gestione del mazzo è stata separata dalla sua
 costruzione. L'interfaccia \texttt{Deck} espone soltanto le operazioni
 necessarie durante la partita, cioè la pesca di una carta tramite
-\texttt{draw()} e la consultazione del numero di carte rimanenti tramite
-\texttt{getRemaining()}. L'implementazione \texttt{DeckImpl} incapsula quindi
+\texttt{draw ()} e la consultazione del numero di carte rimanenti tramite
+\texttt{getRemaining ()}. L'implementazione \texttt{DeckImpl} incapsula quindi
 la lista delle carte effettivamente presenti nel mazzo e si occupa solo della
 loro gestione runtime.
 
@@ -379,7 +379,7 @@ nasconde al resto del modello i dettagli necessari alla sua costruzione
 (recupero definizioni dal database, creazione istanze runtime, selezione
 pesata, mescolamento finale\ldots{}).
 
-Il metodo \texttt{createWeighted(size, strategy)} costruisce un mazzo della
+Il metodo \texttt{createWeighted (size, strategy)} costruisce un mazzo della
 dimensione richiesta usando una \texttt{WeightStrategy}. In questa versione
 implementata, la factory calcola il peso associato a ciascuna definizione e usa
 tale valore per effettuare una selezione casuale non uniforme. In seguito le
@@ -426,7 +426,7 @@ aggiornamento grafico, aumentando il suo accoppiamento sia con il model sia con
 la view.
 
 Un'altra alternativa sarebbe stata usare una notifica generica, basata su un
-unico metodo come \texttt{update()}. In questo caso, però, la view avrebbe
+unico metodo come \texttt{update ()}. In questo caso, però, la view avrebbe
 ricevuto solo l'informazione che qualcosa nel modello è cambiato, dovendo poi
 interrogare il model per ricostruire lo stato aggiornato. Questa variante è
 stata scartata perché avrebbe richiesto alla view di conoscere più dettagli del
@@ -471,7 +471,7 @@ Il collegamento tra model e view viene effettuato dal controller, che registra
 la view come observer del model. Il model, però, non conosce la classe concreta
 \texttt{MatchScene}: conosce solo l'interfaccia \texttt{GameObserver}. Questo
 mantiene basso l'accoppiamento tra le componenti e rispetta la separazione
-prevista dall'architettura MVC.
+prevista dall'architettura MVC\@.
 
 La soluzione ha anche un compromesso: l'interfaccia \texttt{GameObserver} cresce
 all'aumentare degli eventi osservabili. Se in futuro venissero introdotti nuovi
@@ -489,38 +489,106 @@ più leggibile, più controllata e più aderente al dominio del gioco.
 
 \subsection{Francesco Dama}
 
-\subsubsection{Problema 1: Gestione della mano del giocatore}
+\subsubsection{Problema: Gestione delle carte possedute e schierate dal giocatore}
 
-Nel gioco ogni giocatore deve poter gestire una mano di carte pescate dal deck durante la partita. 
-La mano rappresenta una struttura centrale del gameplay, poiché viene continuamente modificata: nuove carte vengono aggiunte
- tramite pesca, alcune vengono rimosse quando giocate, e il numero massimo di carte deve essere limitato.
-Una possibile soluzione sarebbe stata trattare la mano semplicemente come una lista esposta 
-direttamente dal giocatore, lasciando al resto del sistema la responsabilità di controllarne dimensione, inserimenti e rimozioni.
-Questa scelta, però, avrebbe distribuito la logica della mano in più punti del codice, 
-aumentando l'accoppiamento e rendendo più difficile garantire la coerenza dello stato.
-Il problema era quindi progettare una componente autonoma che incapsulasse completamente la gestione
-della mano, mantenendo separate le responsabilità del giocatore da quelle della collezione di carte possedute.
 
-\textbf{\\Soluzione:}
-La soluzione adottata introduce l’interfaccia \texttt{Hand}, che rappresenta il contratto
-astratto di una mano di gioco. Essa espone soltanto le operazioni rilevanti per il dominio,
-come l'aggiunta, la rimozione e la consultazione delle carte presenti.
-La classe \texttt{HandImpl} implementa tale comportamento incapsulando internamente la struttura
-dati concreta utilizzata per memorizzare le carte. In questo modo il resto del modello non dipende 
-direttamente dalla rappresentazione interna della mano.
-La responsabilità del giocatore (\texttt{PlayerImpl}) viene così semplificata: il giocatore possiede una mano,
-ma non gestisce direttamente la logica di manipolazione delle carte al suo interno. 
-Questo migliora la separazione delle responsabilità e mantiene il modello più modulare.
-La soluzione applica inoltre il principio di \textit{information hiding}: il resto del sistema 
-interagisce con la mano esclusivamente tramite l'interfaccia \texttt{Hand}, senza conoscere dettagli implementativi.
+\textbf{Problema:} Nel gioco le carte controllate da un giocatore possono trovarsi in stati
+differenti durante la partita. Alcune carte sono presenti nella mano del giocatore e rappresentano
+le risorse immediatamente giocabili, mentre altre vengono schierate sul campo e diventano parte attiva
+del combattimento. Una possibile soluzione sarebbe stata gestire tutte le carte del giocatore tramite
+un'unica collezione all'interno della classe PlayerImpl, distinguendo manualmente i diversi stati
+delle carte tramite controlli condizionali o flag interni. Questa scelta, però, avrebbe prodotto
+una forte commistione di responsabilità:
+\begin{itemize}
+\item il giocatore avrebbe dovuto conoscere sia la logica della mano sia quella del board;
+\item le operazioni di aggiunta, rimozione e ricerca delle carte sarebbero risultate duplicate;
+\item il codice sarebbe diventato più difficile da estendere e mantenere.
+\end{itemize}
 
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.85\textwidth]{UMLs/PoliticaPescaggioMano.pdf}
-%\caption{Schema UML della gestione della mano del giocatore.}
-%\end{figure}
+Inoltre mano e campo di gioco hanno semantiche differenti:
+\begin{itemize}
+\item la mano rappresenta carte ancora non utilizzate;
+\item il board rappresenta creature attive soggette alle regole del combattimento.
+\end{itemize}
 
-\subsubsection{Problema 2: Gestione della pesca delle carte e degli esiti della pesca}
+Il problema era quindi progettare due componenti separate che modellassero chiaramente i diversi
+stati delle carte durante la partita, mantenendo però una struttura coerente e facilmente
+integrabile nel modello del giocatore.
+
+\textbf{\\Soluzione:} La soluzione adottata separa esplicitamente la gestione delle
+carte in due componenti distinte:
+\begin{itemize}
+\item Hand, responsabile delle carte presenti nella mano del giocatore;
+\item Army, responsabile delle creature schierate sul campo.
+\end{itemize}
+
+Entrambe le componenti vengono modellate tramite un'interfaccia astratta
+\texttt{Hand} e \texttt{Army}
+e una rispettiva implementazione concreta \texttt{HandImpl}
+e \texttt{ArmyImpl}.
+
+Questa scelta permette di:
+\begin{itemize}
+\item nascondere i dettagli implementativi;
+\item mantenere basso l'accoppiamento;
+\item rendere sostituibili le implementazioni concrete;
+\item centralizzare la logica di gestione delle collezioni.
+\end{itemize}
+
+La classe HandImpl incapsula tutte le operazioni relative alle carte pescate
+ma non ancora giocate. Essa si occupa della:
+\begin{itemize}
+\item memorizzazione delle carte;
+\item aggiunta di nuove carte;
+\item rimozione delle carte giocate;
+\item ricerca tramite identificatore.
+\end{itemize}
+
+La gestione della mano è completamente separata dal giocatore, che delega
+tali responsabilità alla componente dedicata.
+La classe ArmyImpl rappresenta invece le creature attive presenti sul board.
+A differenza della mano, l'esercito introduce concetti legati allo stato delle
+creature durante il turno, distinguendo ad esempio:
+\begin{itemize}
+\item creature appena evocate;
+\item creature già attive;
+\item creature esauste.
+\end{itemize}
+
+Questa separazione consente di modellare in modo più aderente il dominio del gioco
+e semplifica l'implementazione delle regole di combattimento.
+
+Dal punto di vista implementativo,
+entrambe le classi fanno ampio uso di funzionalità moderne di Java:
+\begin{itemize}
+\item Optional, per rappresentare risultati eventualmente assenti;
+\item Stream API, per ricerca e trasformazione delle collezioni;
+\item lambda expressions, per definire predicati e operazioni funzionali.
+\end{itemize}
+
+Ad esempio, le operazioni di ricerca delle carte vengono effettuate tramite
+pipeline funzionali basate su stream, evitando iterazioni imperative
+esplicite e migliorando leggibilità e concisione del codice.
+
+La soluzione applica inoltre il principio di composizione:
+PlayerImpl non eredita il comportamento di mano o esercito,
+ma possiede componenti specializzate dedicate alla loro gestione.
+
+Questo approccio migliora:
+\begin{itemize}
+\item modularità;
+\item estendibilità;
+\item separazione delle responsabilità;
+\item aderenza all'architettura object-oriented.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{UMLs/GestioneManoArmy.pdf}
+    \caption{Schema UML della gestione di Hand e Army.}
+\end{figure}
+
+\subsubsection{Problema: Gestione della pesca delle carte e degli esiti della pesca}
 
 Durante la partita un giocatore può pescare carte dal proprio deck.
 Tuttavia l'operazione di pesca non produce sempre lo stesso risultato: il deck potrebbe essere vuoto,
@@ -551,13 +619,13 @@ il metodo restituisce un oggetto che rappresenta semanticamente l'esito dell'ope
 Questo rende il codice più robusto e leggibile, perché i casi gestibili dal dominio
 vengono esplicitati direttamente nel tipo restituito.
 
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.7\textwidth]{UMLs/DrawCardResult.pdf}
-%\caption{Schema UML della gestione degli esiti della pesca.}
-%\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{UMLs/PoliticaPescaggioMano.pdf}
+    \caption{Schema UML della gestione degli esiti della pesca.}
+\end{figure}
 
-\subsubsection{Problema 3:Gestione dello stato del giocatore}
+\subsubsection{Problema:Gestione dello stato del giocatore}
 
 Nel gioco il giocatore rappresenta una componente complessa del modello. Ogni giocatore possiede:
 \begin{itemize}
@@ -587,17 +655,19 @@ La classe \texttt{PlayerImpl} coordina le varie componenti che costituiscono lo 
 \item \texttt{ManaManager} per la gestione del mana.
 \end{itemize}
 
-Questa scelta permette di suddividere il comportamento in componenti specializzate,
-mantenendo il giocatore come coordinatore logico dello stato.
+Questa scelta permette di suddividere il comportamento in componenti
+specializzate, mantenendo il giocatore come coordinatore logico dello stato.
 L'identità del giocatore viene separata tramite \texttt{PlayerId}, mentre \texttt{PlayerType}
-rappresenta la natura del giocatore (umano o IA). In questo modo il sistema può distinguere chiaramente
-il ruolo del giocatore senza introdurre controlli sparsi nel codice.
-La creazione dei giocatori viene inoltre centralizzata tramite \texttt{PlayerFactory},
-che costruisce correttamente tutte le dipendenze necessarie. Questa soluzione riduce l'accoppiamento e nasconde 
-la complessità di inizializzazione al resto del sistema.
+rappresenta la natura del giocatore (umano o IA). In questo modo il sistema
+può distinguere chiaramente il ruolo del giocatore senza introdurre
+controlli sparsi nel codice. La creazione dei giocatori viene inoltre
+centralizzata tramite \texttt{PlayerFactory}, che costruisce correttamente
+tutte le dipendenze necessarie. Questa soluzione riduce l'accoppiamento
+e nasconde la complessità di inizializzazione al resto del sistema.
 
-La gestione del mana viene delegata a \texttt{ManaManager}, evitando che \texttt{PlayerImpl}
-debba conoscere i dettagli delle regole di incremento e consumo del mana durante i turni.
+La gestione del mana viene delegata a \texttt{ManaManager}, evitando
+che  \texttt{PlayerImpl} debba conoscere i dettagli delle regole di
+incremento e consumo del mana durante i turni.
 
 La soluzione applica quindi una combinazione di:
 \begin{itemize}
@@ -606,51 +676,13 @@ La soluzione applica quindi una combinazione di:
 \item factory pattern.
 \end{itemize}
 
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.95\textwidth]{UMLs/GestioneStatoGiocatore.pdf}
-%\caption{Schema UML della gestione dello stato del giocatore.}
-%\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{UMLs/GestioneStatoGiocatore.pdf}
+    \caption{Schema UML della gestione dello stato del giocatore.}
+\end{figure}
 
-\subsubsection{Problema 1:Gestione delle creature schierate sul campo}
-
-Durante la partita ogni giocatore può schierare creature sul campo di gioco. Tali creature devono essere
-gestite separatamente dalla mano e dal deck, poiché rappresentano lo stato attivo del combattimento.
-
-Una possibile soluzione sarebbe stata trattare le creature schierate come una semplice lista interna al giocatore.
-Tuttavia questa scelta avrebbe accoppiato fortemente la logica del combattimento con quella del giocatore stesso.
-
-Il problema era quindi creare una struttura dedicata alla gestione delle creature presenti sul board, 
-mantenendo separate le responsabilità del giocatore dalla gestione delle unità schierate.
-
-\textbf{\\Soluzione:}
-La soluzione adottata introduce l'interfaccia \texttt{Army},
-che rappresenta l'insieme delle creature schierate da un giocatore.
-
-L'implementazione \texttt{ArmyImpl} incapsula completamente la gestione delle creature
-presenti sul campo, occupandosi delle operazioni di inserimento, rimozione e consultazione.
-
-Il giocatore possiede quindi un'istanza di \texttt{Army}, ma non gestisce direttamente
-la struttura interna delle creature schierate.
-
-Questa soluzione migliora la modularità del sistema e rende più semplice estendere in futuro
-le regole legate al campo di gioco, ad esempio:
-\begin{itemize}
-\item limiti sul numero di creature;
-\item ordinamento sul board;
-\item effetti ad area;
-\item gestione di evocazioni speciali.
-\end{itemize}
-
-La soluzione segue il principio di composizione, mantenendo il board del giocatore come componente autonoma del modello.
-
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.8\textwidth]{UMLs/ArmyManagement.pdf}
-%\caption{Schema UML della gestione delle creature schierate.}
-%\end{figure}
-
-\subsubsection{Problema 3:Gestione del turno e delle risorse di mana}
+\subsubsection{Problema: Gestione del turno e delle risorse di mana}
 
 Il sistema di turni rappresenta una parte critica della logica di gioco. A ogni cambio turno devono essere aggiornati:
 \begin{itemize}
@@ -693,28 +725,10 @@ La soluzione migliora:
 
 Inoltre rende più semplice modificare in futuro le regole del turno senza impattare il resto del modello.
 
-%\begin{figure}[htbp]
-%\centering
-%\includegraphics[width=0.7\textwidth]{UMLs/GestioneTurnoRIsorse.pdf.pdf}
-%\caption{Schema UML della gestione dei turni e del mana.}
-%\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.80\textwidth]{UMLs/GestioneStatoGiocatore.pdf}
-    \caption{Schema UML della gestione dello stato del giocatore.}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.80\textwidth]{UMLs/PoliticaPescaggioMano.pdf}
-    \caption{Schema UML della gestione della mano e degli esiti di pescaggio.}
-\end{figure}
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.80\textwidth]{UMLs/GestioneTurnoRisorse.pdf}
-    \caption{Schema UML della gestione del turno e delle risorse di mana.}
+    \caption{Schema UML della gestione del turno del giocatore.}
 \end{figure}
 
 \subsection{Lorenzo Mercuriali}
@@ -749,7 +763,7 @@ un numero fisso di carte iniziali, rappresentato dalla costante
 permette di legare la regola di apertura del match al punto che coordina lo
 stato complessivo, senza duplicarla nelle classi che rappresentano i singoli
 giocatori. Anche la verifica della fine della partita resta centralizzata:
-\texttt{getWinner()} filtra i giocatori ancora in vita e restituisce un
+\texttt{getWinner ()} filtra i giocatori ancora in vita e restituisce un
 \texttt{Optional<PlayerId>}, evitando valori speciali o controlli sparsi sul
 numero di punti vita.
 
@@ -787,18 +801,18 @@ e delle azioni di gioco, non sulle scelte di creazione di altre entità.
 Una prima alternativa sarebbe stata collocare questa costruzione nel controller
 che avvia la partita. In questo modo, il \textit{Controller} avrebbe dovuto incorporare
 scelte di costruzione e entità che appartengono al model, perdendo parte del proprio
-ruolo di coordinatore e non rispettando il dogma del pattern MVC.
+ruolo di coordinatore e non rispettando il dogma del pattern MVC\@.
 
 La responsabilità di assemblare una partita è stata dunque
 isolata in \texttt{BoardGameFactory}, una factory statica riconducibile ai
 pattern creazionali e dedicata alla configurazione standard del match. Il
 controller non crea direttamente la board né le sue dipendenze: in
-\texttt{MainControllerImpl.startMatch()} richiede una \texttt{BoardGame} tramite
-\texttt{createDefaultGame()}, ottenendo un oggetto già pronto per essere passato
+\texttt{MainControllerImpl.startMatch ()} richiede una \texttt{BoardGame} tramite
+\texttt{ ()}, ottenendo un oggetto già pronto per essere passato
 al \texttt{MatchController}.
 
 La costruzione dei dettagli iniziali è confinata in
-\texttt{createDefaultSetup()}. Qui vengono preparati gli oggetti necessari alla
+\texttt{createDefaultSetup ()}. Qui vengono preparati gli oggetti necessari alla
 partita: le definizioni delle creature sono caricate tramite
 \texttt{CreatureDatabaseFactory}, le carte concrete vengono prodotte con
 \texttt{CreatureImplFactory}, i mazzi con \texttt{DeckFactory} e i giocatori
@@ -843,15 +857,15 @@ da parte della View.
 
 \textbf{\\Soluzione:} La soluzione adottata separa l'uso delle immagini dal modo
 in cui esse vengono caricate. Il punto di accesso per la View è la facciata
-statica \texttt{ImageLoader}, che espone i metodi \texttt{load(String)} e
-\texttt{load(String, int, int)} per ottenere rispettivamente immagini originali
+statica \texttt{ImageLoader}, che espone i metodi \texttt{load (String)} e
+\texttt{load (String, int, int)} per ottenere rispettivamente immagini originali
 e immagini scalate.
 
 Dietro la facciata è presente \texttt{ImageLoaderProxy}, che traduce le
 richieste sincrone della View in richieste asincrone verso un
-\texttt{ImageRepository}. Il proxy usa il metodo \texttt{join()} solo quando una
+\texttt{ImageRepository}. Il proxy usa il metodo \texttt{join ()} solo quando una
 classe grafica richiede effettivamente l'icona, ma può anche avviare più
-caricamenti in background tramite \texttt{preload()}, combinandoli con
+caricamenti in background tramite \texttt{preload ()}, combinandoli con
 \texttt{Completable\-Future.allOf}. In questo modo il codice della View conserva
 un'interfaccia semplice, mentre l'infrastruttura può lavorare in anticipo.
 
@@ -874,11 +888,11 @@ dimensione richiesta; le richieste senza ridimensionamento sono invece create co
 \texttt{ImageLoadRequest.raw}.
 
 I gruppi di risorse da precaricare sono raccolti in
-\texttt{ImagePreloadCatalog}. Il metodo \texttt{menuAndNavigation()}
+\texttt{ImagePreloadCatalog}. Il metodo \texttt{menuAndNavigation ()}
 prepara lo sfondo comune, i banner della schermata finale e le texture dei
-pulsanti usati nelle schermate di navigazione; \texttt{match()} prepara le
+pulsanti usati nelle schermate di navigazione; \texttt{match ()} prepara le
 immagini usate dalle carte nella scena di gioco, compreso il retro delle carte e
-le immagini delle creature; \texttt{database()} prepara invece le immagini usate
+le immagini delle creature; \texttt{database ()} prepara invece le immagini usate
 nella schermata del mazzo. Le dimensioni delle immagini scalate vengono ricavate
 da \texttt{ViewMetrics}, così il catalogo produce richieste coerenti con la
 risoluzione effettiva dell'interfaccia.

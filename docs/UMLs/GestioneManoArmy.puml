@@ -1,0 +1,39 @@
+@startuml GestioneManoArmy
+
+interface Hand {
++ add(card: Card): boolean
++ remove(cardId: CardId): Optional<Card>
++ getCards(): List<Card>
++ size(): Integer
+}
+
+class HandImpl {
+}
+
+interface Army {
++ add(creature: Creature): boolean
++ remove(cardId: CardId): Optional<Creature>
++ getPlacedCard(cardId: CardId): Optional<Creature>
++ getCreatures(): List<Creature>
+}
+
+class ArmyImpl {
+- awakenCreatures : Map<CardId, Creature>
+- sleepingCreatures : List<Creature>
+}
+
+interface Card {
++ getId(): CardId
+}
+
+interface Creature
+
+Card <|-- Creature
+
+Hand <|.. HandImpl
+Army <|.. ArmyImpl
+
+HandImpl o-- "0.." Card
+ArmyImpl o-- "0.." Creature
+
+@enduml
