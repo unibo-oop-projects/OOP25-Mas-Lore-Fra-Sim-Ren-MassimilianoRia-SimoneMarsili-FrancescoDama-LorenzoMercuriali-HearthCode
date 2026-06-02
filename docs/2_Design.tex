@@ -122,59 +122,38 @@ dispositivo. In questo modo le classi della View continuano a chiedere immagini
 in termini di pixel logici, ma il sottosistema grafico di Java può selezionare
 la variante più adatta al momento del disegno.
 
-Il punto centrale del fix è \texttt{AsyncCachedImageRepository}, che implementa
-\texttt{ImageRepository} ed è usata da \texttt{ImageLoaderProxy} dietro alla
-facciata statica \texttt{ImageLoader}. Quando riceve una
-\texttt{ImageLoadRequest} scalata, il repository calcola prima la dimensione
-fisica equivalente tramite il metodo \texttt{deviceSize(int, int)}. Questo metodo
-legge il \texttt{defaultTransform} della configurazione grafica principale,
-ottenuta da \texttt{GraphicsEnvironment}, e moltiplica larghezza e altezza
-logiche per i fattori di scala dello schermo. Nei contesti senza ambiente
-grafico viene invece usato un fattore 1.0, così il caricamento resta valido anche
-in esecuzioni headless.
+Il fix è stato concentrato nel repository usato da \texttt{ImageLoader}. Quando
+arriva una richiesta di immagine scalata, \texttt{AsyncCachedImageRepository}
+parte dalla dimensione logica richiesta dalla View e ricava anche la dimensione
+fisica corrispondente, usando il fattore di scala dello schermo quando
+disponibile. Il flusso rimane quindi unico: la View chiede un'immagine di una
+certa dimensione in pixel logici; il caricatore prepara anche la versione adatta
+ai pixel fisici realmente usati dal monitor.
 
-Una volta note le due dimensioni, \texttt{AsyncCachedImageRepository} costruisce
-l'icona nel metodo \texttt{createScaledIcon}. La risorsa originale viene letta
-con \texttt{ImageIO} come \texttt{BufferedImage}, così può essere ridimensionata
-in modo controllato. Se dimensione logica e dimensione fisica coincidono, viene
-restituita una normale \texttt{ImageIcon}. Se invece lo schermo richiede più
-pixel fisici, viene creata una \texttt{BaseMultiResolutionImage} contenente la
-variante logica e quella fisica, poi incapsulata in una \texttt{ImageIcon}. Le
-chiavi della cache delle immagini scalate includono sia la dimensione logica sia
-quella fisica, evitando di riutilizzare per errore la stessa bitmap su schermi
-con fattori di scala diversi.
+Da quel punto la risorsa originale viene letta come \texttt{BufferedImage}, così
+può essere ridimensionata in modo controllato. Se le due dimensioni coincidono,
+viene prodotta una normale icona scalata. Se invece lo schermo Hi-DPI richiede
+più dettaglio, vengono create due varianti della stessa immagine: una alla
+dimensione logica e una alla dimensione fisica. Queste varianti vengono poi
+raccolte in una \texttt{BaseMultiResolutionImage}, incapsulata in una
+\texttt{ImageIcon}. In questo modo Java riceve un'unica icona, ma può scegliere
+internamente la versione più adatta al dispositivo su cui sta disegnando.
 
-Il ridimensionamento non usa più direttamente \texttt{getScaledInstance}, ma una
-procedura esplicita basata su \texttt{Graphics2D}. Il metodo \texttt{scaleImage}
-riceve l'immagine sorgente e la dimensione obiettivo, poi la riduce con passi
-intermedi: finché la distanza dal risultato finale resta elevata, la bitmap
-viene dimezzata; solo alla fine viene prodotta la dimensione esatta. Ogni
-passaggio è disegnato da \texttt{renderScaledImage} con interpolazione bicubica,
-qualità di rendering elevata e antialiasing. Questa scelta aumenta leggermente
-il costo del precaricamento, ma concentra il lavoro in un punto controllato e
-produce una qualità più stabile.
+Anche la cache è stata adattata a questo comportamento: le immagini scalate non
+sono identificate solo dalla dimensione richiesta dalla View, ma anche dalla
+dimensione fisica per cui sono state generate. Questo evita che una bitmap
+pensata per uno schermo a scala normale venga riutilizzata su uno schermo
+Hi-DPI, o viceversa.
 
-Le classi che mostrano effettivamente le carte non devono conoscere il dettaglio
-Hi-DPI\@. \texttt{CardComponent} continua a caricare fronte e retro tramite
-\texttt{ImageLoader}. Le misure restano quelle di \texttt{ViewMetrics}; nel
-metodo \texttt{paintComponent} il componente disegna l'immagine ricevuta nello
-spazio del bottone. Analogamente \texttt{CardsPanel} usa lo stesso caricatore per
-costruire gli \texttt{IconPanel} del database. Il catalogo
-\texttt{ImagePreloadCatalog} produce invece le richieste scalate per carte,
-bottoni e banner, così \texttt{ImageLoader} può precaricare le varianti prima
-della visualizzazione delle scene.
-
-Prima di stabilizzare questa soluzione sono stati valutati anche refactor
-alternativi. In particolare è stato provato un approccio in cui l'immagine ad
-alta risoluzione veniva mantenuta più a lungo e ridimensionata nel punto più
-vicino possibile al disegno finale. La qualità visiva era promettente, ma il
-compromesso risultava meno adatto all'applicazione: il costo dello scaling
-tendeva a spostarsi sul primo rendering dei componenti, oppure rendeva il
-precaricamento più pesante e meno prevedibile nelle schermate con molte carte.
-La soluzione multi-risoluzione centralizzata nel repository è quindi risultata
-più equilibrata, perché mantiene l'API della View invariata, conserva il
-precaricamento asincrono già presente e delega a Java la scelta della variante
-grafica corretta per lo schermo in uso.
+Le classi della View restano quindi semplici e non devono conoscere il dettaglio
+della multi-risoluzione. \texttt{CardComponent} e i pannelli che mostrano le
+carte continuano a passare da \texttt{ImageLoader} e dalle misure di
+\texttt{ViewMetrics}; la differenza è gestita prima del disegno, nel punto in
+cui le immagini vengono caricate e precaricate. Rispetto ai refactor valutati,
+che spostavano il ridimensionamento più vicino al rendering finale, questa
+soluzione è risultata più equilibrata: conserva il precaricamento asincrono già
+presente, mantiene invariata l'API della View e delega a Java la scelta della
+variante grafica corretta.
 
 \subsubsection{Stato Simulabile per l'IA}
 
@@ -496,7 +475,7 @@ le risorse immediatamente giocabili, mentre altre vengono schierate sul campo e 
 del combattimento. Una possibile soluzione sarebbe stata gestire tutte le carte del giocatore tramite
 un'unica collezione all'interno della classe PlayerImpl, distinguendo manualmente i diversi stati
 delle carte tramite controlli condizionali o flag interni. Questa scelta, però, avrebbe prodotto
-una forte commistione di responsabilità:
+un forte intreccio di responsabilità:
 \begin{itemize}
 \item il giocatore avrebbe dovuto conoscere sia la logica della mano sia quella del board;
 \item le operazioni di aggiunta, rimozione e ricerca delle carte sarebbero risultate duplicate;
@@ -707,9 +686,6 @@ La soluzione adottata introduce il componente \texttt{TurnManager}, definito int
 \item il reset dello stato delle creature;
 \item le operazioni automatiche di inizio turno.
 \end{itemize}
-
-La gestione del mana viene ulteriormente delegata a \texttt{ManaManager},
-che incapsula le regole di incremento e consumo delle risorse.
 
 Questa separazione permette di mantenere \texttt{BoardGameImpl} focalizzata sulla coordinazione generale
 della partita, evitando che conosca tutti i dettagli operativi del turno.
