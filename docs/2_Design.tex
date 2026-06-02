@@ -782,7 +782,7 @@ isolata in \texttt{BoardGameFactory}, una factory statica riconducibile ai
 pattern creazionali e dedicata alla configurazione standard del match. Il
 controller non crea direttamente la board né le sue dipendenze: in
 \texttt{MainControllerImpl.startMatch()} richiede una \texttt{BoardGame} tramite
-\texttt{()}, ottenendo un oggetto già pronto per essere passato
+\texttt{createDefaultGame()}, ottenendo un oggetto già pronto per essere passato
 al \texttt{MatchController}.
 
 La costruzione dei dettagli iniziali è confinata in
