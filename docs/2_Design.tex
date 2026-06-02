@@ -844,11 +844,8 @@ caricamenti in background tramite \texttt{preload()}, combinandoli con
 un'interfaccia semplice, mentre l'infrastruttura può lavorare in anticipo.
 
 La classe concreta \texttt{AsyncCachedImageRepository} mantiene due cache
-concorrenti: una per le immagini originali e una per le immagini scalate. Le
-chiavi delle immagini originali coincidono con il percorso della risorsa, mentre
-quelle delle immagini scalate includono anche la dimensione logica richiesta e
-la dimensione fisica calcolata per lo schermo. L'uso di
-\texttt{computeIfAbsent} fa sì che due richieste uguali condividano lo
+concorrenti: una per le immagini originali e una per le immagini scalate.
+L'uso di \texttt{computeIfAbsent} fa sì che due richieste uguali condividano lo
 stesso \texttt{CompletableFuture}, evitando letture e ridimensionamenti
 ripetuti.
 
