@@ -31,7 +31,7 @@ stato della partita.
 Il \textit{Controller} è rappresentato principalmente dalle interfacce \texttt{MainControl\-ler} e
 \texttt{SceneCoordinator}. Il controller coordina il flusso applicativo generale, crea le schermate, registra le scene
 nella vista principale e gestisce la navigazione tra di esse, a richiesta delle azioni utente catturate dalla View.
-Per evitare un'eccessiva concentrazione di responsabilità, si suddivide le responsabilità in controller
+Per evitare un'eccessiva concentrazione di responsabilità, si suddividono le responsabilità in controller
 specializzati per le singole schermate. Questi collegano le callback esposte dalle View alla logica
 applicativa corrispondente.
 
@@ -56,7 +56,7 @@ classe \texttt{ViewMetrics}, usata come punto di accesso unico alle principali
 dimensioni grafiche dell'applicazione. Nella sua versione iniziale, tali misure
 venivano calcolate a partire dalla dimensione fisica dello schermo. La classe
 determina una sola volta le grandezze necessarie e le espone tramite metodi
-statici dedicati, come ad esempio \texttt{cardWidth ()} e \texttt{cardHeight ()}.
+statici dedicati, come ad esempio \texttt{cardWidth()} e \texttt{cardHeight()}.
 In questo modo si riduce la duplicazione del codice e ogni scena può richiedere
 solo la metrica di cui ha bisogno.
 
@@ -73,15 +73,13 @@ Per risolvere il problema è stato introdotto il concetto di \textit{viewport}:
 l'applicazione continua ad aprirsi a schermo intero, ma la zona effettiva in cui
 vengono disegnate le scene corrisponde alla più grande area 16:9 contenibile
 nello schermo dell'utente. Il calcolo è centralizzato nel metodo
-\texttt{ViewMetrics.viewportSize (Dimension)}, che confronta il rapporto tra la
-larghezza e l'altezza disponibili con il rapporto obiettivo 16:9. Se lo schermo
-è più largo del necessario, viene mantenuta l'altezza e ridotta la larghezza; se
-invece è troppo alto, viene mantenuta la larghezza e ridotta l'altezza.
+\texttt{ViewMetrics.viewportSize()}, che confronta il rapporto tra la
+larghezza e l'altezza disponibili con il rapporto obiettivo 16:9.
 
 La classe \texttt{BlackBounds} applica concretamente questa scelta: viene usata
 da \texttt{MainViewImpl} come pannello radice della finestra e contiene il
 pannello delle scene gestito dal \texttt{CardLayout}. Nell'override del metodo
-\texttt{doLayout ()}, richiamato automaticamente da Swing quando la finestra
+\texttt{doLayout()}, richiamato automaticamente da Swing quando la finestra
 viene mostrata per la prima volta o quando cambia dimensione,
 \texttt{BlackBounds} calcola la viewport a partire dalla dimensione corrente
 della finestra, centra l'unico componente figlio e gli assegna l'area 16:9
@@ -128,7 +126,7 @@ Il punto centrale del fix è \texttt{AsyncCachedImageRepository}, che implementa
 \texttt{ImageRepository} ed è usata da \texttt{ImageLoaderProxy} dietro alla
 facciata statica \texttt{ImageLoader}. Quando riceve una
 \texttt{ImageLoadRequest} scalata, il repository calcola prima la dimensione
-fisica equivalente tramite il metodo \texttt{deviceSize (int, int)}. Questo metodo
+fisica equivalente tramite il metodo \texttt{deviceSize(int, int)}. Questo metodo
 legge il \texttt{defaultTransform} della configurazione grafica principale,
 ottenuta da \texttt{GraphicsEnvironment}, e moltiplica larghezza e altezza
 logiche per i fattori di scala dello schermo. Nei contesti senza ambiente
@@ -360,8 +358,8 @@ interna del mazzo o sulla factory che lo costruisce.
 \textbf{\\Soluzione:} La gestione del mazzo è stata separata dalla sua
 costruzione. L'interfaccia \texttt{Deck} espone soltanto le operazioni
 necessarie durante la partita, cioè la pesca di una carta tramite
-\texttt{draw ()} e la consultazione del numero di carte rimanenti tramite
-\texttt{getRemaining ()}. L'implementazione \texttt{DeckImpl} incapsula quindi
+\texttt{draw()} e la consultazione del numero di carte rimanenti tramite
+\texttt{getRemaining()}. L'implementazione \texttt{DeckImpl} incapsula quindi
 la lista delle carte effettivamente presenti nel mazzo e si occupa solo della
 loro gestione runtime.
 
@@ -379,7 +377,7 @@ nasconde al resto del modello i dettagli necessari alla sua costruzione
 (recupero definizioni dal database, creazione istanze runtime, selezione
 pesata, mescolamento finale\ldots{}).
 
-Il metodo \texttt{createWeighted (size, strategy)} costruisce un mazzo della
+Il metodo \texttt{createWeighted(size, strategy)} costruisce un mazzo della
 dimensione richiesta usando una \texttt{WeightStrategy}. In questa versione
 implementata, la factory calcola il peso associato a ciascuna definizione e usa
 tale valore per effettuare una selezione casuale non uniforme. In seguito le
@@ -426,7 +424,7 @@ aggiornamento grafico, aumentando il suo accoppiamento sia con il model sia con
 la view.
 
 Un'altra alternativa sarebbe stata usare una notifica generica, basata su un
-unico metodo come \texttt{update ()}. In questo caso, però, la view avrebbe
+unico metodo come \texttt{update()}. In questo caso, però, la view avrebbe
 ricevuto solo l'informazione che qualcosa nel modello è cambiato, dovendo poi
 interrogare il model per ricostruire lo stato aggiornato. Questa variante è
 stata scartata perché avrebbe richiesto alla view di conoscere più dettagli del
@@ -763,7 +761,7 @@ un numero fisso di carte iniziali, rappresentato dalla costante
 permette di legare la regola di apertura del match al punto che coordina lo
 stato complessivo, senza duplicarla nelle classi che rappresentano i singoli
 giocatori. Anche la verifica della fine della partita resta centralizzata:
-\texttt{getWinner ()} filtra i giocatori ancora in vita e restituisce un
+\texttt{getWinner()} filtra i giocatori ancora in vita e restituisce un
 \texttt{Optional<PlayerId>}, evitando valori speciali o controlli sparsi sul
 numero di punti vita.
 
@@ -807,12 +805,12 @@ La responsabilità di assemblare una partita è stata dunque
 isolata in \texttt{BoardGameFactory}, una factory statica riconducibile ai
 pattern creazionali e dedicata alla configurazione standard del match. Il
 controller non crea direttamente la board né le sue dipendenze: in
-\texttt{MainControllerImpl.startMatch ()} richiede una \texttt{BoardGame} tramite
-\texttt{ ()}, ottenendo un oggetto già pronto per essere passato
+\texttt{MainControllerImpl.startMatch()} richiede una \texttt{BoardGame} tramite
+\texttt{()}, ottenendo un oggetto già pronto per essere passato
 al \texttt{MatchController}.
 
 La costruzione dei dettagli iniziali è confinata in
-\texttt{createDefaultSetup ()}. Qui vengono preparati gli oggetti necessari alla
+\texttt{createDefaultSetup()}. Qui vengono preparati gli oggetti necessari alla
 partita: le definizioni delle creature sono caricate tramite
 \texttt{CreatureDatabaseFactory}, le carte concrete vengono prodotte con
 \texttt{CreatureImplFactory}, i mazzi con \texttt{DeckFactory} e i giocatori
@@ -857,15 +855,15 @@ da parte della View.
 
 \textbf{\\Soluzione:} La soluzione adottata separa l'uso delle immagini dal modo
 in cui esse vengono caricate. Il punto di accesso per la View è la facciata
-statica \texttt{ImageLoader}, che espone i metodi \texttt{load (String)} e
-\texttt{load (String, int, int)} per ottenere rispettivamente immagini originali
+statica \texttt{ImageLoader}, che espone i metodi \texttt{load(String)} e
+\texttt{load(String, int, int)} per ottenere rispettivamente immagini originali
 e immagini scalate.
 
 Dietro la facciata è presente \texttt{ImageLoaderProxy}, che traduce le
 richieste sincrone della View in richieste asincrone verso un
-\texttt{ImageRepository}. Il proxy usa il metodo \texttt{join ()} solo quando una
+\texttt{ImageRepository}. Il proxy usa il metodo \texttt{join()} solo quando una
 classe grafica richiede effettivamente l'icona, ma può anche avviare più
-caricamenti in background tramite \texttt{preload ()}, combinandoli con
+caricamenti in background tramite \texttt{preload()}, combinandoli con
 \texttt{Completable\-Future.allOf}. In questo modo il codice della View conserva
 un'interfaccia semplice, mentre l'infrastruttura può lavorare in anticipo.
 
@@ -888,11 +886,11 @@ dimensione richiesta; le richieste senza ridimensionamento sono invece create co
 \texttt{ImageLoadRequest.raw}.
 
 I gruppi di risorse da precaricare sono raccolti in
-\texttt{ImagePreloadCatalog}. Il metodo \texttt{menuAndNavigation ()}
+\texttt{ImagePreloadCatalog}. Il metodo \texttt{menuAndNavigation()}
 prepara lo sfondo comune, i banner della schermata finale e le texture dei
-pulsanti usati nelle schermate di navigazione; \texttt{match ()} prepara le
+pulsanti usati nelle schermate di navigazione; \texttt{match()} prepara le
 immagini usate dalle carte nella scena di gioco, compreso il retro delle carte e
-le immagini delle creature; \texttt{database ()} prepara invece le immagini usate
+le immagini delle creature; \texttt{database()} prepara invece le immagini usate
 nella schermata del mazzo. Le dimensioni delle immagini scalate vengono ricavate
 da \texttt{ViewMetrics}, così il catalogo produce richieste coerenti con la
 risoluzione effettiva dell'interfaccia.
