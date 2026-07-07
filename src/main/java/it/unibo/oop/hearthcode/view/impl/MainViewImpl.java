@@ -2,6 +2,8 @@ package it.unibo.oop.hearthcode.view.impl;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -45,10 +47,13 @@ public final class MainViewImpl implements MainView {
     @Override
     public void show() {
         SwingUtilities.invokeLater(() -> {
+            final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             this.frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-            this.frame.setUndecorated(true);
-            this.frame.setResizable(false);
             this.frame.setContentPane(this.rootPanel);
+            this.frame.setSize(screenSize);
+            this.frame.setLocationRelativeTo(null);
+            this.frame.setResizable(false);
+            this.frame.setUndecorated(true);
             this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             this.frame.setVisible(true);
         });
